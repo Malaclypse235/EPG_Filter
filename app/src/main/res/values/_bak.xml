@@ -1,0 +1,4 @@
+<resources>
+
+    <style name="Theme.EPGUtility" parent="Theme.AppCompat.DayNight.NoActionBar" />
+</resources>

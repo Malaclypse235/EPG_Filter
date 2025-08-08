@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000022"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <!-- Title Text -->
+    <TextView
+        android:id="@+id/titleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:fontFamily="@font/dancingscript_bold"
+        android:padding="16dp"
+        android:shadowColor="#FF2196F3"
+        android:shadowDx="0"
+        android:shadowDy="0"
+        android:shadowRadius="10"
+        android:text="Mal's EPG Filter Utility"
+        android:textColor="#2196F3"
+        android:textSize="36sp"
+        android:textStyle="bold" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginHorizontal="40dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="48dp"
+        android:background="@android:color/white" />
+
+    <TextView
+        android:id="@+id/warningText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:text=""
+        android:textColor="@android:color/holo_red_light"
+        android:textSize="16sp"
+        android:visibility="gone" />
+
+    <!-- Horizontal container for Playlist and EPG buttons + file names + checkboxes -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:orientation="horizontal">
+
+        <!-- Left half container -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/buttonPlaylist"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Choose Playlist File" />
+
+            <TextView
+                android:id="@+id/playlistFileText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="No file selected"
+                android:textColor="#FFFFFF" />
+
+            <CheckBox
+                android:id="@+id/checkboxDisablePlaylistFilter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:scaleX="0.7"
+                android:scaleY="0.7"
+                android:text="Disable filtering"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <!-- Right half container -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/buttonEPG"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Choose EPG File" />
+
+            <TextView
+                android:id="@+id/epgFileText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="No file selected"
+                android:textColor="#FFFFFF" />
+
+            <CheckBox
+                android:id="@+id/checkboxDisableEpgFilter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:scaleX="0.7"
+                android:scaleY="0.7"
+                android:text="Disable filtering"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/buttonFilters"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Filters" />
+
+    <Button
+        android:id="@+id/buttonRunFilter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="12dp"
+        android:text="Run Filters" />
+
+    <Button
+        android:id="@+id/buttonResetFiles"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="12dp"
+        android:text="Reset Files" />
+
+
+</LinearLayout>

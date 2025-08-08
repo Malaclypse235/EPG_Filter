@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="top|start"
+    android:background="#000000"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Filters"
+        android:textSize="40sp"
+        android:layout_gravity="center_horizontal"
+        android:fontFamily="@font/dancingscript_bold"
+        android:textColor="#2196F3" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/white"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Remove:"
+        android:textSize="24sp"
+        android:layout_gravity="start"
+        android:textColor="#ff0000" />
+
+    <!-- Horizontal layout for side-by-side checkboxes -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp">
+
+        <CheckBox
+            android:id="@+id/checkboxNonLatin"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Non-Latin Characters"
+            android:textSize="12sp"
+            android:textColor="@android:color/white"
+            android:buttonTint="@android:color/white"
+            android:paddingEnd="8dp" />
+
+        <CheckBox
+            android:id="@+id/checkboxNonEnglish"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Non-English Characters"
+            android:textSize="12sp"
+            android:textColor="@android:color/white"
+            android:buttonTint="@android:color/white"
+            android:paddingStart="8dp" />
+
+    </LinearLayout>
+
+    <!-- Optional: Add descriptions for each filter -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="4dp"
+        android:alpha="0.7">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Removes accents, umlauts, etc."
+            android:textSize="10sp"
+            android:textColor="@android:color/white"
+            android:paddingEnd="8dp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="ASCII only (A-Z, 0-9, basic punctuation)"
+            android:textSize="10sp"
+            android:textColor="@android:color/white"
+            android:paddingStart="8dp" />
+
+    </LinearLayout>
+
+    <!-- Spacer to push buttons to bottom -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <!-- Bottom buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="bottom"
+        android:gravity="center"
+        android:layout_marginTop="16dp"
+        android:paddingTop="16dp">
+
+        <Button
+            android:id="@+id/buttonConfirm"
+            style="@style/CustomRoundedButton"
+            android:minWidth="150dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Confirm"
+            android:layout_marginEnd="16dp" />
+
+        <Button
+            android:id="@+id/buttonCancel"
+            style="@style/CustomRoundedButton"
+            android:minWidth="150dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancel" />
+
+    </LinearLayout>
+
+</LinearLayout>
