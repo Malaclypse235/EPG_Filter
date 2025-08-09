@@ -31,7 +31,7 @@ class EpgProcessorService : Service() {
 
     // Progress tracking
     private var currentProgress = 0
-    private var currentStatus = "Idle"
+    private var currentStatus = "remove this text <---" // used to say "Idle"
     private var totalChannels = 0
     private var processedChannels = 0
     private var totalProgrammes = 0

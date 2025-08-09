@@ -75,8 +75,14 @@ class FilterProgressActivity : Activity() {
 
                     try {
                         // Update the accumulated log text
-                        val currentLog = textProgress.text.toString()
-                        textProgress.text = "$currentLog\n$message"
+                        //val currentLog = textProgress.text.toString()
+                        //textProgress.text = "$currentLog\n$message"
+                        if (message.isNotBlank() &&
+                            !message.contains("remove this text") &&
+                            message != "Idle") {
+                            val currentLog = textProgress.text.toString()
+                            textProgress.text = "$currentLog\n$message"
+                        }
 
                         // Update progress bar and percent text if percentage is valid
                         if (percentage in 0..100) { // Check for valid range
@@ -299,7 +305,7 @@ class FilterProgressActivity : Activity() {
                         textPercent.text = "100%"
                         progressBar.progress = 100
                         val finalLog = textProgress.text.toString() + "✅ All files are current"
-                        textProgress.text = finalLog + "\n" + getFilteringStatusSummary(playlistPath, epgPath)
+                        textProgress.text = finalLog + "\n\n" + getFilteringStatusSummary(playlistPath, epgPath)
                     }
                     // Change button text to indicate it now does filtering
                     buttonStart.isEnabled = true
@@ -688,7 +694,7 @@ class FilterProgressActivity : Activity() {
                 val progress = (currentStep * 100 / totalSteps)
                 progressBar.progress = progress
                 textPercent.text = "$progress%"
-                textProgress.append("\n✅ $filename validated (up to date)")
+                textProgress.append("\n✅ $filename validated (up to date)\n")
             }
 
             Thread.sleep(TIME_TO_PAUSE)
