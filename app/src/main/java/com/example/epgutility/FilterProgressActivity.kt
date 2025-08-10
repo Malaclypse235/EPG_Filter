@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.ScrollView
@@ -27,9 +28,12 @@ class FilterProgressActivity : Activity() {
 
     // --- Log State ---
     private val logLines = mutableListOf<String>()
+    private var m3uStartLineIndex = -1  // Track "Starting M3U..." line
     private var m3uLineIndex = -1
     private var channelsLineIndex = -1
     private var programmesLineIndex = -1
+
+    private var epgStartLineIndex = -1
 
     // --- Throttling ---
     private var lastProgressUpdate = 0L
@@ -79,16 +83,55 @@ class FilterProgressActivity : Activity() {
                                 percentage
                             )
                         }
-                        EpgProcessorService.MSG_PROGRESS_PROGRAMMES -> {
-                            updateProgressLine(
-                                "${Emojis.PROGRAMMES} Programmes: $message",
-                                ::programmesLineIndex,
-                                ::programmesLineIndex::set,
-                                percentage
-                            )
-                        }
+
                         EpgProcessorService.MSG_LOG -> {
-                            appendLog(message, phase)
+                            Log.d("FILTER_DEBUG", "Received log message: '$message'")
+                            // Handle M3U count
+                            if (message.startsWith("M3U_COUNT: ")) {
+                                if (m3uStartLineIndex != -1 && m3uStartLineIndex < logLines.size) {
+                                    logLines[m3uStartLineIndex] = "${Emojis.M3U} Starting M3U filtering... (${message.substring(11)})"
+                                    textProgress.text = logLines.joinToString("\n")
+                                    scrollView.post { scrollView.fullScroll(ScrollView.FOCUS_DOWN) }
+                                }
+                            }
+                            // Handle M3U start
+                            else if (message.contains("Starting M3U filtering", ignoreCase = true)) {
+                                updateProgressLine(
+                                    "${Emojis.M3U} Starting M3U filtering...",
+                                    ::m3uStartLineIndex,
+                                    ::m3uStartLineIndex::set,
+                                    percentage
+                                )
+                            }
+                            // Handle EPG start
+                            else if (message.contains("Starting EPG filtering", ignoreCase = true)) {
+                                updateProgressLine(
+                                    "${Emojis.CHANNELS} Starting EPG filtering...",
+                                    ::epgStartLineIndex,
+                                    ::epgStartLineIndex::set,
+                                    percentage
+                                )
+                            }
+                            // Handle EPG count
+                            else if (message.startsWith("EPG_COUNT: ")) {
+                                if (epgStartLineIndex != -1 && epgStartLineIndex < logLines.size) {
+                                    logLines[epgStartLineIndex] = "${Emojis.CHANNELS} Starting EPG filtering... (${message.substring(11)})"
+                                    textProgress.text = logLines.joinToString("\n")
+                                    scrollView.post { scrollView.fullScroll(ScrollView.FOCUS_DOWN) }
+                                }
+                            }
+                            // All other logs
+                            // All other logs
+                            else {
+                                if ((message.contains("M3U:") || message.contains("EPG:")) &&
+                                    message.contains("kept,") &&
+                                    message.contains("removed")) {
+                                    appendLog(message, phase)     // Log the result
+                                    appendLog("", phase)          // Add blank line after
+                                } else {
+                                    appendLog(message, phase)     // All other logs unchanged
+                                }
+                            }
                         }
                         else -> {
                             // General status
@@ -187,15 +230,7 @@ class FilterProgressActivity : Activity() {
     }
 
     private fun appendLog(message: String, phase: String) {
-        val prefix = when {
-            message.contains("All processing complete", ignoreCase = true) -> Emojis.DONE
-            message.contains("M3U filtering complete", ignoreCase = true) -> Emojis.DONE
-            message.contains("EPG filtering complete", ignoreCase = true) -> Emojis.DONE
-            message.contains("All files are current", ignoreCase = true) -> Emojis.DONE
-            else -> Emojis.INFO
-        }
-
-        logLines.add("$prefix $message")
+        logLines.add(message)  // Just add the message exactly as it comes
 
         if (logLines.size > 50) {
             logLines.removeAt(0)
@@ -218,7 +253,7 @@ class FilterProgressActivity : Activity() {
                 if (totalSteps == 0) {
                     runOnUiThread {
                         textStatus.text = "Nothing to sync"
-                        appendLog("No files selected or filtering disabled", "Error")
+                        appendLog("⚠\uFE0F No files selected or filtering disabled", "Error")
                         buttonStart.isEnabled = false
                         buttonStart.text = "Nothing to Filter"
                     }
@@ -241,9 +276,9 @@ class FilterProgressActivity : Activity() {
                     buttonStart.text = "Start Filtering"
                     buttonPause.isEnabled = false
 
-                    appendLog("All files are current", "SyncDone")
-                    logLines.add("") // ✅ One blank line AFTER "All files are current"
-                    appendLog("Press 'Start Filtering' to begin", "Info")
+                    appendLog("❇\uFE0F All files are current", "SyncDone")
+                    logLines.add("") // One blank line after "All files are current"
+                    appendLog("✨ Press 'Start Filtering' to begin ✨", "Info")
                 }
             } catch (e: Exception) {
                 runOnUiThread {
@@ -266,7 +301,7 @@ class FilterProgressActivity : Activity() {
                 textStatus.text = "Checking M3U: $filename"
                 val progress = (currentStep * 100 / totalSteps)
                 progressBar.progress = progress
-                logLines.add("Checking for updates to: $filename")
+                logLines.add("\uD83D\uDCE1 Checking for updates to: $filename")
                 textProgress.text = logLines.joinToString("\n")
             }
             Thread.sleep(200)
@@ -289,7 +324,7 @@ class FilterProgressActivity : Activity() {
                     textStatus.text = "Updating M3U: $filename"
                     val progress = (currentStep * 100 / totalSteps)
                     progressBar.progress = progress
-                    logLines.add("Updating file: $filename")
+                    logLines.add("\uD83D\uDCE1 Updating file: $filename")
                     textProgress.text = logLines.joinToString("\n")
                 }
                 Thread.sleep(200)
@@ -302,7 +337,7 @@ class FilterProgressActivity : Activity() {
                 file.copyTo(dest, overwrite = true)
 
                 runOnUiThread {
-                    logLines.add("✅ $filename updated")
+                    logLines.add("\uD83D\uDCE1 $filename updated")
                     textProgress.text = logLines.joinToString("\n")
                 }
             } else {
@@ -310,7 +345,7 @@ class FilterProgressActivity : Activity() {
                     textStatus.text = "M3U up to date: $filename"
                     val progress = (currentStep * 100 / totalSteps)
                     progressBar.progress = progress
-                    logLines.add("$filename does not need updating")
+                    logLines.add("\uD83D\uDCE1 $filename does not need updating")
                     textProgress.text = logLines.joinToString("\n")
                 }
                 Thread.sleep(200)
@@ -321,7 +356,7 @@ class FilterProgressActivity : Activity() {
                 val progress = (currentStep * 100 / totalSteps)
                 progressBar.progress = progress
                 logLines.add("✅ $filename validated")
-                logLines.add("") // ← Add blank line after validation
+                logLines.add("") // Blank line after validation
                 textProgress.text = logLines.joinToString("\n")
                 scrollView.post { scrollView.fullScroll(ScrollView.FOCUS_DOWN) }
             }
@@ -344,7 +379,7 @@ class FilterProgressActivity : Activity() {
                 textStatus.text = "Checking EPG: $filename"
                 val progress = (currentStep * 100 / totalSteps)
                 progressBar.progress = progress
-                logLines.add("Checking for updates to: $filename")
+                logLines.add("\uD83D\uDCFA Checking for updates to: $filename")
                 textProgress.text = logLines.joinToString("\n")
             }
             Thread.sleep(200)
@@ -367,7 +402,7 @@ class FilterProgressActivity : Activity() {
                     textStatus.text = "Updating EPG: $filename"
                     val progress = (currentStep * 100 / totalSteps)
                     progressBar.progress = progress
-                    logLines.add("Updating file: $filename")
+                    logLines.add("\uD83D\uDCFA Updating file: $filename")
                     textProgress.text = logLines.joinToString("\n")
                 }
                 Thread.sleep(200)
@@ -380,7 +415,7 @@ class FilterProgressActivity : Activity() {
                 file.copyTo(dest, overwrite = true)
 
                 runOnUiThread {
-                    logLines.add("✅ $filename updated")
+                    logLines.add("\uD83D\uDCFA $filename updated")
                     textProgress.text = logLines.joinToString("\n")
                 }
             } else {
@@ -388,7 +423,7 @@ class FilterProgressActivity : Activity() {
                     textStatus.text = "EPG up to date: $filename"
                     val progress = (currentStep * 100 / totalSteps)
                     progressBar.progress = progress
-                    logLines.add("$filename does not need updating")
+                    logLines.add("\uD83D\uDCFA $filename does not need updating")
                     textProgress.text = logLines.joinToString("\n")
                 }
                 Thread.sleep(200)
@@ -399,7 +434,7 @@ class FilterProgressActivity : Activity() {
                 val progress = (currentStep * 100 / totalSteps)
                 progressBar.progress = progress
                 logLines.add("✅ $filename validated")
-                logLines.add("") // ← Add blank line after validation
+                logLines.add("") // Blank line after validation
                 textProgress.text = logLines.joinToString("\n")
                 scrollView.post { scrollView.fullScroll(ScrollView.FOCUS_DOWN) }
             }
@@ -417,13 +452,14 @@ class FilterProgressActivity : Activity() {
             if (buttonStart.text == "Start Filtering") {
                 // ✅ Clear all previous log lines
                 logLines.clear()
+                m3uStartLineIndex = -1
                 m3uLineIndex = -1
                 channelsLineIndex = -1
                 programmesLineIndex = -1
                 textProgress.text = ""
 
                 // ✅ Add fresh header
-                logLines.add("${Emojis.START} FILTERING STARTED")
+                logLines.add("  ✨ FILTERING STARTED ✨")
                 logLines.add("────────────────────────")
                 logLines.add("") // Blank line after header
                 textProgress.text = logLines.joinToString("\n")
@@ -449,15 +485,11 @@ class FilterProgressActivity : Activity() {
 
     // --- File Helpers ---
     private fun findExistingM3UFile(directory: File): File? {
-        return directory.listFiles()?.find {
-            it.name.endsWith(".m3u", true) || it.name.endsWith(".m3u8", true)
-        }
+        return directory.listFiles()?.find { it.isPlaylist() }
     }
 
     private fun findExistingEPGFile(directory: File): File? {
-        return directory.listFiles()?.find {
-            it.name.endsWith(".xml", true) || it.name.endsWith(".xml.gz", true)
-        }
+        return directory.listFiles()?.find { it.isEpg() }
     }
 
     override fun onResume() {
@@ -465,3 +497,7 @@ class FilterProgressActivity : Activity() {
         setupButtonListeners()
     }
 }
+
+// File extension helpers
+private fun File.isPlaylist() = name.endsWith(".m3u", true) || name.endsWith(".m3u8", true)
+private fun File.isEpg() = name.endsWith(".xml", true) || name.endsWith(".xml.gz", true)
