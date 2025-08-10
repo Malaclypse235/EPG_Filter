@@ -188,14 +188,19 @@ class FilterProgressActivity : Activity() {
 
     private fun appendLog(message: String, phase: String) {
         val prefix = when {
-            message.contains("All processing complete") -> Emojis.DONE
-            message.contains("M3U filtering complete") -> Emojis.DONE
-            message.contains("EPG filtering complete") -> Emojis.DONE
-            message.contains("All files are current") -> Emojis.DONE
+            message.contains("All processing complete", ignoreCase = true) -> Emojis.DONE
+            message.contains("M3U filtering complete", ignoreCase = true) -> Emojis.DONE
+            message.contains("EPG filtering complete", ignoreCase = true) -> Emojis.DONE
+            message.contains("All files are current", ignoreCase = true) -> Emojis.DONE
             else -> Emojis.INFO
         }
-        val separator = if (phase == "Complete" || message.contains("complete", ignoreCase = true)) "\n\n" else "\n"
-        logLines.add("$separator$prefix $message")
+
+        logLines.add("$prefix $message")
+
+        if (logLines.size > 50) {
+            logLines.removeAt(0)
+        }
+
         textProgress.text = logLines.joinToString("\n")
         scrollView.post { scrollView.fullScroll(ScrollView.FOCUS_DOWN) }
     }
@@ -235,7 +240,9 @@ class FilterProgressActivity : Activity() {
                     buttonStart.isEnabled = true
                     buttonStart.text = "Start Filtering"
                     buttonPause.isEnabled = false
+
                     appendLog("All files are current", "SyncDone")
+                    logLines.add("") // ✅ One blank line AFTER "All files are current"
                     appendLog("Press 'Start Filtering' to begin", "Info")
                 }
             } catch (e: Exception) {
@@ -314,7 +321,9 @@ class FilterProgressActivity : Activity() {
                 val progress = (currentStep * 100 / totalSteps)
                 progressBar.progress = progress
                 logLines.add("✅ $filename validated")
+                logLines.add("") // ← Add blank line after validation
                 textProgress.text = logLines.joinToString("\n")
+                scrollView.post { scrollView.fullScroll(ScrollView.FOCUS_DOWN) }
             }
         } catch (e: Exception) {
             runOnUiThread {
@@ -390,7 +399,9 @@ class FilterProgressActivity : Activity() {
                 val progress = (currentStep * 100 / totalSteps)
                 progressBar.progress = progress
                 logLines.add("✅ $filename validated")
+                logLines.add("") // ← Add blank line after validation
                 textProgress.text = logLines.joinToString("\n")
+                scrollView.post { scrollView.fullScroll(ScrollView.FOCUS_DOWN) }
             }
         } catch (e: Exception) {
             runOnUiThread {
@@ -414,6 +425,7 @@ class FilterProgressActivity : Activity() {
                 // ✅ Add fresh header
                 logLines.add("${Emojis.START} FILTERING STARTED")
                 logLines.add("────────────────────────")
+                logLines.add("") // Blank line after header
                 textProgress.text = logLines.joinToString("\n")
 
                 // Start service

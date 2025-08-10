@@ -247,7 +247,7 @@ class EpgProcessorService : Service() {
                                     // Update progress every 10 channels
                                     if (total % 10 == 0 || total == 1) {
                                         val progress = (total * 100 / playlistFile.countLines().coerceAtLeast(1)).coerceAtMost(100)
-                                        logAndSend("Processing M3U: $total", progress, "M3U_Progress", MSG_PROGRESS_M3U)
+                                        logAndSend("$total", progress, "M3U_Progress", MSG_PROGRESS_M3U)
                                     }
                                 }
                                 currentChannel.clear()
@@ -272,6 +272,8 @@ class EpgProcessorService : Service() {
                     }
                 }
             }
+
+            logAndSend("✅ M3U: $kept kept, $removed removed", 100, "M3U_Done", MSG_LOG)
 
             keptChannelsCount = kept
             removedChannelsCount = removed
@@ -371,7 +373,7 @@ class EpgProcessorService : Service() {
 
                                 if (processedChannels - lastUpdateCount >= progressUpdateInterval) {
                                     val channelProgress = (processedChannels.toLong() * 100 / totalChannels.coerceAtLeast(1)).toInt()
-                                    logAndSend("Channels: $processedChannels/$totalChannels", channelProgress, "EPG_Channels", MSG_PROGRESS_CHANNELS)
+                                    logAndSend("$processedChannels/$totalChannels", channelProgress, "EPG_Channels", MSG_PROGRESS_CHANNELS)
                                     lastUpdateCount = processedChannels
                                 }
                             }
@@ -392,7 +394,7 @@ class EpgProcessorService : Service() {
 
                                 if (processedProgrammes - lastUpdateCount >= progressUpdateInterval) {
                                     val programmeProgress = (processedProgrammes.toLong() * 100 / totalProgrammes.coerceAtLeast(1)).toInt()
-                                    logAndSend("Programmes: $processedProgrammes/$totalProgrammes", programmeProgress, "EPG_Programmes", MSG_PROGRESS_PROGRAMMES)
+                                    logAndSend("$processedProgrammes/$totalProgrammes", programmeProgress, "EPG_Programmes", MSG_PROGRESS_PROGRAMMES)
                                     lastUpdateCount = processedProgrammes
                                 }
                             }
@@ -464,8 +466,7 @@ class EpgProcessorService : Service() {
             keptWriter.flush()
             removedWriter.flush()
 
-            val finalMsg = "EPG complete: $keptChannelsCount kept, $removedChannelsCount removed | $keptProgrammesCount kept, $removedProgrammesCount removed"
-            logAndSend(finalMsg, 100, "EPG_Complete", MSG_LOG)
+            logAndSend("✅ EPG: $keptChannelsCount ch kept, $removedChannelsCount removed | $keptProgrammesCount prog kept, $removedProgrammesCount removed", 100, "EPG_Done", MSG_LOG)
         } catch (e: Exception) {
             Log.e(TAG, "❌ EPG filtering failed", e)
             logAndSend("EPG error: ${e.message}", 0, "Error", MSG_LOG)
