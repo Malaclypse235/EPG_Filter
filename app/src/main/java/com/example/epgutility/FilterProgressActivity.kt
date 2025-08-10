@@ -25,8 +25,14 @@ class FilterProgressActivity : Activity() {
     private lateinit var scrollView: ScrollView
 
     private val TAG = "FilterProgress"
-    private lateinit var config: ConfigManager.ConfigData
 
+    // --- Log State ---
+    private val logLines = mutableListOf<String>()
+    private var m3uLineIndex = -1
+    private var channelsLineIndex = -1
+    private var programmesLineIndex = -1
+
+    private lateinit var config: ConfigManager.ConfigData
     private var playlistPath: String? = null
     private var epgPath: String? = null
 
@@ -42,26 +48,28 @@ class FilterProgressActivity : Activity() {
             runOnUiThread {
                 try {
                     when (messageType) {
-                        EpgProcessorService.MSG_PROGRESS_M3U -> {
-                            replaceLastLineWithMarker("PROGRESS_M3U:", message)
-                            updateProgress(percentage, message)
-                        }
-                        EpgProcessorService.MSG_PROGRESS_CHANNELS -> {
-                            replaceLastLineWithMarker("PROGRESS_CHANNELS:", message)
-                            updateProgress(percentage, message)
-                        }
-                        EpgProcessorService.MSG_PROGRESS_PROGRAMMES -> {
-                            replaceLastLineWithMarker("PROGRESS_PROGRAMMES:", message)
-                            updateProgress(percentage, message)
-                        }
-                        EpgProcessorService.MSG_LOG -> {
-                            appendLog(message, phase)
-                        }
+                        EpgProcessorService.MSG_PROGRESS_M3U -> updateOrAdd("📡 M3U: $message", ::m3uLineIndex, ::m3uLineIndex::set)
+                        EpgProcessorService.MSG_PROGRESS_CHANNELS -> updateOrAdd("📺 Channels: $message", ::channelsLineIndex, ::channelsLineIndex::set)
+                        EpgProcessorService.MSG_PROGRESS_PROGRAMMES -> updateOrAdd("🎬 Programmes: $message", ::programmesLineIndex, ::programmesLineIndex::set)
+                        EpgProcessorService.MSG_LOG -> appendLine("🔹 $message")
                         else -> {
-                            updateProgress(percentage, message)
+                            textStatus.text = message
+                            if (percentage in 0..100) {
+                                progressBar.progress = percentage
+                                textPercent.text = "$percentage%"
+                            }
                         }
                     }
 
+                    // Only one setText call per update
+                    textProgress.text = logLines.joinToString("\n")
+
+                    // Auto-scroll (post delayed to ensure layout)
+                    scrollView.postDelayed({
+                        scrollView.fullScroll(ScrollView.FOCUS_DOWN)
+                    }, 50)
+
+                    // Final state
                     if (phase == "Complete" || phase.contains("Error")) {
                         buttonStart.isEnabled = true
                         buttonStart.text = "Start Filtering"
@@ -99,17 +107,16 @@ class FilterProgressActivity : Activity() {
         Log.d(TAG, "Received playlistPath: $playlistPath")
         Log.d(TAG, "Received epgPath: $epgPath")
 
-        // Register broadcast receiver
-        registerReceiver(epgProgressReceiver, IntentFilter("EPG_PROGRESS_UPDATE"), RECEIVER_EXPORTED)
+        // Register receiver
+        registerReceiver(epgProgressReceiver, IntentFilter("EPG_PROGRESS_UPDATE"), Context.RECEIVER_EXPORTED)
 
-        // Initial UI state
+        // Initial state
         buttonStart.isEnabled = false
         buttonStart.text = "Loading..."
         buttonPause.isEnabled = false
         buttonCancel.isEnabled = true
-        textProgress.text = "📌 Initializing...\n"
 
-        // Start file sync immediately
+        // Start file sync
         startFileSync()
     }
 
@@ -118,74 +125,18 @@ class FilterProgressActivity : Activity() {
         super.onDestroy()
     }
 
-    private fun updateProgress(percentage: Int, status: String) {
-        textStatus.text = status
-        if (percentage in 0..100) {
-            progressBar.progress = percentage
-            textPercent.text = "$percentage%"
+    private fun updateOrAdd(line: String, indexRef: () -> Int, setIndex: (Int) -> Unit) {
+        if (indexRef() == -1) {
+            logLines.add(line)
+            setIndex(logLines.lastIndex)
+        } else {
+            logLines[indexRef()] = line
         }
-        scrollView.post { scrollView.fullScroll(ScrollView.FOCUS_DOWN) }
+        textStatus.text = line  // Always show latest progress
     }
 
-    private fun appendLog(message: String, phase: String = "") {
-        // Skip adding emoji if message already starts with one
-        val hasEmoji = message.length >= 2 && listOf("📁", "📋", "✅", "❌", "🔍", "📊", "🎬", "📺", "📡", "🎉", "🔹")
-            .any { message.startsWith(it) }
-
-        val prefix = if (hasEmoji) "" else {
-            when {
-                message.contains("Checking") -> "📁"
-                message.contains("updating", ignoreCase = true) -> "📋"
-                message.contains("validated", ignoreCase = true) -> "✅"
-                message.contains("not found", ignoreCase = true) ||
-                        phase == "Error" -> "❌"
-                message.contains("Starting M3U", ignoreCase = true) -> "🔍"
-                message.contains("M3U filtering complete") -> "✅"
-                message.contains("Analyzing EPG") -> "📊"
-                message.contains("EPG filtering complete") -> "✅"
-                message.contains("All processing complete") -> "🎉"
-                else -> "🔹"
-            }
-        }
-
-        val separator = if (
-            message.startsWith("✅") ||
-            message.startsWith("🎉") ||
-            message.contains("All processing complete") ||
-            phase == "Complete"
-        ) "\n\n" else "\n"
-
-        val finalMessage = if (prefix.isEmpty()) {
-            "$separator$message"
-        } else {
-            "$separator$prefix $message"
-        }
-
-        textProgress.append(finalMessage)
-        scrollView.post { scrollView.fullScroll(ScrollView.FOCUS_DOWN) }
-    }
-
-    private fun replaceLastLineWithMarker(marker: String, displayText: String) {
-        val lines = textProgress.text.toString().split("\n").toMutableList()
-        val fullLine = "$marker$displayText"
-        val index = lines.indexOfLast { it.startsWith(marker) }
-
-        if (index != -1) {
-            lines[index] = fullLine
-        } else {
-            lines.add(fullLine)
-        }
-
-        // Rebuild text: show only the actual message, not the marker
-        textProgress.text = lines.joinToString("\n") { line ->
-            if (line.startsWith("PROGRESS_")) {
-                line.substringAfter(":", "").trim()
-            } else {
-                line
-            }
-        }
-
-        scrollView.post { scrollView.fullScroll(ScrollView.FOCUS_DOWN) }
+    private fun appendLine(line: String) {
+        logLines.add(line)
     }
 
     private fun startFileSync() {
@@ -200,39 +151,40 @@ class FilterProgressActivity : Activity() {
                 if (totalSteps == 0) {
                     runOnUiThread {
                         textStatus.text = "Nothing to sync"
-                        appendLog("⚠️ No files selected or filtering disabled")
+                        appendLine("⚠️ No files selected or filtering disabled")
+                        textProgress.text = logLines.joinToString("\n")
                         buttonStart.isEnabled = false
                         buttonStart.text = "Nothing to Filter"
                     }
                     return@Thread
                 }
 
-                // Sync M3U
                 if (!config.disablePlaylistFiltering && !playlistPath.isNullOrEmpty()) {
                     processM3UFile(playlistPath!!, currentStep, totalSteps)
                     currentStep += 3
                 }
 
-                // Sync EPG
                 if (!config.disableEPGFiltering && !epgPath.isNullOrEmpty()) {
                     processEPGFile(epgPath!!, currentStep, totalSteps)
                     currentStep += 3
                 }
 
-                // Finalize
                 runOnUiThread {
                     textStatus.text = "Ready to filter"
                     buttonStart.isEnabled = true
                     buttonStart.text = "Start Filtering"
                     buttonPause.isEnabled = false
-                    appendLog("\n✅ All files are current")
-                    appendLog("➡️ Press 'Start Filtering' to begin")
+                    appendLine("")
+                    appendLine("✅ All files are current")
+                    appendLine("➡️ Press 'Start Filtering' to begin")
+                    textProgress.text = logLines.joinToString("\n")
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Sync failed", e)
                 runOnUiThread {
                     textStatus.text = "Sync error"
-                    appendLog("❌ Sync failed: ${e.message}", "Error")
+                    appendLine("❌ Sync failed: ${e.message}")
+                    textProgress.text = logLines.joinToString("\n")
                     buttonStart.isEnabled = false
                 }
             }
@@ -250,13 +202,15 @@ class FilterProgressActivity : Activity() {
                 textStatus.text = "Checking M3U: $filename"
                 val progress = (currentStep * 100 / totalSteps)
                 progressBar.progress = progress
-                appendLog("Checking for updates to: $filename")
+                appendLine("📁 Checking for updates to: $filename")
+                textProgress.text = logLines.joinToString("\n")
             }
             Thread.sleep(200)
 
             if (!file.exists()) {
                 runOnUiThread {
-                    appendLog("❌ M3U file not found: $path", "Error")
+                    appendLine("❌ M3U file not found: $path")
+                    textProgress.text = logLines.joinToString("\n")
                 }
                 return
             }
@@ -271,7 +225,8 @@ class FilterProgressActivity : Activity() {
                     textStatus.text = "Updating M3U: $filename"
                     val progress = (currentStep * 100 / totalSteps)
                     progressBar.progress = progress
-                    appendLog("Updating file: $filename")
+                    appendLine("📋 Updating file: $filename")
+                    textProgress.text = logLines.joinToString("\n")
                 }
                 Thread.sleep(200)
 
@@ -283,14 +238,16 @@ class FilterProgressActivity : Activity() {
                 file.copyTo(dest, overwrite = true)
 
                 runOnUiThread {
-                    appendLog("✅ $filename updated")
+                    appendLine("✅ $filename updated")
+                    textProgress.text = logLines.joinToString("\n")
                 }
             } else {
                 runOnUiThread {
                     textStatus.text = "M3U up to date: $filename"
                     val progress = (currentStep * 100 / totalSteps)
                     progressBar.progress = progress
-                    appendLog("$filename does not need updating")
+                    appendLine("$filename does not need updating")
+                    textProgress.text = logLines.joinToString("\n")
                 }
                 Thread.sleep(200)
             }
@@ -299,11 +256,13 @@ class FilterProgressActivity : Activity() {
             runOnUiThread {
                 val progress = (currentStep * 100 / totalSteps)
                 progressBar.progress = progress
-                appendLog("$filename validated")
+                appendLine("✅ $filename validated")
+                textProgress.text = logLines.joinToString("\n")
             }
         } catch (e: Exception) {
             runOnUiThread {
-                appendLog("❌ Failed to sync M3U: ${e.message}", "Error")
+                appendLine("❌ Failed to sync M3U: ${e.message}")
+                textProgress.text = logLines.joinToString("\n")
             }
         }
     }
@@ -319,13 +278,15 @@ class FilterProgressActivity : Activity() {
                 textStatus.text = "Checking EPG: $filename"
                 val progress = (currentStep * 100 / totalSteps)
                 progressBar.progress = progress
-                appendLog("Checking for updates to: $filename")
+                appendLine("📁 Checking for updates to: $filename")
+                textProgress.text = logLines.joinToString("\n")
             }
             Thread.sleep(200)
 
             if (!file.exists()) {
                 runOnUiThread {
-                    appendLog("❌ EPG file not found: $path", "Error")
+                    appendLine("❌ EPG file not found: $path")
+                    textProgress.text = logLines.joinToString("\n")
                 }
                 return
             }
@@ -340,7 +301,8 @@ class FilterProgressActivity : Activity() {
                     textStatus.text = "Updating EPG: $filename"
                     val progress = (currentStep * 100 / totalSteps)
                     progressBar.progress = progress
-                    appendLog("Updating file: $filename")
+                    appendLine("📋 Updating file: $filename")
+                    textProgress.text = logLines.joinToString("\n")
                 }
                 Thread.sleep(200)
 
@@ -352,14 +314,16 @@ class FilterProgressActivity : Activity() {
                 file.copyTo(dest, overwrite = true)
 
                 runOnUiThread {
-                    appendLog("✅ $filename updated")
+                    appendLine("✅ $filename updated")
+                    textProgress.text = logLines.joinToString("\n")
                 }
             } else {
                 runOnUiThread {
                     textStatus.text = "EPG up to date: $filename"
                     val progress = (currentStep * 100 / totalSteps)
                     progressBar.progress = progress
-                    appendLog("$filename does not need updating")
+                    appendLine("$filename does not need updating")
+                    textProgress.text = logLines.joinToString("\n")
                 }
                 Thread.sleep(200)
             }
@@ -368,11 +332,13 @@ class FilterProgressActivity : Activity() {
             runOnUiThread {
                 val progress = (currentStep * 100 / totalSteps)
                 progressBar.progress = progress
-                appendLog("$filename validated")
+                appendLine("✅ $filename validated")
+                textProgress.text = logLines.joinToString("\n")
             }
         } catch (e: Exception) {
             runOnUiThread {
-                appendLog("❌ Failed to sync EPG: ${e.message}", "Error")
+                appendLine("❌ Failed to sync EPG: ${e.message}")
+                textProgress.text = logLines.joinToString("\n")
             }
         }
     }
@@ -380,8 +346,11 @@ class FilterProgressActivity : Activity() {
     private fun setupButtonListeners() {
         buttonStart.setOnClickListener {
             if (buttonStart.text == "Start Filtering") {
-                appendLog("\n🔄 FILTERING STARTED")
-                appendLog("────────────────────────")
+                appendLine("")
+                appendLine("🔄 FILTERING STARTED")
+                appendLine("────────────────────────")
+                textProgress.text = logLines.joinToString("\n")
+
                 val serviceIntent = Intent(this, EpgProcessorService::class.java)
                 serviceIntent.action = EpgProcessorService.ACTION_START_EPG_PROCESSING
                 startService(serviceIntent)
@@ -392,7 +361,7 @@ class FilterProgressActivity : Activity() {
         }
 
         buttonPause.setOnClickListener {
-            // Pause/resume can be added later
+            // Pause/resume later
         }
 
         buttonCancel.setOnClickListener {
