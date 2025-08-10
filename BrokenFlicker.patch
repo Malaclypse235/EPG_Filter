@@ -1,0 +1,488 @@
+Index: app/src/main/java/com/example/epgutility/MainActivity.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/epgutility/MainActivity.kt b/app/src/main/java/com/example/epgutility/MainActivity.kt
+--- a/app/src/main/java/com/example/epgutility/MainActivity.kt
++++ b/app/src/main/java/com/example/epgutility/MainActivity.kt	(date 1754299817161)
+@@ -1,310 +1,203 @@
+ package com.example.epgutility
+ 
+-import android.Manifest
+-import android.animation.Animator
+-import android.animation.AnimatorListenerAdapter
+-import android.animation.ValueAnimator
+-import android.content.ActivityNotFoundException
+-import android.content.Intent
+-import android.graphics.Color
+-import android.net.Uri
+-import android.os.Build
+ import android.os.Bundle
+-import android.os.Environment
+-import android.provider.Settings
+-import android.util.Log
+-import android.widget.*
++import android.widget.Button
++import android.widget.ProgressBar
++import android.widget.TextView
+ import androidx.appcompat.app.AppCompatActivity
+-import androidx.core.app.ActivityCompat
+-import androidx.core.content.ContextCompat
+-import androidx.lifecycle.lifecycleScope
+-import kotlinx.coroutines.launch
+-import java.io.File
+-import android.content.pm.PackageManager
+-import java.util.concurrent.TimeUnit
++import kotlinx.coroutines.*
++import org.xmlpull.v1.XmlPullParser
++import org.xmlpull.v1.XmlPullParserFactory
++import org.xmlpull.v1.XmlSerializer
++import java.io.*
+ 
+-class MainActivity : AppCompatActivity() {
++class FilterProgressActivity : AppCompatActivity() {
+ 
+-    private lateinit var buttonPlaylist: Button
+-    private lateinit var buttonEPG: Button
+-    private lateinit var playlistFileText: TextView
+-    private lateinit var epgFileText: TextView
+-    private lateinit var buttonFilters: Button
+-    private lateinit var buttonRunFilter: Button
+-    private lateinit var titleText: TextView
+-    private lateinit var disablePlaylistCheckbox: CheckBox
+-    private lateinit var disableEPGCheckbox: CheckBox
+-    private lateinit var config: ConfigManager.ConfigData
++    private lateinit var progressBar: ProgressBar
++    private lateinit var textStatus: TextView
++    private lateinit var textPercent: TextView
++    private lateinit var textProgress: TextView
++    private lateinit var buttonStart: Button
++    private lateinit var buttonPause: Button
++    private lateinit var buttonCancel: Button
+ 
+-    companion object {
+-        private const val PICK_PLAYLIST_FILE = 1
+-        private const val PICK_EPG_FILE = 2
+-        private const val PERMISSION_REQUEST_STORAGE = 100
+-        private val FILE_MAX_AGE_MS = TimeUnit.DAYS.toMillis(8)
+-    }
++    private val scope = CoroutineScope(Dispatchers.Main + Job())
+ 
+     override fun onCreate(savedInstanceState: Bundle?) {
+-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+-            if (!Environment.isExternalStorageManager()) {
+-                try {
+-                    val intent = Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION)
+-                    startActivity(intent)
+-                } catch (e: ActivityNotFoundException) {
+-                    Log.w("MainActivity", "MANAGE_ALL_FILES_ACCESS_PERMISSION not supported")
+-                }
+-            }
+-        }
+-
+-        if (ContextCompat.checkSelfPermission(
+-                this, Manifest.permission.READ_EXTERNAL_STORAGE
+-            ) != PackageManager.PERMISSION_GRANTED
+-        ) {
+-            ActivityCompat.requestPermissions(
+-                this,
+-                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+-                PERMISSION_REQUEST_STORAGE
+-            )
+-        }
+-
+-        Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
+-            try {
+-                val downloadsDir =
+-                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+-                if (!downloadsDir.exists()) downloadsDir.mkdirs()
+-
+-                val crashFile = File(downloadsDir, "epg_utility_last_crash.txt")
+-                crashFile.writeText("Thread: ${thread.name}\n${throwable.stackTraceToString()}")
+-
+-                runOnUiThread {
+-                    Toast.makeText(
+-                        this,
+-                        "App crashed! Check Downloads/epg_utility_last_crash.txt",
+-                        Toast.LENGTH_LONG
+-                    ).show()
+-                }
+-            } catch (e: Exception) {
+-                e.printStackTrace()
+-            }
+-        }
+-
+         super.onCreate(savedInstanceState)
+-        setContentView(R.layout.activity_main)
+-
+-        ensureRequiredSubfolders()
+-        deleteOldFiles()
+-
+-        config = ConfigManager.loadConfig(this).config
+-
+-        val documentsDir =
+-            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
+-        val downloadsDir =
+-            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+-
+-        val malEpgDir: File = if (documentsDir.exists() || documentsDir.mkdirs()) {
+-            File(documentsDir, "MalEPG")
+-        } else {
+-            File(downloadsDir, "MalEPG")
+-        }
+-
+-        if (!malEpgDir.exists()) malEpgDir.mkdirs()
+-
+-        if (config.defaultFolderPath.isNullOrEmpty()) {
+-            config.defaultFolderPath = malEpgDir.absolutePath
+-            ConfigManager.saveConfig(this, config)
+-        }
+-
+-        // Bind views
+-        titleText = findViewById(R.id.titleText)
+-        buttonPlaylist = findViewById(R.id.buttonPlaylist)
+-        buttonEPG = findViewById(R.id.buttonEPG)
+-        playlistFileText = findViewById(R.id.playlistFileText)
+-        epgFileText = findViewById(R.id.epgFileText)
+-        buttonFilters = findViewById(R.id.buttonFilters)
+-        buttonRunFilter = findViewById(R.id.buttonRunFilter)
+-        disablePlaylistCheckbox = findViewById(R.id.checkboxDisablePlaylistFilter)
+-        disableEPGCheckbox = findViewById(R.id.checkboxDisableEpgFilter)
+-
+-        // Initialize checkbox states
+-        disablePlaylistCheckbox.isChecked = config.disablePlaylistFiltering
+-        disableEPGCheckbox.isChecked = config.disableEPGFiltering
+-
+-        // Save config on change
+-        disablePlaylistCheckbox.setOnCheckedChangeListener { _, isChecked ->
+-            config.disablePlaylistFiltering = isChecked
+-            ConfigManager.saveConfig(this, config)
+-        }
+-        disableEPGCheckbox.setOnCheckedChangeListener { _, isChecked ->
+-            config.disableEPGFiltering = isChecked
+-            ConfigManager.saveConfig(this, config)
+-        }
+-
+-        buttonPlaylist.post {
+-            val width = buttonPlaylist.width
+-            val height = buttonPlaylist.height
+-            buttonEPG.layoutParams.width = width
+-            buttonEPG.layoutParams.height = height
+-            buttonEPG.requestLayout()
+-        }
+-
+-        startGlowFlicker()
+-        startTextFlicker()
+-
+-        playlistFileText.text = getDisplayName(config.playlistPath, config.playlistUri)
+-        epgFileText.text = getDisplayName(config.epgPath, config.epgUri)
+-
+-        buttonPlaylist.setOnClickListener { openFilePicker(PICK_PLAYLIST_FILE) }
+-        buttonEPG.setOnClickListener { openFilePicker(PICK_EPG_FILE) }
+-
+-        buttonFilters.setOnClickListener {
+-            startActivity(Intent(this, FiltersActivity::class.java))
+-        }
++        setContentView(R.layout.activity_filter_progress)
+ 
+-        buttonRunFilter.setOnClickListener {
+-            val intent = Intent(this, FilterProgressActivity::class.java).apply {
+-                putExtra("PLAYLIST_PATH", config.playlistPath)
+-                putExtra("EPG_PATH", config.epgPath)
+-                putExtra("filterPlaylist", !config.disablePlaylistFiltering)
+-                putExtra("filterEPG", !config.disableEPGFiltering)
+-            }
+-            startActivity(intent)
+-        }
++        progressBar = findViewById(R.id.progressBar)
++        textStatus = findViewById(R.id.textStatus)
++        textPercent = findViewById(R.id.textPercent)
++        textProgress = findViewById(R.id.textProgress)
++        buttonStart = findViewById(R.id.buttonStart)
++        buttonPause = findViewById(R.id.buttonPause)
++        buttonCancel = findViewById(R.id.buttonCancel)
+ 
+-        val buttonResetFiles: Button = findViewById(R.id.buttonResetFiles)
+-        buttonResetFiles.setOnClickListener {
+-            config.playlistPath = null
+-            config.playlistUri = null
+-            config.epgPath = null
+-            config.epgUri = null
+-            ConfigManager.clearConfig(this)
++        checkAndDownloadIfNeeded()
+ 
+-            playlistFileText.text = "No file selected"
+-            epgFileText.text = "No file selected"
+-            Toast.makeText(this, "Files reset successfully!", Toast.LENGTH_SHORT).show()
++        buttonStart.setOnClickListener {
++            startFiltering()
+         }
+-    }
+ 
+-    private fun ensureRequiredSubfolders() {
+-        val requiredFolders = listOf("input", "output", "configuration")
+-        requiredFolders.forEach { folderName ->
+-            val dir = File(filesDir, folderName)
+-            if (!dir.exists()) dir.mkdirs()
++        buttonCancel.setOnClickListener {
++            scope.cancel()
++            textStatus.text = "Cancelled"
++            buttonPause.isEnabled = false
++            buttonStart.isEnabled = true
+         }
+     }
+ 
+-    private fun deleteOldFiles() {
+-        val now = System.currentTimeMillis()
+-
+-        fun cleanFolder(folder: File) {
+-            if (!folder.exists() || !folder.isDirectory) return
+-            val files = folder.listFiles()?.sortedByDescending { it.lastModified() } ?: emptyList()
+-            var newestPlaylist: File? = null
+-            var newestEpg: File? = null
+-
+-            files.forEach { file ->
+-                val ext = file.extension.lowercase()
+-                if (ext == "m3u" || ext == "m3u8") {
+-                    if (newestPlaylist == null || file.lastModified() > newestPlaylist!!.lastModified()) {
+-                        newestPlaylist = file
+-                    }
+-                } else if (ext == "xml" || ext == "gz") {
+-                    if (newestEpg == null || file.lastModified() > newestEpg!!.lastModified()) {
+-                        newestEpg = file
+-                    }
+-                }
+-            }
++    private fun checkAndDownloadIfNeeded() {
++        textStatus.text = "Checking EPG files..."
++        scope.launch {
++            withContext(Dispatchers.IO) {
++                delay(1000) // Placeholder for actual file check/download logic
++            }
++            textStatus.text = "Ready"
++        }
++    }
+ 
+-            files.forEach { file ->
+-                val age = now - file.lastModified()
+-                val shouldKeep = (file == newestPlaylist || file == newestEpg)
+-                if (!shouldKeep && age > FILE_MAX_AGE_MS) {
+-                    if (!file.delete()) {
+-                        Log.w("MainActivity", "Failed to delete old file: ${file.name}")
+-                    }
+-                }
+-            }
+-        }
++    private fun startFiltering() {
++        buttonStart.isEnabled = false
++        buttonPause.isEnabled = true
++        textStatus.text = "Filtering..."
++        progressBar.progress = 0
++        textPercent.text = "0%"
++        textProgress.text = ""
+ 
+-        cleanFolder(File(filesDir, "input"))
+-        cleanFolder(File(filesDir, "output"))
+-    }
++        val epgInput = File(filesDir, "epg.xml")
++        val epgFilteredOutput = File(filesDir, "epg_filtered.xml")
++        val epgRemovedOutput = File(filesDir, "epg_removed.xml")
+ 
+-    private fun getDisplayName(path: String?, uri: String?): String {
+-        if (!path.isNullOrBlank()) {
+-            val file = File(path)
+-            if (file.exists()) return file.name
+-        }
+-        if (!uri.isNullOrBlank()) {
++        scope.launch {
+             try {
+-                val parsedUri = Uri.parse(uri)
+-                val hasPermission = contentResolver.persistedUriPermissions.any {
+-                    it.uri == parsedUri && it.isReadPermission
+-                }
+-                if (hasPermission) {
+-                    val name = UriUtils.getFileNameFromUri(this, parsedUri)
+-                    if (name != null) return name
+-                }
+-            } catch (_: SecurityException) {}
++                filterEpgXml(
++                    inputFile = epgInput,
++                    outputFiltered = epgFilteredOutput,
++                    outputRemoved = epgRemovedOutput,
++                    removeNonLatin = true
++                )
++                textStatus.text = "Done"
++                textPercent.text = "100%"
++                progressBar.progress = 100
++            } catch (e: Exception) {
++                textStatus.text = "Error: ${e.message}"
++                textProgress.append("\n${e.stackTraceToString()}")
++            } finally {
++                buttonPause.isEnabled = false
++                buttonStart.isEnabled = true
++            }
++        }
++    }
++
++    private suspend fun filterEpgXml(
++        inputFile: File,
++        outputFiltered: File,
++        outputRemoved: File,
++        removeNonLatin: Boolean
++    ) = withContext(Dispatchers.IO) {
++        val factory = XmlPullParserFactory.newInstance()
++        val parser = factory.newPullParser()
++        parser.setInput(FileReader(inputFile))
++
++        val filteredWriter = BufferedWriter(FileWriter(outputFiltered))
++        val removedWriter = BufferedWriter(FileWriter(outputRemoved))
++
++        val serializerFiltered = factory.newSerializer().apply {
++            setOutput(filteredWriter)
++            startDocument("UTF-8", true)
++            startTag(null, "tv")
+         }
+-        return "Missing file, please (re)select"
+-    }
++
++        val serializerRemoved = factory.newSerializer().apply {
++            setOutput(removedWriter)
++            startDocument("UTF-8", true)
++            startTag(null, "tv")
++        }
+ 
+-    private fun openFilePicker(requestCode: Int) {
+-        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+-            addCategory(Intent.CATEGORY_OPENABLE)
+-            type = "*/*"
+-            putExtra(
+-                Intent.EXTRA_MIME_TYPES,
+-                when (requestCode) {
+-                    PICK_PLAYLIST_FILE -> arrayOf("audio/x-mpegurl", "application/vnd.apple.mpegurl")
+-                    PICK_EPG_FILE -> arrayOf("application/xml", "application/gzip")
+-                    else -> arrayOf("*/*")
++        var event = parser.eventType
++        while (event != XmlPullParser.END_DOCUMENT) {
++            if (event == XmlPullParser.START_TAG) {
++                when (parser.name) {
++                    "channel", "programme" -> {
++                        val tagContent = readTag(parser)
++                        val keep = if (removeNonLatin && parser.name == "programme") {
++                            !tagContent.any { it.code > 127 && !it.isWhitespace() }
++                        } else true
++
++                        val output = StringWriter().apply {
++                            val tempParser = XmlPullParserFactory.newInstance().newPullParser()
++                            tempParser.setInput(StringReader(tagContent))
++                            val tempSerializer = XmlPullParserFactory.newInstance().newSerializer()
++                            tempSerializer.setOutput(this)
++                            writeFullTag(tempParser, tempSerializer)
++                        }.toString()
++
++                        if (keep) filteredWriter.write(output) else removedWriter.write(output)
++                    }
+                 }
+-            )
++            }
++            event = parser.next()
+         }
+-        startActivityForResult(intent, requestCode)
++
++        serializerFiltered.endTag(null, "tv")
++        serializerFiltered.endDocument()
++        serializerFiltered.flush()
++        filteredWriter.flush()
++
++        serializerRemoved.endTag(null, "tv")
++        serializerRemoved.endDocument()
++        serializerRemoved.flush()
++        removedWriter.flush()
++
++        filteredWriter.close()
++        removedWriter.close()
+     }
+ 
+-    @Suppress("DEPRECATION")
+-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+-        super.onActivityResult(requestCode, resultCode, data)
+-        if (resultCode == RESULT_OK && data != null) {
+-            val uri = data.data ?: return
+-            when (requestCode) {
+-                PICK_PLAYLIST_FILE -> {
+-                    config.playlistUri = uri.toString()
+-                    config.playlistPath = UriUtils.getRealPathFromUri(this, uri)
+-                    playlistFileText.text = getDisplayName(config.playlistPath, config.playlistUri)
+-                    lifecycleScope.launch {
+-                        FileManager.checkAndCopyIfNeeded(this@MainActivity, config.playlistPath)
++    private fun readTag(parser: XmlPullParser): String {
++        val writer = StringWriter()
++        val serializer = XmlPullParserFactory.newInstance().newSerializer()
++        serializer.setOutput(writer)
++
++        val startDepth = parser.depth
++        var eventType = parser.eventType
++
++        while (!(eventType == XmlPullParser.END_TAG && parser.depth == startDepth)) {
++            when (eventType) {
++                XmlPullParser.START_TAG -> {
++                    serializer.startTag(null, parser.name)
++                    for (i in 0 until parser.attributeCount) {
++                        serializer.attribute(null, parser.getAttributeName(i), parser.getAttributeValue(i))
+                     }
+                 }
+-                PICK_EPG_FILE -> {
+-                    config.epgUri = uri.toString()
+-                    config.epgPath = UriUtils.getRealPathFromUri(this, uri)
+-                    epgFileText.text = getDisplayName(config.epgPath, config.epgUri)
+-                    lifecycleScope.launch {
+-                        FileManager.checkAndCopyIfNeeded(this@MainActivity, config.epgPath)
+-                    }
+-                }
+-            }
+-            ConfigManager.saveConfig(this, config)
+-        }
+-    }
+-
+-    override fun onRequestPermissionsResult(
+-        requestCode: Int, permissions: Array<out String>, grantResults: IntArray
+-    ) {
+-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+-        if (requestCode == PERMISSION_REQUEST_STORAGE) {
+-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+-                Toast.makeText(this, "Permission granted!", Toast.LENGTH_SHORT).show()
+-            } else {
+-                Toast.makeText(this, "Permission denied. Files may not load.", Toast.LENGTH_LONG).show()
++                XmlPullParser.TEXT -> serializer.text(parser.text)
++                XmlPullParser.END_TAG -> serializer.endTag(null, parser.name)
++            }
++            eventType = parser.next()
++        }
++        serializer.endTag(null, parser.name)
++        serializer.flush()
++        return writer.toString()
++    }
++
++    private fun writeFullTag(parser: XmlPullParser, serializer: XmlSerializer) {
++        var event = parser.eventType
++        while (event != XmlPullParser.END_DOCUMENT) {
++            when (event) {
++                XmlPullParser.START_TAG -> {
++                    serializer.startTag(null, parser.name)
++                    for (i in 0 until parser.attributeCount) {
++                        serializer.attribute(null, parser.getAttributeName(i), parser.getAttributeValue(i))
++                    }
++                }
++                XmlPullParser.TEXT -> serializer.text(parser.text)
++                XmlPullParser.END_TAG -> serializer.endTag(null, parser.name)
+             }
++            event = parser.next()
++            if (event == XmlPullParser.END_TAG && parser.depth == 0) break
+         }
++        serializer.endDocument()
+     }
+-
+-    private fun startGlowFlicker() { /* unchanged */ }
+-    private fun startTextFlicker() { /* unchanged */ }
+-    private fun adjustAlpha(color: Int, factor: Float): Int { /* unchanged */ }
+ }
