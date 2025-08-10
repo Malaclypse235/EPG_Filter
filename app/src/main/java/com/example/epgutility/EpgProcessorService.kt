@@ -213,16 +213,16 @@ class EpgProcessorService : Service() {
 
                             if (trimmed.startsWith("#EXTM3U")) {
                                 if (!headerWritten) {
-                                    keptWriter.write("$trimmed\n")
-                                    removedWriter.write("$trimmed\n")
+                                    keptWriter.write("$trimmed\n\n")
+                                    removedWriter.write("$trimmed\n\n")
                                     headerWritten = true
                                 }
                                 continue
                             }
 
                             if (trimmed.startsWith("#EXTGRP")) {
-                                keptWriter.write("$trimmed\n")
-                                removedWriter.write("$trimmed\n")
+                                keptWriter.write("$trimmed\n\n")
+                                removedWriter.write("$trimmed\n\n")
                                 continue
                             }
 
@@ -232,10 +232,10 @@ class EpgProcessorService : Service() {
                                     val shouldKeep = shouldKeepM3uChannel(currentChannel)
                                     if (shouldKeep) {
                                         kept++
-                                        keptWriter.write("${currentChannel[0]}\n${currentChannel[1]}\n")
+                                        keptWriter.write("${currentChannel[0]}\n${currentChannel[1]}\n\n")
                                     } else {
                                         removed++
-                                        removedWriter.write("${currentChannel[0]}\n${currentChannel[1]}\n")
+                                        removedWriter.write("${currentChannel[0]}\n${currentChannel[1]}\n\n")
                                     }
                                 }
                                 currentChannel.clear()
