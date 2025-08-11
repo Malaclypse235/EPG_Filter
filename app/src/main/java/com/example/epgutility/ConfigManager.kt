@@ -37,13 +37,25 @@ object ConfigManager {
     )
 
     // 🧹 Filtering rules (will grow over time)
+    // 🧹 Filtering rules (now with news/weather filters)
     data class FilterSettings(
         var removeNonEnglish: Boolean = false,
         var removeNonLatin: Boolean = false,
         var excludeKeywords: List<String> = emptyList(),
         var includeCategories: List<String> = emptyList(),
         var hideEncrypted: Boolean = false,
-        var hideRadio: Boolean = false
+        var hideRadio: Boolean = false,
+
+        // 🔽 News & Weather Filters
+        var removeNewsAndWeather: Boolean = false,
+        var removeFoxNews: Boolean = false,
+        var removeCNN: Boolean = false,
+        var removeMSNBC: Boolean = false,
+        var removeNewsMax: Boolean = false,
+        var removeCNBC: Boolean = false,
+        var removeOAN: Boolean = false,
+        var removeWeatherChannel: Boolean = false,
+        var removeAccuWeather: Boolean = false
     )
 
     // Get the configuration directory

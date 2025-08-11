@@ -12,6 +12,16 @@ class FiltersActivity : AppCompatActivity() {
     private lateinit var removeNonEnglishCheckBox: CheckBox
     private lateinit var buttonConfirm: Button
     private lateinit var buttonCancel: Button
+    private lateinit var checkboxRemoveNewsWeather: CheckBox
+
+    private lateinit var checkboxFoxNews: CheckBox
+    private lateinit var checkboxCNN: CheckBox
+    private lateinit var checkboxMSNBC: CheckBox
+    private lateinit var checkboxNewsMax: CheckBox
+    private lateinit var checkboxCNBC: CheckBox
+    private lateinit var checkboxOAN: CheckBox
+    private lateinit var checkboxWeatherChannel: CheckBox
+    private lateinit var checkboxAccuWeather: CheckBox
 
     // Current config data
     private lateinit var config: ConfigManager.ConfigData
@@ -25,6 +35,16 @@ class FiltersActivity : AppCompatActivity() {
         removeNonEnglishCheckBox = findViewById(R.id.checkboxNonEnglish)
         buttonConfirm = findViewById(R.id.buttonConfirm)
         buttonCancel = findViewById(R.id.buttonCancel)
+        checkboxRemoveNewsWeather = findViewById(R.id.checkboxRemoveNewsWeather)
+
+        checkboxFoxNews = findViewById(R.id.checkboxFoxNews)
+        checkboxCNN = findViewById(R.id.checkboxCNN)
+        checkboxMSNBC = findViewById(R.id.checkboxMSNBC)
+        checkboxNewsMax = findViewById(R.id.checkboxNewsMax)
+        checkboxCNBC = findViewById(R.id.checkboxCNBC)
+        checkboxOAN = findViewById(R.id.checkboxOAN)
+        checkboxWeatherChannel = findViewById(R.id.checkboxWeatherChannel)
+        checkboxAccuWeather = findViewById(R.id.checkboxAccuWeather)
 
         // Load config (create defaults if missing)
         val loadResult = ConfigManager.loadConfig(this)
@@ -48,6 +68,17 @@ class FiltersActivity : AppCompatActivity() {
         // ✅ FIXED: now reads from config.filters
         removeNonLatinCheckBox.isChecked = config.filters.removeNonLatin
         removeNonEnglishCheckBox.isChecked = config.filters.removeNonEnglish
+        // Load News & Weather filter states
+        checkboxRemoveNewsWeather.isChecked = config.filters.removeNewsAndWeather
+
+        checkboxFoxNews.isChecked = config.filters.removeFoxNews
+        checkboxCNN.isChecked = config.filters.removeCNN
+        checkboxMSNBC.isChecked = config.filters.removeMSNBC
+        checkboxNewsMax.isChecked = config.filters.removeNewsMax
+        checkboxCNBC.isChecked = config.filters.removeCNBC
+        checkboxOAN.isChecked = config.filters.removeOAN
+        checkboxWeatherChannel.isChecked = config.filters.removeWeatherChannel
+        checkboxAccuWeather.isChecked = config.filters.removeAccuWeather
 
         // Add checkbox interaction logic
         setupCheckboxInteractions()
@@ -58,6 +89,17 @@ class FiltersActivity : AppCompatActivity() {
             // ✅ FIXED: now writes to config.filters
             config.filters.removeNonLatin = removeNonLatinCheckBox.isChecked
             config.filters.removeNonEnglish = removeNonEnglishCheckBox.isChecked
+            // Save News & Weather filter states
+            config.filters.removeNewsAndWeather = checkboxRemoveNewsWeather.isChecked
+
+            config.filters.removeFoxNews = checkboxFoxNews.isChecked
+            config.filters.removeCNN = checkboxCNN.isChecked
+            config.filters.removeMSNBC = checkboxMSNBC.isChecked
+            config.filters.removeNewsMax = checkboxNewsMax.isChecked
+            config.filters.removeCNBC = checkboxCNBC.isChecked
+            config.filters.removeOAN = checkboxOAN.isChecked
+            config.filters.removeWeatherChannel = checkboxWeatherChannel.isChecked
+            config.filters.removeAccuWeather = checkboxAccuWeather.isChecked
 
             // Save updated config and backup
             ConfigManager.saveConfig(this, config)

@@ -1,128 +1,311 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="top|start"
     android:background="#000000"
-    android:padding="16dp">
+    android:padding="10dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Filters"
-        android:textSize="40sp"
-        android:layout_gravity="center_horizontal"
-        android:fontFamily="@font/dancingscript_bold"
-        android:textColor="#2196F3" />
-
-    <View
+    <!-- SCROLLABLE FILTER CONTENT -->
+    <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/white"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="16dp" />
+        android:layout_height="match_parent"
+        android:layout_above="@+id/bottomBar"
+        android:fillViewport="true">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Remove:"
-        android:textSize="24sp"
-        android:layout_gravity="start"
-        android:textColor="#ff0000" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <!-- Horizontal layout for side-by-side checkboxes -->
+            <!-- Filters Title -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Filters"
+                android:textSize="40sp"
+                android:layout_gravity="center_horizontal"
+                android:fontFamily="@font/dancingscript_bold"
+                android:textColor="#2196F3" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/white"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Remove:"
+                android:textSize="18sp"
+                android:textColor="#FF9800" />
+
+            <!-- Non-Latin / Non-English Checkboxes -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
+
+                <CheckBox
+                    android:id="@+id/checkboxNonLatin"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Non-Latin Characters"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingEnd="8dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxNonEnglish"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Non-English Characters"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="8dp" />
+            </LinearLayout>
+
+            <!-- Descriptions -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="4dp"
+                android:alpha="0.7">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Removes accents, umlauts, etc."
+                    android:textSize="10sp"
+                    android:textColor="@android:color/white"
+                    android:paddingEnd="8dp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="ASCII only (A-Z, 0-9, basic punctuation)"
+                    android:textSize="10sp"
+                    android:textColor="@android:color/white"
+                    android:paddingStart="8dp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#FFFFFF"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- News and Weather Master Checkbox -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="News and Weather:"
+                    android:textSize="18sp"
+                    android:textColor="#FFFFFF"
+                    android:layout_marginEnd="8dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxRemoveNewsWeather"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Remove all News and Weather"
+                    android:textSize="14sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white" />
+            </LinearLayout>
+
+            <!-- Remove: Label -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Remove:"
+                android:textSize="18sp"
+                android:textColor="#FF9800"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp" />
+
+            <!-- First Row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="8dp">
+
+                <CheckBox
+                    android:id="@+id/checkboxFoxNews"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Fox News"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingEnd="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxCNN"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="CNN"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxMSNBC"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="MSNBC"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxNewsMax"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="NewsMax"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp" />
+            </LinearLayout>
+
+            <!-- Second Row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="8dp">
+
+                <CheckBox
+                    android:id="@+id/checkboxCNBC"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="CNBC"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingEnd="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxOAN"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="OAN"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxWeatherChannel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="The Weather Channel"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxAccuWeather"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="AccuWeather"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp" />
+            </LinearLayout>
+
+            <!-- Final divider inside scroll -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#444444"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- BOTTOM BAR: Line + Buttons -->
     <LinearLayout
+        android:id="@+id/bottomBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="8dp">
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        android:background="#000000">
 
-        <CheckBox
-            android:id="@+id/checkboxNonLatin"
-            android:layout_width="0dp"
+        <!-- Divider Line -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#CCCCCC"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="8dp" />
+
+        <!-- Confirm / Cancel Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Non-Latin Characters"
-            android:textSize="12sp"
-            android:textColor="@android:color/white"
-            android:buttonTint="@android:color/white"
-            android:paddingEnd="8dp" />
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:paddingTop="4dp"
+            android:paddingBottom="2dp">
 
-        <CheckBox
-            android:id="@+id/checkboxNonEnglish"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Non-English Characters"
-            android:textSize="12sp"
-            android:textColor="@android:color/white"
-            android:buttonTint="@android:color/white"
-            android:paddingStart="8dp" />
+            <Button
+                android:id="@+id/buttonConfirm"
+                style="@style/CustomRoundedButton"
+                android:minWidth="150dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Confirm"
+                android:layout_marginEnd="16dp" />
 
+            <Button
+                android:id="@+id/buttonCancel"
+                style="@style/CustomRoundedButton"
+                android:minWidth="150dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cancel" />
+        </LinearLayout>
     </LinearLayout>
 
-    <!-- Optional: Add descriptions for each filter -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="4dp"
-        android:alpha="0.7">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Removes accents, umlauts, etc."
-            android:textSize="10sp"
-            android:textColor="@android:color/white"
-            android:paddingEnd="8dp" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="ASCII only (A-Z, 0-9, basic punctuation)"
-            android:textSize="10sp"
-            android:textColor="@android:color/white"
-            android:paddingStart="8dp" />
-
-    </LinearLayout>
-
-    <!-- Spacer to push buttons to bottom -->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
-
-    <!-- Bottom buttons -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_gravity="bottom"
-        android:gravity="center"
-        android:layout_marginTop="16dp"
-        android:paddingTop="16dp">
-
-        <Button
-            android:id="@+id/buttonConfirm"
-            style="@style/CustomRoundedButton"
-            android:minWidth="150dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Confirm"
-            android:layout_marginEnd="16dp" />
-
-        <Button
-            android:id="@+id/buttonCancel"
-            style="@style/CustomRoundedButton"
-            android:minWidth="150dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Cancel" />
-
-    </LinearLayout>
-
-</LinearLayout>
+</RelativeLayout>
