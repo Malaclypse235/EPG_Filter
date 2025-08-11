@@ -12,7 +12,13 @@ import java.util.regex.Pattern
 import java.util.zip.GZIPInputStream
 
 class EpgProcessorService : Service() {
+
+
     companion object {
+
+        const val CHANNELS = "📺"
+
+        const val DONE = "✅"
         const val ACTION_START_EPG_PROCESSING = "START_EPG_PROCESSING"
         const val ACTION_STOP_EPG_PROCESSING = "STOP_EPG_PROCESSING"
         const val ACTION_GET_PROGRESS = "GET_EPG_PROGRESS"
@@ -162,7 +168,9 @@ class EpgProcessorService : Service() {
 
             // --- Step 2: EPG Filtering ---
             if (epgFile != null && !config.disableEPGFiltering) {
-                logAndSend("\uD83D\uDCFA Starting EPG filtering...", 0, "EPG_Start", MSG_LOG)
+                logAndSend("Starting EPG filtering...", 5, "EPG_Start", MSG_LOG)
+                countElementsInFile(epgFile)
+                logAndSend("EPG: $totalChannels channels found", 5, "EPG_Count", MSG_LOG)
                 processEpgFile(epgFile)
             } else {
                 logAndSend("⚠\uFE0F Skipped EPG filtering", 0, "EPG_Skipped", MSG_LOG)
@@ -319,8 +327,10 @@ class EpgProcessorService : Service() {
         // Count elements first
         countElementsInFile(epgFile)
 
+        Log.d("EpgProcessorService", "After count: totalChannels = $totalChannels")
+
         // Send count to update UI
-        logAndSend("\uD83D\uDCFA EPG: $totalChannels channels found", 5, "EPG_Start", MSG_LOG)
+        logAndSend("EPG: $totalChannels channels found", 5, "EPG_Count", MSG_LOG)
 
         var inputStream: InputStream? = null
         var keptWriter: BufferedWriter? = null
@@ -379,7 +389,7 @@ class EpgProcessorService : Service() {
 
                                 if (processedChannels - lastUpdateCount >= progressUpdateInterval) {
                                     val channelProgress = (processedChannels.toLong() * 100 / totalChannels.coerceAtLeast(1)).toInt()
-                                    logAndSend("Filtering channels: $processedChannels / $totalChannels", channelProgress, "EPG_Channels", MSG_PROGRESS_CHANNELS)
+                                    logAndSend("Filtering: $processedChannels / $totalChannels", channelProgress, "EPG_Channels", MSG_PROGRESS_CHANNELS)
                                     lastUpdateCount = processedChannels
                                 }
                             }
@@ -456,7 +466,8 @@ class EpgProcessorService : Service() {
             removedWriter.flush()
 
             // Final EPG result (only channels)
-            val result = "\uD83D\uDCFA EPG: $keptChannelsCount channels kept, $removedChannelsCount removed"
+            // Final EPG result (only channels)
+            val result = "✅ EPG: $keptChannelsCount channels kept, $removedChannelsCount removed"
             logAndSend(result, 100, "EPG_Done", MSG_LOG)
 
         } catch (e: Exception) {
