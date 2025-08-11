@@ -356,7 +356,7 @@ class EpgProcessorService : Service() {
         val text = channelLines.joinToString(" ")
 
         if (config.filters.removeNonEnglish) {
-            val matcher = Pattern.compile("[^\\u0020-\\u007E]").matcher(text)
+            val matcher = Pattern.compile("[^\\u0020-\\u007E\\u2010-\\u2027]").matcher(text)
             if (matcher.find()) return false
         }
 
@@ -579,7 +579,7 @@ class EpgProcessorService : Service() {
             .trim()
 
         if (config.filters.removeNonEnglish) {
-            val matcher = Pattern.compile("[^\\u0020-\\u007E]").matcher(textContent)
+            val matcher = Pattern.compile("[^\\u0020-\\u007E\\u2010-\\u2027]").matcher(textContent)
             if (matcher.find()) return false
         }
 
