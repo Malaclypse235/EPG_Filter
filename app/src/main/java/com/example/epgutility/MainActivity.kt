@@ -64,7 +64,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-
         // Crash log handler
         Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
             try {
@@ -114,8 +113,8 @@ class MainActivity : AppCompatActivity() {
 
         if (!malEpgDir.exists()) malEpgDir.mkdirs()
 
-        if (config.defaultFolderPath.isNullOrEmpty()) {
-            config.defaultFolderPath = malEpgDir.absolutePath
+        if (config.system.defaultFolderPath.isNullOrEmpty()) {
+            config.system.defaultFolderPath = malEpgDir.absolutePath
             ConfigManager.saveConfig(this, config)
         }
 
@@ -127,7 +126,7 @@ class MainActivity : AppCompatActivity() {
         epgFileText = findViewById(R.id.epgFileText)
         buttonFilters = findViewById(R.id.buttonFilters)
         buttonRunFilter = findViewById(R.id.buttonRunFilter)
-        checkBoxDisablePlaylist = findViewById(R.id.checkboxDisablePlaylistFilter)  // Use actual ID from your XML
+        checkBoxDisablePlaylist = findViewById(R.id.checkboxDisablePlaylistFilter)
         checkBoxDisableEPG = findViewById(R.id.checkboxDisableEpgFilter)
 
         // Equalize button sizes
@@ -140,27 +139,24 @@ class MainActivity : AppCompatActivity() {
         }
 
         // --- Title Flicker Animations --- Do Not Change or Delete
-
         AnimationManager.startGlowFlicker(titleText)
         AnimationManager.startTextFlicker(titleText)
 
-
-
         // --- Update displayed file names ---
-        playlistFileText.text = getDisplayName(config.playlistPath, config.playlistUri)
-        epgFileText.text = getDisplayName(config.epgPath, config.epgUri)
-        checkBoxDisablePlaylist.isChecked = config.disablePlaylistFiltering
-        checkBoxDisableEPG.isChecked = config.disableEPGFiltering
+        playlistFileText.text = getDisplayName(config.system.playlistPath, config.system.playlistUri)
+        epgFileText.text = getDisplayName(config.system.epgPath, config.system.epgUri)
+        checkBoxDisablePlaylist.isChecked = config.system.disablePlaylistFiltering
+        checkBoxDisableEPG.isChecked = config.system.disableEPGFiltering
 
         // Add checkbox listeners
         checkBoxDisablePlaylist.setOnCheckedChangeListener { _, isChecked ->
-            config.disablePlaylistFiltering = isChecked
+            config.system.disablePlaylistFiltering = isChecked
             ConfigManager.saveConfig(this, config)
             Log.d("MainActivity", "Playlist filtering disabled: $isChecked")
         }
 
         checkBoxDisableEPG.setOnCheckedChangeListener { _, isChecked ->
-            config.disableEPGFiltering = isChecked
+            config.system.disableEPGFiltering = isChecked
             ConfigManager.saveConfig(this, config)
             Log.d("MainActivity", "EPG filtering disabled: $isChecked")
         }
@@ -179,8 +175,8 @@ class MainActivity : AppCompatActivity() {
             val config = loadResult.config
 
             val intent = Intent(this, FilterProgressActivity::class.java).apply {
-                putExtra("PLAYLIST_PATH", config.playlistPath)
-                putExtra("EPG_PATH", config.epgPath)
+                putExtra("PLAYLIST_PATH", config.system.playlistPath)
+                putExtra("EPG_PATH", config.system.epgPath)
             }
             startActivity(intent)
         }
@@ -188,10 +184,10 @@ class MainActivity : AppCompatActivity() {
         // Reset button
         val buttonResetFiles: Button = findViewById(R.id.buttonResetFiles)
         buttonResetFiles.setOnClickListener {
-            config.playlistPath = null
-            config.playlistUri = null
-            config.epgPath = null
-            config.epgUri = null
+            config.system.playlistPath = null
+            config.system.playlistUri = null
+            config.system.epgPath = null
+            config.system.epgUri = null
             ConfigManager.clearConfig(this)
 
             playlistFileText.text = "No file selected"
@@ -209,9 +205,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * Deletes files older than 8 days from the 'input' and 'output' folders
-     */
     /**
      * Deletes files older than 8 days from the 'input' and 'output' folders.
      * - Always keeps newest playlist and newest EPG file in each folder.
@@ -266,7 +259,6 @@ class MainActivity : AppCompatActivity() {
 
     private val FILE_MAX_AGE_MS = 8L * 24L * 60L * 60L * 1000L // 8 days
 
-
     /** Get a display name for a file path or URI */
     private fun getDisplayName(path: String?, uri: String?): String {
         if (!path.isNullOrBlank()) {
@@ -318,21 +310,21 @@ class MainActivity : AppCompatActivity() {
             val uri = data.data ?: return
             when (requestCode) {
                 PICK_PLAYLIST_FILE -> {
-                    config.playlistUri = uri.toString()
-                    config.playlistPath = UriUtils.getRealPathFromUri(this, uri)
-                    playlistFileText.text = getDisplayName(config.playlistPath, config.playlistUri)
+                    config.system.playlistUri = uri.toString()
+                    config.system.playlistPath = UriUtils.getRealPathFromUri(this, uri)
+                    playlistFileText.text = getDisplayName(config.system.playlistPath, config.system.playlistUri)
                     // Copy in background
                     lifecycleScope.launch {
-                        FileManager.checkAndCopyIfNeeded(this@MainActivity, config.playlistPath)
+                        FileManager.checkAndCopyIfNeeded(this@MainActivity, config.system.playlistPath)
                     }
                 }
                 PICK_EPG_FILE -> {
-                    config.epgUri = uri.toString()
-                    config.epgPath = UriUtils.getRealPathFromUri(this, uri)
-                    epgFileText.text = getDisplayName(config.epgPath, config.epgUri)
+                    config.system.epgUri = uri.toString()
+                    config.system.epgPath = UriUtils.getRealPathFromUri(this, uri)
+                    epgFileText.text = getDisplayName(config.system.epgPath, config.system.epgUri)
                     // Copy in background
                     lifecycleScope.launch {
-                        FileManager.checkAndCopyIfNeeded(this@MainActivity, config.epgPath)
+                        FileManager.checkAndCopyIfNeeded(this@MainActivity, config.system.epgPath)
                     }
                 }
             }
@@ -356,6 +348,4 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
-
 }

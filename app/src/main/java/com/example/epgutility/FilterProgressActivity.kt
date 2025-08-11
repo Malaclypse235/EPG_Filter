@@ -99,7 +99,7 @@ class FilterProgressActivity : Activity() {
                                 )
                             }
 
-                            // Delete this block too if you want:
+                            // Handle EPG count: update the "Starting..." line with count
                             else if (message.contains("EPG:") && message.contains("channels found")) {
                                 Log.d("FILTER_DEBUG", "🔢 EPG count message: $message")
                                 val count = Regex("\\d+").find(message)?.value ?: "0"
@@ -113,7 +113,6 @@ class FilterProgressActivity : Activity() {
                                     message
                                 )
                             }
-                            // Handle EPG count: update the "Starting..." line with count
 
                             // All other logs
                             else {
@@ -235,8 +234,9 @@ class FilterProgressActivity : Activity() {
                 var totalSteps = 0
                 var currentStep = 0
 
-                if (!config.disablePlaylistFiltering && !playlistPath.isNullOrEmpty()) totalSteps += 3
-                if (!config.disableEPGFiltering && !epgPath.isNullOrEmpty()) totalSteps += 3
+                // ✅ FIXED: access via config.system
+                if (!config.system.disablePlaylistFiltering && !playlistPath.isNullOrEmpty()) totalSteps += 3
+                if (!config.system.disableEPGFiltering && !epgPath.isNullOrEmpty()) totalSteps += 3
 
                 if (totalSteps == 0) {
                     runOnUiThread {
@@ -248,12 +248,12 @@ class FilterProgressActivity : Activity() {
                     return@Thread
                 }
 
-                if (!config.disablePlaylistFiltering && !playlistPath.isNullOrEmpty()) {
+                if (!config.system.disablePlaylistFiltering && !playlistPath.isNullOrEmpty()) {
                     processM3UFile(playlistPath!!, currentStep, totalSteps)
                     currentStep += 3
                 }
 
-                if (!config.disableEPGFiltering && !epgPath.isNullOrEmpty()) {
+                if (!config.system.disableEPGFiltering && !epgPath.isNullOrEmpty()) {
                     processEPGFile(epgPath!!, currentStep, totalSteps)
                     currentStep += 3
                 }
@@ -452,6 +452,8 @@ class FilterProgressActivity : Activity() {
 
                 val serviceIntent = Intent(this, EpgProcessorService::class.java)
                 serviceIntent.action = EpgProcessorService.ACTION_START_EPG_PROCESSING
+                if (playlistPath != null) serviceIntent.putExtra("PLAYLIST_PATH", playlistPath)
+                if (epgPath != null) serviceIntent.putExtra("EPG_PATH", epgPath)
                 startService(serviceIntent)
 
                 buttonStart.isEnabled = false

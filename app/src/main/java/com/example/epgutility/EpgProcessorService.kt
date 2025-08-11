@@ -13,11 +13,8 @@ import java.util.zip.GZIPInputStream
 
 class EpgProcessorService : Service() {
 
-
     companion object {
-
         const val CHANNELS = "📺"
-
         const val DONE = "✅"
         const val ACTION_START_EPG_PROCESSING = "START_EPG_PROCESSING"
         const val ACTION_STOP_EPG_PROCESSING = "STOP_EPG_PROCESSING"
@@ -53,16 +50,37 @@ class EpgProcessorService : Service() {
     private var keptChannelsCount = 0
     private var removedChannelsCount = 0
 
+    // ✅ NEW: Store paths from intent
+    private var playlistPath: String? = null
+    private var epgPath: String? = null
+
     override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
-            ACTION_START_EPG_PROCESSING -> startEpgProcessing()
+            ACTION_START_EPG_PROCESSING -> {
+                // ✅ Extract paths from intent
+                this.playlistPath = intent.getStringExtra("PLAYLIST_PATH")
+                this.epgPath = intent.getStringExtra("EPG_PATH")
+                startEpgProcessing()
+            }
             ACTION_STOP_EPG_PROCESSING -> stopEpgProcessing()
             ACTION_GET_PROGRESS -> sendCurrentProgress()
             else -> Log.w(TAG, "Unknown action: ${intent?.action}")
         }
         return START_STICKY
+    }
+
+    private fun resetState() {
+        currentProgress = 0
+        currentStatus = "Idle"
+        currentPhase = "Idle"
+        keptChannelsCount = 0
+        removedChannelsCount = 0
+        processedChannels = 0
+        totalChannels = 0
+        totalProgrammes = 0
+        channelFilterDecisions.clear()
     }
 
     private fun startEpgProcessing() {
@@ -84,18 +102,6 @@ class EpgProcessorService : Service() {
 
         processingThread = Thread { processEpgInBackground() }
         processingThread?.start()
-    }
-
-    private fun resetState() {
-        currentProgress = 0
-        currentStatus = "Idle"
-        currentPhase = "Idle"
-        keptChannelsCount = 0
-        removedChannelsCount = 0
-        processedChannels = 0
-        totalChannels = 0
-        totalProgrammes = 0
-        channelFilterDecisions.clear()
     }
 
     private fun stopEpgProcessing() {
@@ -140,50 +146,6 @@ class EpgProcessorService : Service() {
             .setSmallIcon(android.R.drawable.ic_media_play)
             .setOngoing(true)
             .build()
-    }
-
-    private fun processEpgInBackground() {
-        try {
-            val inputDir = File(this.filesDir, "input")
-            if (!inputDir.exists()) {
-                logAndSend("❌ Input folder missing", 0, "Error", MSG_LOG)
-                return
-            }
-
-            val playlistFile = findExistingPlaylistFile(inputDir)
-            val epgFile = findExistingEPGFile(inputDir)
-
-            if (playlistFile == null && epgFile == null) {
-                logAndSend("❌ No .m3u or .xml files found", 0, "Error", MSG_LOG)
-                return
-            }
-
-            // --- Step 1: M3U Filtering ---
-            if (playlistFile != null && !config.disablePlaylistFiltering) {
-                logAndSend("\uD83D\uDCE1 Starting M3U filtering...", 0, "M3U_Start", MSG_LOG)
-                processM3uFile(playlistFile)
-            } else {
-                logAndSend("⚠\uFE0F Skipped M3U filtering", 0, "M3U_Skipped", MSG_LOG)
-            }
-
-            // --- Step 2: EPG Filtering ---
-            if (epgFile != null && !config.disableEPGFiltering) {
-                logAndSend("📺 Starting EPG filtering...", 5, "EPG_Start", MSG_LOG)
-                countElementsInFile(epgFile)
-                // logAndSend("EPG: $totalChannels channels found", 5, "EPG_Count", MSG_LOG)
-                processEpgFile(epgFile)
-            } else {
-                logAndSend("⚠\uFE0F Skipped EPG filtering", 0, "EPG_Skipped", MSG_LOG)
-            }
-
-            logAndSend("✅ All processing complete!", 100, "Complete", MSG_LOG)
-        } catch (e: Exception) {
-            Log.e(TAG, "💥 Critical error", e)
-            logAndSend("‼\uFE0F Processing failed: ${e.message}", 0, "Error", MSG_LOG)
-            writeCrashLog(e)
-        } finally {
-            stopEpgProcessing()
-        }
     }
 
     private fun processM3uFile(playlistFile: File) {
@@ -316,6 +278,59 @@ class EpgProcessorService : Service() {
             throw e
         }
     }
+    private fun processEpgInBackground() {
+        try {
+            val inputDir = File(this.filesDir, "input")
+            if (!inputDir.exists()) {
+                logAndSend("❌ Input folder missing", 0, "Error", MSG_LOG)
+                return
+            }
+
+            // ✅ Use only the files passed in the intent
+            val playlistFile = if (!playlistPath.isNullOrEmpty() && !config.system.disablePlaylistFiltering) {
+                val file = File(playlistPath!!)
+                if (file.exists()) file else null
+            } else {
+                null
+            }
+
+            val epgFile = if (!epgPath.isNullOrEmpty() && !config.system.disableEPGFiltering) {
+                val file = File(epgPath!!)
+                if (file.exists()) file else null
+            } else {
+                null
+            }
+
+            // --- Step 1: M3U Filtering ---
+            if (playlistFile != null) {
+                logAndSend("\uD83D\uDCE1 Starting M3U filtering...", 0, "M3U_Start", MSG_LOG)
+                processM3uFile(playlistFile)
+            } else {
+                logAndSend("⚠\uFE0F Skipped M3U filtering", 0, "M3U_Skipped", MSG_LOG)
+            }
+
+            // --- Step 2: EPG Filtering ---
+            if (epgFile != null) {
+                logAndSend("📺 Starting EPG filtering...", 5, "EPG_Start", MSG_LOG)
+                countElementsInFile(epgFile)
+                processEpgFile(epgFile)
+            } else {
+                logAndSend("⚠\uFE0F Skipped EPG filtering", 0, "EPG_Skipped", MSG_LOG)
+            }
+
+            logAndSend("✅ All processing complete!", 100, "Complete", MSG_LOG)
+        } catch (e: Exception) {
+            Log.e(TAG, "💥 Critical error", e)
+            logAndSend("‼\uFE0F Processing failed: ${e.message}", 0, "Error", MSG_LOG)
+            writeCrashLog(e)
+        } finally {
+            stopEpgProcessing()
+        }
+    }
+
+    // --- Rest of the file remains unchanged ---
+    // (processM3uFile, processEpgFile, shouldKeepM3uChannel, etc.)
+    // I'll include them below for completeness
 
     private fun countExtinfLines(file: File): Int {
         return try {
@@ -336,16 +351,16 @@ class EpgProcessorService : Service() {
     }
 
     private fun shouldKeepM3uChannel(channelLines: List<String>): Boolean {
-        if (!config.removeNonLatin && !config.removeNonEnglish) return true
+        if (!config.filters.removeNonEnglish && !config.filters.removeNonLatin) return true
 
         val text = channelLines.joinToString(" ")
 
-        if (config.removeNonEnglish) {
+        if (config.filters.removeNonEnglish) {
             val matcher = Pattern.compile("[^\\u0020-\\u007E]").matcher(text)
             if (matcher.find()) return false
         }
 
-        if (config.removeNonLatin) {
+        if (config.filters.removeNonLatin) {
             val matcher = nonLatinPattern.matcher(text)
             if (matcher.find()) return false
         }
@@ -354,13 +369,7 @@ class EpgProcessorService : Service() {
     }
 
     private fun processEpgFile(epgFile: File) {
-        // Count elements first
         countElementsInFile(epgFile)
-
-        Log.d("EpgProcessorService", "After count: totalChannels = $totalChannels")
-
-        // Send count to update UI
-        // logAndSend("EPG: $totalChannels channels found", 5, "EPG_Count", MSG_LOG)
 
         var inputStream: InputStream? = null
         var keptWriter: BufferedWriter? = null
@@ -394,11 +403,9 @@ class EpgProcessorService : Service() {
             val channelBuffer = StringBuilder()
             var tvRootWritten = false
 
-            // Track last progress update time
             var lastProgressUpdate = System.currentTimeMillis()
             val PROGRESS_UPDATE_INTERVAL = 500L
 
-// Start a background updater
             val progressUpdater = object : Thread() {
                 override fun run() {
                     try {
@@ -414,11 +421,9 @@ class EpgProcessorService : Service() {
                                 )
                                 lastProgressUpdate = now
                             }
-                            sleep(50) // Check every 50ms to avoid missing interval
+                            sleep(50)
                         }
-                    } catch (e: InterruptedException) {
-                        // Expected on stop
-                    }
+                    } catch (e: InterruptedException) { }
                 }
             }.apply { start() }
 
@@ -441,7 +446,6 @@ class EpgProcessorService : Service() {
 
                                 channelBuffer.setLength(0)
                                 channelBuffer.append(buildXmlStartTag(parser))
-
                             }
                             "programme" -> {
                                 insideProgramme = true
@@ -515,7 +519,6 @@ class EpgProcessorService : Service() {
             keptWriter.flush()
             removedWriter.flush()
 
-            // Final progress update
             val finalProgress = (processedChannels.toLong() * 100 / totalChannels.coerceAtLeast(1)).toInt()
             logAndSend(
                 "Filtering: $processedChannels / $totalChannels",
@@ -524,8 +527,6 @@ class EpgProcessorService : Service() {
                 MSG_PROGRESS_CHANNELS
             )
 
-            // Final EPG result (only channels)
-            // Final EPG result (only channels)
             val result = "✅ EPG: $keptChannelsCount channels kept, $removedChannelsCount removed"
             logAndSend(result, 100, "EPG_Done", MSG_LOG)
 
@@ -571,18 +572,18 @@ class EpgProcessorService : Service() {
     }
 
     private fun shouldKeepXmlChannel(channelXml: String): Boolean {
-        if (!config.removeNonLatin && !config.removeNonEnglish) return true
+        if (!config.filters.removeNonEnglish && !config.filters.removeNonLatin) return true
 
         val textContent = channelXml.replace(Regex("<[^>]+>"), " ")
             .replace(Regex("\\s+"), " ")
             .trim()
 
-        if (config.removeNonEnglish) {
+        if (config.filters.removeNonEnglish) {
             val matcher = Pattern.compile("[^\\u0020-\\u007E]").matcher(textContent)
             if (matcher.find()) return false
         }
 
-        if (config.removeNonLatin) {
+        if (config.filters.removeNonLatin) {
             val matcher = nonLatinPattern.matcher(textContent)
             if (matcher.find()) return false
         }
@@ -653,12 +654,12 @@ class EpgProcessorService : Service() {
         percentage: Int,
         phase: String,
         messageType: String = MSG_STATUS,
-        totalChannelsOverride: Int? = null  // Add this parameter
+        totalChannelsOverride: Int? = null
     ) {
         currentStatus = message
         currentProgress = percentage
         currentPhase = phase
-        val channelsToSend = totalChannelsOverride ?: totalChannels  // Use override if provided
+        val channelsToSend = totalChannelsOverride ?: totalChannels
         sendProgressUpdate(message, percentage, channelsToSend, processedChannels, totalProgrammes, 0, phase, messageType)
     }
 

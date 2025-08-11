@@ -45,8 +45,9 @@ class FiltersActivity : AppCompatActivity() {
         }
 
         // Initialize checkboxes with saved values
-        removeNonLatinCheckBox.isChecked = config.removeNonLatin
-        removeNonEnglishCheckBox.isChecked = config.removeNonEnglish
+        // ✅ FIXED: now reads from config.filters
+        removeNonLatinCheckBox.isChecked = config.filters.removeNonLatin
+        removeNonEnglishCheckBox.isChecked = config.filters.removeNonEnglish
 
         // Add checkbox interaction logic
         setupCheckboxInteractions()
@@ -54,8 +55,9 @@ class FiltersActivity : AppCompatActivity() {
         // Save changes when confirm button pressed
         buttonConfirm.setOnClickListener {
             // Update config from UI
-            config.removeNonLatin = removeNonLatinCheckBox.isChecked
-            config.removeNonEnglish = removeNonEnglishCheckBox.isChecked
+            // ✅ FIXED: now writes to config.filters
+            config.filters.removeNonLatin = removeNonLatinCheckBox.isChecked
+            config.filters.removeNonEnglish = removeNonEnglishCheckBox.isChecked
 
             // Save updated config and backup
             ConfigManager.saveConfig(this, config)
