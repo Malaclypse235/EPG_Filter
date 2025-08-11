@@ -32,7 +32,6 @@ class FilterProgressActivity : Activity() {
     private var m3uLineIndex = -1
     private var channelsLineIndex = -1
     private var programmesLineIndex = -1
-
     private var epgStartLineIndex = -1
 
     // --- Throttling ---
@@ -72,7 +71,8 @@ class FilterProgressActivity : Activity() {
                                 "${Emojis.M3U} M3U: $message",
                                 ::m3uLineIndex,
                                 ::m3uLineIndex::set,
-                                percentage
+                                percentage,
+                                message  // Pass clean message for status bar
                             )
                         }
                         EpgProcessorService.MSG_PROGRESS_CHANNELS -> {
@@ -80,7 +80,8 @@ class FilterProgressActivity : Activity() {
                                 "${Emojis.CHANNELS} Channels: $message",
                                 ::channelsLineIndex,
                                 ::channelsLineIndex::set,
-                                percentage
+                                percentage,
+                                message  // Pass clean message for status bar
                             )
                         }
 
@@ -93,16 +94,22 @@ class FilterProgressActivity : Activity() {
                                     "${Emojis.M3U} Starting M3U filtering...",
                                     ::m3uStartLineIndex,
                                     ::m3uStartLineIndex::set,
-                                    percentage
+                                    percentage,
+                                    message
                                 )
                             }
                             // Handle M3U count: update the "Starting..." line with count
                             else if (message.startsWith("📡 M3U:") && message.contains("channels found")) {
                                 val count = message.substringAfter("📡 M3U: ").substringBefore(" channels").trim()
                                 if (m3uStartLineIndex != -1 && m3uStartLineIndex < logLines.size) {
-                                    logLines[m3uStartLineIndex] = "${Emojis.M3U} Starting M3U filtering... ($count channels)"
-                                    textProgress.text = logLines.joinToString("\n")
-                                    scrollView.post { scrollView.fullScroll(ScrollView.FOCUS_DOWN) }
+                                    val updatedLine = "${Emojis.M3U} Starting M3U filtering... ($count channels)"
+                                    updateProgressLine(
+                                        updatedLine,
+                                        { m3uStartLineIndex },
+                                        { m3uStartLineIndex = it },
+                                        percentage,
+                                        message  // Use clean message
+                                    )
                                 }
                             }
                             // Handle EPG start: create the line
@@ -112,7 +119,8 @@ class FilterProgressActivity : Activity() {
                                     "${Emojis.CHANNELS} Starting EPG filtering...",
                                     ::epgStartLineIndex,
                                     ::epgStartLineIndex::set,
-                                    percentage
+                                    percentage,
+                                    message
                                 )
                             }
                             // Handle EPG count: update the "Starting..." line with count
@@ -120,14 +128,14 @@ class FilterProgressActivity : Activity() {
                                 Log.d("FILTER_DEBUG", "🔢 EPG count message: $message")
                                 val countMatch = Regex("\\d+").find(message)
                                 val count = countMatch?.value ?: "unknown"
-
-                                // Reuse updateProgressLine to handle throttling and UI
                                 val updatedLine = "${Emojis.CHANNELS} Starting EPG filtering... ($count channels)"
+
                                 updateProgressLine(
                                     updatedLine,
-                                    { epgStartLineIndex },           // getter
-                                    { epgStartLineIndex = it },      // setter
-                                    percentage                       // use current percentage
+                                    { epgStartLineIndex },
+                                    { epgStartLineIndex = it },
+                                    percentage,
+                                    message  // Pass clean message
                                 )
                             }
                             // All other logs
@@ -143,7 +151,7 @@ class FilterProgressActivity : Activity() {
                             }
                         }
                         else -> {
-                            // General status
+                            // General status (use clean message without emoji)
                             textStatus.text = message
                             if (percentage in 0..100) {
                                 progressBar.progress = percentage
@@ -205,17 +213,17 @@ class FilterProgressActivity : Activity() {
     }
 
     // --- Progress Line Management ---
-    private fun updateProgressLine(line: String, indexRef: () -> Int, setIndex: (Int) -> Unit, percentage: Int) {
+    private fun updateProgressLine(
+        line: String,
+        indexRef: () -> Int,
+        setIndex: (Int) -> Unit,
+        percentage: Int,
+        originalMessage: String  // Used for clean status bar
+    ) {
         val now = System.currentTimeMillis()
         if (now - lastProgressUpdate < PROGRESS_UPDATE_INTERVAL) {
-            // Throttle log update, but still update status
-            // Remove emoji and clean up for status bar
-            val cleanStatus = line
-                .replace(Regex("^[\uD83C-\uDBFF\uDC00-\uDFFF]+\\s*"), "")  // Remove leading emojis
-                .replace("Channels: ", "")  // We don't need "Channels:" in status bar
-                .trim()
-
-            textStatus.text = cleanStatus
+            // Throttle: update status bar but skip log
+            textStatus.text = originalMessage
             if (percentage in 0..100) {
                 progressBar.progress = percentage
                 textPercent.text = "$percentage%"
@@ -231,8 +239,8 @@ class FilterProgressActivity : Activity() {
             logLines[indexRef()] = line
         }
 
-        // Apply to UI
-        textStatus.text = line
+        // Update UI
+        textStatus.text = originalMessage  // Clean text in status bar
         if (percentage in 0..100) {
             progressBar.progress = percentage
             textPercent.text = "$percentage%"
@@ -245,7 +253,7 @@ class FilterProgressActivity : Activity() {
     }
 
     private fun appendLog(message: String, phase: String) {
-        logLines.add(message)  // Just add the message exactly as it comes
+        logLines.add(message)
 
         if (logLines.size > 50) {
             logLines.removeAt(0)
@@ -292,7 +300,7 @@ class FilterProgressActivity : Activity() {
                     buttonPause.isEnabled = false
 
                     appendLog("❇\uFE0F All files are current", "SyncDone")
-                    logLines.add("") // One blank line after "All files are current"
+                    logLines.add("") // Blank line after "All files are current"
                     appendLog("✨ Press 'Start Filtering' to begin ✨", "Info")
                 }
             } catch (e: Exception) {
@@ -465,7 +473,6 @@ class FilterProgressActivity : Activity() {
     private fun setupButtonListeners() {
         buttonStart.setOnClickListener {
             if (buttonStart.text == "Start Filtering") {
-                // ✅ Clear all previous log lines
                 logLines.clear()
                 m3uStartLineIndex = -1
                 m3uLineIndex = -1
@@ -473,13 +480,11 @@ class FilterProgressActivity : Activity() {
                 programmesLineIndex = -1
                 textProgress.text = ""
 
-                // ✅ Add fresh header
                 logLines.add("  ✨ FILTERING STARTED ✨")
                 logLines.add("────────────────────────")
-                logLines.add("") // Blank line after header
+                logLines.add("")
                 textProgress.text = logLines.joinToString("\n")
 
-                // Start service
                 val serviceIntent = Intent(this, EpgProcessorService::class.java)
                 serviceIntent.action = EpgProcessorService.ACTION_START_EPG_PROCESSING
                 startService(serviceIntent)
