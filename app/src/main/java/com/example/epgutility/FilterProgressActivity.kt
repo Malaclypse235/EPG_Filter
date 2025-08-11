@@ -72,7 +72,7 @@ class FilterProgressActivity : Activity() {
                                 ::m3uLineIndex,
                                 ::m3uLineIndex::set,
                                 percentage,
-                                message  // Pass clean message for status bar
+                                message
                             )
                         }
                         EpgProcessorService.MSG_PROGRESS_CHANNELS -> {
@@ -81,7 +81,7 @@ class FilterProgressActivity : Activity() {
                                 ::channelsLineIndex,
                                 ::channelsLineIndex::set,
                                 percentage,
-                                message  // Pass clean message for status bar
+                                message
                             )
                         }
 
@@ -98,36 +98,11 @@ class FilterProgressActivity : Activity() {
                                     message
                                 )
                             }
-                            // Handle M3U count: update the "Starting..." line with count
-                            else if (message.startsWith("📡 M3U:") && message.contains("channels found")) {
-                                val count = message.substringAfter("📡 M3U: ").substringBefore(" channels").trim()
-                                if (m3uStartLineIndex != -1 && m3uStartLineIndex < logLines.size) {
-                                    val updatedLine = "${Emojis.M3U} Starting M3U filtering... ($count channels)"
-                                    updateProgressLine(
-                                        updatedLine,
-                                        { m3uStartLineIndex },
-                                        { m3uStartLineIndex = it },
-                                        percentage,
-                                        message  // Use clean message
-                                    )
-                                }
-                            }
-                            // Handle EPG start: create the line
-                            else if (message.contains("Starting EPG filtering", ignoreCase = true)) {
-                                Log.d("FILTER_DEBUG", "🎯 Matched 'Starting EPG filtering...' — updating line")
-                                updateProgressLine(
-                                    "${Emojis.CHANNELS} Starting EPG filtering...",
-                                    ::epgStartLineIndex,
-                                    ::epgStartLineIndex::set,
-                                    percentage,
-                                    message
-                                )
-                            }
-                            // Handle EPG count: update the "Starting..." line with count
+
+                            // Delete this block too if you want:
                             else if (message.contains("EPG:") && message.contains("channels found")) {
                                 Log.d("FILTER_DEBUG", "🔢 EPG count message: $message")
-                                val countMatch = Regex("\\d+").find(message)
-                                val count = countMatch?.value ?: "unknown"
+                                val count = Regex("\\d+").find(message)?.value ?: "0"
                                 val updatedLine = "${Emojis.CHANNELS} Starting EPG filtering... ($count channels)"
 
                                 updateProgressLine(
@@ -135,16 +110,18 @@ class FilterProgressActivity : Activity() {
                                     { epgStartLineIndex },
                                     { epgStartLineIndex = it },
                                     percentage,
-                                    message  // Pass clean message
+                                    message
                                 )
                             }
+                            // Handle EPG count: update the "Starting..." line with count
+
                             // All other logs
                             else {
                                 if ((message.contains("M3U:") || message.contains("EPG:")) &&
                                     message.contains("kept,") &&
                                     message.contains("removed")) {
                                     appendLog(message, phase)
-                                    appendLog("", phase)  // Blank line after result
+                                    appendLog("", phase) // Blank line after result
                                 } else {
                                     appendLog(message, phase)
                                 }
@@ -218,20 +195,16 @@ class FilterProgressActivity : Activity() {
         indexRef: () -> Int,
         setIndex: (Int) -> Unit,
         percentage: Int,
-        originalMessage: String  // Used for clean status bar
+        originalMessage: String
     ) {
-        val now = System.currentTimeMillis()
-        if (now - lastProgressUpdate < PROGRESS_UPDATE_INTERVAL) {
-            // Throttle: update status bar but skip log
-            textStatus.text = originalMessage
-            if (percentage in 0..100) {
-                progressBar.progress = percentage
-                textPercent.text = "$percentage%"
-            }
-            return
+        // Always update the status bar and progress
+        textStatus.text = originalMessage
+        if (percentage in 0..100) {
+            progressBar.progress = percentage
+            textPercent.text = "$percentage%"
         }
 
-        // Update log
+        // Always update the log line
         if (indexRef() == -1 || indexRef() >= logLines.size) {
             logLines.add(line)
             setIndex(logLines.lastIndex)
@@ -239,17 +212,9 @@ class FilterProgressActivity : Activity() {
             logLines[indexRef()] = line
         }
 
-        // Update UI
-        textStatus.text = originalMessage  // Clean text in status bar
-        if (percentage in 0..100) {
-            progressBar.progress = percentage
-            textPercent.text = "$percentage%"
-        }
-
+        // Always refresh the displayed log
         textProgress.text = logLines.joinToString("\n")
         scrollView.post { scrollView.fullScroll(ScrollView.FOCUS_DOWN) }
-
-        lastProgressUpdate = now
     }
 
     private fun appendLog(message: String, phase: String) {

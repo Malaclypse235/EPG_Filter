@@ -168,9 +168,9 @@ class EpgProcessorService : Service() {
 
             // --- Step 2: EPG Filtering ---
             if (epgFile != null && !config.disableEPGFiltering) {
-                logAndSend("Starting EPG filtering...", 5, "EPG_Start", MSG_LOG)
+                logAndSend("📺 Starting EPG filtering...", 5, "EPG_Start", MSG_LOG)
                 countElementsInFile(epgFile)
-                logAndSend("EPG: $totalChannels channels found", 5, "EPG_Count", MSG_LOG)
+                // logAndSend("EPG: $totalChannels channels found", 5, "EPG_Count", MSG_LOG)
                 processEpgFile(epgFile)
             } else {
                 logAndSend("⚠\uFE0F Skipped EPG filtering", 0, "EPG_Skipped", MSG_LOG)
@@ -189,7 +189,9 @@ class EpgProcessorService : Service() {
     private fun processM3uFile(playlistFile: File) {
         // Step 1: Count total channels
         val total = countExtinfLines(playlistFile)
-        logAndSend("\uD83D\uDCE1 M3U: $total channels found", 0, "M3U_Start", MSG_LOG)
+        Log.d(TAG, "FILTER_DEBUG: local total = $total, this.totalChannels = $this.totalChannels")
+        this.totalChannels = total
+        logAndSend("Starting M3U filtering...", 0, "M3U_Start", MSG_LOG)
 
         try {
             val outputDir = File(this.filesDir, "output").apply { mkdirs() }
@@ -199,6 +201,34 @@ class EpgProcessorService : Service() {
             var kept = 0
             var removed = 0
             var processed = 0
+
+            // --- NEW: Timer for smooth progress updates ---
+            var lastProgressUpdate = System.currentTimeMillis()
+            val PROGRESS_UPDATE_INTERVAL = 500L
+
+            val progressUpdater = object : Thread() {
+                override fun run() {
+                    try {
+                        while (!isInterrupted && isProcessing && processed < total) {
+                            val now = System.currentTimeMillis()
+                            if (now - lastProgressUpdate >= PROGRESS_UPDATE_INTERVAL) {
+                                val progress = (processed.toLong() * 100 / total.coerceAtLeast(1)).toInt()
+                                logAndSend(
+                                    "Filtering: $processed / $total",
+                                    progress,
+                                    "M3U_Filtering",
+                                    MSG_PROGRESS_M3U
+                                )
+                                lastProgressUpdate = now
+                            }
+                            sleep(50) // Check every 50ms
+                        }
+                    } catch (e: InterruptedException) {
+                        // Stopped intentionally
+                    }
+                }
+            }.apply { start() }
+            // --- END Timer ---
 
             keptFile.bufferedWriter().use { keptWriter ->
                 removedFile.bufferedWriter().use { removedWriter ->
@@ -237,12 +267,6 @@ class EpgProcessorService : Service() {
                                         removed++
                                         removedWriter.write("${currentChannel[0]}\n${currentChannel[1].trimEnd()}\n\n")
                                     }
-
-                                    // Update every 10 channels
-                                    if (processed % 10 == 0 || processed == 1) {
-                                        val progress = (processed * 100 / total.coerceAtLeast(1)).coerceAtMost(100)
-                                        logAndSend("Filtering: $processed / $total", progress, "M3U_Filtering", MSG_PROGRESS_M3U)
-                                    }
                                 }
                                 currentChannel.clear()
                                 currentChannel.add(trimmed)
@@ -254,7 +278,6 @@ class EpgProcessorService : Service() {
                         // Last channel
                         if (currentChannel.size >= 2) {
                             processed++
-
                             val shouldKeep = shouldKeepM3uChannel(currentChannel)
                             if (shouldKeep) {
                                 kept++
@@ -263,13 +286,20 @@ class EpgProcessorService : Service() {
                                 removed++
                                 removedWriter.write("${currentChannel[0]}\n${currentChannel[1].trimEnd()}\n\n")
                             }
-
-                            val progress = (processed * 100 / total.coerceAtLeast(1)).coerceAtMost(100)
-                            logAndSend("Filtering: $processed / $total", progress, "M3U_Filtering", MSG_PROGRESS_M3U)
                         }
                     }
                 }
             }
+
+            // Stop updater before final update
+            progressUpdater.interrupt()
+            try {
+                progressUpdater.join(100)
+            } catch (e: InterruptedException) { }
+
+            // Final progress update
+            val progress = (processed.toLong() * 100 / total.coerceAtLeast(1)).toInt()
+            logAndSend("Filtering: $processed / $total", progress, "M3U_Filtering", MSG_PROGRESS_M3U)
 
             // Final result
             val result = "✅ M3U: $kept kept, $removed removed"
@@ -277,7 +307,7 @@ class EpgProcessorService : Service() {
 
             keptChannelsCount = kept
             removedChannelsCount = removed
-            this.totalChannels = total
+            // this.totalChannels = total
 
             Log.d(TAG, "✅ M3U filtered: $total total, $kept kept, $removed removed")
         } catch (e: Exception) {
@@ -330,7 +360,7 @@ class EpgProcessorService : Service() {
         Log.d("EpgProcessorService", "After count: totalChannels = $totalChannels")
 
         // Send count to update UI
-        logAndSend("EPG: $totalChannels channels found", 5, "EPG_Count", MSG_LOG)
+        // logAndSend("EPG: $totalChannels channels found", 5, "EPG_Count", MSG_LOG)
 
         var inputStream: InputStream? = null
         var keptWriter: BufferedWriter? = null
@@ -364,8 +394,33 @@ class EpgProcessorService : Service() {
             val channelBuffer = StringBuilder()
             var tvRootWritten = false
 
-            val progressUpdateInterval = 500
-            var lastUpdateCount = 0
+            // Track last progress update time
+            var lastProgressUpdate = System.currentTimeMillis()
+            val PROGRESS_UPDATE_INTERVAL = 500L
+
+// Start a background updater
+            val progressUpdater = object : Thread() {
+                override fun run() {
+                    try {
+                        while (!isInterrupted && isProcessing && processedChannels < totalChannels) {
+                            val now = System.currentTimeMillis()
+                            if (now - lastProgressUpdate >= PROGRESS_UPDATE_INTERVAL) {
+                                val progress = (processedChannels.toLong() * 100 / totalChannels.coerceAtLeast(1)).toInt()
+                                logAndSend(
+                                    "Filtering: $processedChannels / $totalChannels",
+                                    progress,
+                                    "EPG_Channels",
+                                    MSG_PROGRESS_CHANNELS
+                                )
+                                lastProgressUpdate = now
+                            }
+                            sleep(50) // Check every 50ms to avoid missing interval
+                        }
+                    } catch (e: InterruptedException) {
+                        // Expected on stop
+                    }
+                }
+            }.apply { start() }
 
             while (parser.eventType != XmlPullParser.END_DOCUMENT && isProcessing) {
                 when (parser.eventType) {
@@ -387,11 +442,6 @@ class EpgProcessorService : Service() {
                                 channelBuffer.setLength(0)
                                 channelBuffer.append(buildXmlStartTag(parser))
 
-                                if (processedChannels - lastUpdateCount >= progressUpdateInterval) {
-                                    val channelProgress = (processedChannels.toLong() * 100 / totalChannels.coerceAtLeast(1)).toInt()
-                                    logAndSend("Filtering: $processedChannels / $totalChannels", channelProgress, "EPG_Channels", MSG_PROGRESS_CHANNELS)
-                                    lastUpdateCount = processedChannels
-                                }
                             }
                             "programme" -> {
                                 insideProgramme = true
@@ -464,6 +514,15 @@ class EpgProcessorService : Service() {
 
             keptWriter.flush()
             removedWriter.flush()
+
+            // Final progress update
+            val finalProgress = (processedChannels.toLong() * 100 / totalChannels.coerceAtLeast(1)).toInt()
+            logAndSend(
+                "Filtering: $processedChannels / $totalChannels",
+                finalProgress,
+                "EPG_Channels",
+                MSG_PROGRESS_CHANNELS
+            )
 
             // Final EPG result (only channels)
             // Final EPG result (only channels)
@@ -593,12 +652,14 @@ class EpgProcessorService : Service() {
         message: String,
         percentage: Int,
         phase: String,
-        messageType: String = MSG_STATUS
+        messageType: String = MSG_STATUS,
+        totalChannelsOverride: Int? = null  // Add this parameter
     ) {
         currentStatus = message
         currentProgress = percentage
         currentPhase = phase
-        sendProgressUpdate(message, percentage, totalChannels, processedChannels, totalProgrammes, 0, phase, messageType)
+        val channelsToSend = totalChannelsOverride ?: totalChannels  // Use override if provided
+        sendProgressUpdate(message, percentage, channelsToSend, processedChannels, totalProgrammes, 0, phase, messageType)
     }
 
     private fun sendProgressUpdate(
