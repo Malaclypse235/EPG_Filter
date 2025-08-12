@@ -151,7 +151,7 @@ class EpgProcessorService : Service() {
     private fun processM3uFile(playlistFile: File) {
         // Step 1: Count total channels
         val total = countExtinfLines(playlistFile)
-        Log.d(TAG, "FILTER_DEBUG: local total = $total, this.totalChannels = $this.totalChannels")
+        // Log.d(TAG, "FILTER_DEBUG: local total = $total, this.totalChannels = $this.totalChannels")
         this.totalChannels = total
         logAndSend("Starting M3U filtering...", 0, "M3U_Start", MSG_LOG)
 
@@ -271,7 +271,7 @@ class EpgProcessorService : Service() {
             removedChannelsCount = removed
             // this.totalChannels = total
 
-            Log.d(TAG, "✅ M3U filtered: $total total, $kept kept, $removed removed")
+            // Log.d(TAG, "✅ M3U filtered: $total total, $kept kept, $removed removed")
         } catch (e: Exception) {
             Log.e(TAG, "❌ M3U filtering failed", e)
             logAndSend("❌ M3U error: ${e.message}", 0, "Error", MSG_LOG)
@@ -416,6 +416,7 @@ class EpgProcessorService : Service() {
         var inputStream: InputStream? = null
         var keptWriter: BufferedWriter? = null
         var removedWriter: BufferedWriter? = null
+        var tvClosed = false
 
         try {
             val outputDir = File(this.filesDir, "output").apply { mkdirs() }
@@ -443,6 +444,7 @@ class EpgProcessorService : Service() {
             var currentChannelId: String? = null
             var shouldKeepCurrentChannel = true
             val channelBuffer = StringBuilder()
+            var programmeBuffer = StringBuilder()
             var tvRootWritten = false
 
             var lastProgressUpdate = System.currentTimeMillis()
@@ -470,6 +472,8 @@ class EpgProcessorService : Service() {
             }.apply { start() }
 
             while (parser.eventType != XmlPullParser.END_DOCUMENT && isProcessing) {
+                // Log.d(TAG, "Event: ${parser.eventType} | Name: '${parser.name}' | Text: '${parser.text?.take(50)}'")
+
                 when (parser.eventType) {
                     XmlPullParser.START_TAG -> {
                         when (parser.name) {
@@ -480,6 +484,7 @@ class EpgProcessorService : Service() {
                                     removedWriter.write("$tvElement\n")
                                     tvRootWritten = true
                                 }
+                                // Do NOT write it again in 'else' — we handle it here only once
                             }
                             "channel" -> {
                                 insideChannel = true
@@ -493,13 +498,20 @@ class EpgProcessorService : Service() {
                                 insideProgramme = true
                                 val channelId = parser.getAttributeValue(null, "channel") ?: "unknown"
                                 shouldKeepCurrentChannel = channelFilterDecisions.getOrDefault(channelId, true)
+
+                                programmeBuffer.setLength(0)
+                                programmeBuffer.append(buildXmlStartTag(parser))
                             }
                             else -> {
                                 val element = buildXmlStartTag(parser)
-                                if (insideChannel) {
+                                val tagName = parser.name.trim()
+
+                                if (tagName.equals("tv", ignoreCase = true)) {
+                                    // Skip — we handled it
+                                } else if (insideChannel) {
                                     channelBuffer.append(element)
                                 } else if (insideProgramme) {
-                                    (if (shouldKeepCurrentChannel) keptWriter else removedWriter).write(element)
+                                    programmeBuffer.append(element)
                                 } else {
                                     keptWriter.write(element)
                                 }
@@ -512,7 +524,7 @@ class EpgProcessorService : Service() {
                         if (insideChannel) {
                             channelBuffer.append(escaped)
                         } else if (insideProgramme) {
-                            (if (shouldKeepCurrentChannel) keptWriter else removedWriter).write(escaped)
+                            programmeBuffer.append(escaped)
                         } else {
                             keptWriter.write(escaped)
                         }
@@ -521,7 +533,7 @@ class EpgProcessorService : Service() {
                         when (parser.name) {
                             "channel" -> {
                                 insideChannel = false
-                                channelBuffer.append("</channel>")
+                                channelBuffer.append("</channel>\n")
 
                                 val channelText = channelBuffer.toString()
                                 shouldKeepCurrentChannel = shouldKeepXmlChannel(channelText)
@@ -529,25 +541,41 @@ class EpgProcessorService : Service() {
 
                                 if (shouldKeepCurrentChannel) {
                                     keptChannelsCount++
+                                    keptWriter.write(channelText)
                                 } else {
                                     removedChannelsCount++
+                                    removedWriter.write(channelText)
                                 }
                             }
                             "programme" -> {
                                 insideProgramme = false
+                                programmeBuffer.append("</programme>\n")
+
+                                val programmeXml = programmeBuffer.toString()
+                                if (shouldKeepCurrentChannel) {
+                                    keptWriter.write(programmeXml)
+                                } else {
+                                    removedWriter.write(programmeXml)
+                                }
                             }
                             "tv" -> {
-                                if (tvRootWritten) {
+                                if (!tvClosed) {
                                     keptWriter.write("</tv>\n")
                                     removedWriter.write("</tv>\n")
+                                    tvClosed = true
                                 }
+                                // Prevent double-closing
                             }
                             else -> {
                                 val closing = "</${parser.name}>"
-                                if (insideChannel) {
+                                val tagName = parser.name.trim()
+
+                                if (tagName.equals("tv", ignoreCase = true)) {
+                                    // Skip
+                                } else if (insideChannel) {
                                     channelBuffer.append(closing)
                                 } else if (insideProgramme) {
-                                    (if (shouldKeepCurrentChannel) keptWriter else removedWriter).write(closing)
+                                    programmeBuffer.append(closing)
                                 } else {
                                     keptWriter.write(closing)
                                 }
@@ -556,6 +584,7 @@ class EpgProcessorService : Service() {
                     }
                 }
                 parser.next()
+                // Log.d(TAG, "Event: ${parser.eventType} | Name: '${parser.name}' | Text: '${parser.text?.take(50)}'")
             }
 
             keptWriter.flush()
@@ -674,8 +703,19 @@ class EpgProcessorService : Service() {
                 FileInputStream(epgFile)
             }
             stream.use { s ->
-                BufferedReader(InputStreamReader(s)).readLine()?.trim()
-            } ?: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+                val reader = BufferedReader(InputStreamReader(s))
+                val firstLine = reader.readLine() ?: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+                val trimmed = firstLine.trim()
+
+                // Extract only the <?xml ...?> part, if present
+                val xmlDeclMatch = Regex("^<\\?xml\\s+[^?>]*\\?>", RegexOption.IGNORE_CASE).find(trimmed)
+                if (xmlDeclMatch != null) {
+                    xmlDeclMatch.value
+                } else {
+                    // If no valid XML declaration, fall back
+                    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+                }
+            }
         } catch (e: Exception) {
             Log.w(TAG, "Failed to read XML declaration", e)
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
