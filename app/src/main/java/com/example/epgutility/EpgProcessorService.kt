@@ -351,18 +351,60 @@ class EpgProcessorService : Service() {
     }
 
     private fun shouldKeepM3uChannel(channelLines: List<String>): Boolean {
-        if (!config.filters.removeNonEnglish && !config.filters.removeNonLatin) return true
+        val extinfLine = channelLines.getOrNull(0) ?: return true
+        val channelNameLine = channelLines.getOrNull(1) ?: return true
 
-        val text = channelLines.joinToString(" ")
-
-        if (config.filters.removeNonEnglish) {
-            val matcher = Pattern.compile("[^\\u0020-\\u007E\\u2010-\\u2027]").matcher(text)
-            if (matcher.find()) return false
+        // Extract text to search: EXTINF attributes + visible name
+        val searchText = buildString {
+            append(extinfLine.lowercase())
+            append(" ")
+            append(channelNameLine.trim().lowercase())
         }
 
+        // 1. General filters: Non-English / Non-Latin
+        if (config.filters.removeNonEnglish) {
+            if (Regex("[^\\u0020-\\u007E\\u2010-\\u2027]").find(searchText) != null) return false
+        }
         if (config.filters.removeNonLatin) {
-            val matcher = nonLatinPattern.matcher(text)
-            if (matcher.find()) return false
+            if (nonLatinPattern.matcher(searchText).find()) return false
+        }
+
+        // 2. Exclude custom keywords
+        if (config.filters.excludeKeywords.isNotEmpty()) {
+            if (config.filters.excludeKeywords.any { it.lowercase() in searchText }) return false
+        }
+
+        // 3. Hide Radio
+        if (config.filters.hideRadio) {
+            if ("radio" in searchText || "music" in searchText) return false
+        }
+
+        // 4. Hide Encrypted (very basic — improve if needed)
+        if (config.filters.hideEncrypted) {
+            if ("drm" in searchText || "encrypt" in searchText) return false
+        }
+
+        // 🔥 5. News & Weather Master Filter
+        if (config.filters.removeNewsAndWeather) {
+            // Check for generic terms
+            if (listOf("news", "weather").any { it in searchText }) return false
+
+            // Also apply all sub-filters if master is enabled
+            val newsPatterns = listOf(
+                "fox news", "cnn", "msnbc", "newsmax", "cnbc", "oan",
+                "weather channel", "accuweather"
+            )
+            if (newsPatterns.any { it in searchText }) return false
+        } else {
+            // Master is OFF → apply sub-filters individually
+            if (config.filters.removeFoxNews && "fox news" in searchText) return false
+            if (config.filters.removeCNN && "cnn" in searchText) return false
+            if (config.filters.removeMSNBC && "msnbc" in searchText) return false
+            if (config.filters.removeNewsMax && "newsmax" in searchText) return false
+            if (config.filters.removeCNBC && "cnbc" in searchText) return false
+            if (config.filters.removeOAN && "oan" in searchText) return false
+            if (config.filters.removeWeatherChannel && ("weather channel" in searchText || "weather." in searchText)) return false
+            if (config.filters.removeAccuWeather && "accuweather" in searchText) return false
         }
 
         return true
@@ -572,20 +614,43 @@ class EpgProcessorService : Service() {
     }
 
     private fun shouldKeepXmlChannel(channelXml: String): Boolean {
-        if (!config.filters.removeNonEnglish && !config.filters.removeNonLatin) return true
-
         val textContent = channelXml.replace(Regex("<[^>]+>"), " ")
             .replace(Regex("\\s+"), " ")
             .trim()
+            .lowercase()
 
+        // 1. General filters
         if (config.filters.removeNonEnglish) {
-            val matcher = Pattern.compile("[^\\u0020-\\u007E\\u2010-\\u2027]").matcher(textContent)
-            if (matcher.find()) return false
+            if (Regex("[^\\u0020-\\u007E\\u2010-\\u2027]").find(textContent) != null) return false
+        }
+        if (config.filters.removeNonLatin) {
+            if (nonLatinPattern.matcher(textContent).find()) return false
         }
 
-        if (config.filters.removeNonLatin) {
-            val matcher = nonLatinPattern.matcher(textContent)
-            if (matcher.find()) return false
+        // 2. Exclude custom keywords
+        if (config.filters.excludeKeywords.isNotEmpty()) {
+            if (config.filters.excludeKeywords.any { it.lowercase() in textContent }) return false
+        }
+
+        // 🔥 3. News & Weather Master Filter
+        if (config.filters.removeNewsAndWeather) {
+            if (listOf("news", "weather").any { it in textContent }) return false
+
+            val newsPatterns = listOf(
+                "fox news", "cnn", "msnbc", "newsmax", "cnbc", "oan",
+                "weather channel", "accuweather"
+            )
+            if (newsPatterns.any { it in textContent }) return false
+        } else {
+            // Apply individual sub-filters
+            if (config.filters.removeFoxNews && "fox news" in textContent) return false
+            if (config.filters.removeCNN && "cnn" in textContent) return false
+            if (config.filters.removeMSNBC && "msnbc" in textContent) return false
+            if (config.filters.removeNewsMax && "newsmax" in textContent) return false
+            if (config.filters.removeCNBC && "cnbc" in textContent) return false
+            if (config.filters.removeOAN && "oan" in textContent) return false
+            if (config.filters.removeWeatherChannel && ("weather channel" in textContent || "weather." in textContent)) return false
+            if (config.filters.removeAccuWeather && "accuweather" in textContent) return false
         }
 
         return true
