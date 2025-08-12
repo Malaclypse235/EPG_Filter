@@ -151,7 +151,6 @@ class EpgProcessorService : Service() {
     private fun processM3uFile(playlistFile: File) {
         // Step 1: Count total channels
         val total = countExtinfLines(playlistFile)
-        // Log.d(TAG, "FILTER_DEBUG: local total = $total, this.totalChannels = $this.totalChannels")
         this.totalChannels = total
         logAndSend("Starting M3U filtering...", 0, "M3U_Start", MSG_LOG)
 
@@ -192,6 +191,9 @@ class EpgProcessorService : Service() {
             }.apply { start() }
             // --- END Timer ---
 
+            // ✅ NEW: Track tvg-id values for duplicate detection
+            val seenTvgIds = mutableSetOf<String>()
+
             keptFile.bufferedWriter().use { keptWriter ->
                 removedFile.bufferedWriter().use { removedWriter ->
                     playlistFile.bufferedReader().use { reader ->
@@ -221,7 +223,20 @@ class EpgProcessorService : Service() {
                                 if (currentChannel.size >= 2) {
                                     processed++
 
-                                    val shouldKeep = shouldKeepM3uChannel(currentChannel)
+                                    // ✅ Check for tvg-id
+                                    val tvgId = extractTvgId(currentChannel[0])
+                                    val isDuplicate = tvgId != null && !config.filters.removeDuplicates.not() && seenTvgIds.contains(tvgId)
+
+                                    val shouldKeep = if (config.filters.removeDuplicates && isDuplicate) {
+                                        false
+                                    } else {
+                                        shouldKeepM3uChannel(currentChannel)
+                                    }
+
+                                    if (tvgId != null && shouldKeep) {
+                                        seenTvgIds.add(tvgId)
+                                    }
+
                                     if (shouldKeep) {
                                         kept++
                                         keptWriter.write("${currentChannel[0]}\n${currentChannel[1].trimEnd()}\n\n")
@@ -240,7 +255,19 @@ class EpgProcessorService : Service() {
                         // Last channel
                         if (currentChannel.size >= 2) {
                             processed++
-                            val shouldKeep = shouldKeepM3uChannel(currentChannel)
+                            val tvgId = extractTvgId(currentChannel[0])
+                            val isDuplicate = tvgId != null && !config.filters.removeDuplicates.not() && seenTvgIds.contains(tvgId)
+
+                            val shouldKeep = if (config.filters.removeDuplicates && isDuplicate) {
+                                false
+                            } else {
+                                shouldKeepM3uChannel(currentChannel)
+                            }
+
+                            if (tvgId != null && shouldKeep) {
+                                seenTvgIds.add(tvgId)
+                            }
+
                             if (shouldKeep) {
                                 kept++
                                 keptWriter.write("${currentChannel[0]}\n${currentChannel[1].trimEnd()}\n\n")
@@ -267,13 +294,20 @@ class EpgProcessorService : Service() {
             val result = "✅ M3U: $kept kept, $removed removed"
             logAndSend(result, 100, "M3U_Done", MSG_LOG)
 
-            // Log.d(TAG, "✅ M3U filtered: $total total, $kept kept, $removed removed")
+            // Removed: do not set keptChannelsCount here — it's for EPG only
         } catch (e: Exception) {
             Log.e(TAG, "❌ M3U filtering failed", e)
             logAndSend("❌ M3U error: ${e.message}", 0, "Error", MSG_LOG)
             throw e
         }
     }
+
+    // ✅ Helper to extract tvg-id from #EXTINF line
+    private fun extractTvgId(extinfLine: String): String? {
+        val regex = Regex("""tvg-id=["']?([^"'\s>]+)""")
+        return regex.find(extinfLine)?.groupValues?.get(1)
+    }
+
     private fun processEpgInBackground() {
         try {
             val inputDir = File(this.filesDir, "input")
@@ -323,10 +357,6 @@ class EpgProcessorService : Service() {
             stopEpgProcessing()
         }
     }
-
-    // --- Rest of the file remains unchanged ---
-    // (processM3uFile, processEpgFile, shouldKeepM3uChannel, etc.)
-    // I'll include them below for completeness
 
     private fun countExtinfLines(file: File): Int {
         return try {
@@ -467,9 +497,11 @@ class EpgProcessorService : Service() {
                 }
             }.apply { start() }
 
-            while (parser.eventType != XmlPullParser.END_DOCUMENT && isProcessing) {
-                // Log.d(TAG, "Event: ${parser.eventType} | Name: '${parser.name}' | Text: '${parser.text?.take(50)}'")
+            // ✅ NEW: Track seen and duplicate channel IDs
+            val seenChannelIds = mutableSetOf<String>()
+            val duplicateChannelIds = mutableSetOf<String>()
 
+            while (parser.eventType != XmlPullParser.END_DOCUMENT && isProcessing) {
                 when (parser.eventType) {
                     XmlPullParser.START_TAG -> {
                         when (parser.name) {
@@ -480,12 +512,20 @@ class EpgProcessorService : Service() {
                                     removedWriter.write("$tvElement\n")
                                     tvRootWritten = true
                                 }
-                                // Do NOT write it again in 'else' — we handle it here only once
                             }
                             "channel" -> {
                                 insideChannel = true
                                 currentChannelId = parser.getAttributeValue(null, "id") ?: "unknown"
                                 processedChannels++
+
+                                // ✅ Check for duplicate
+                                if (config.filters.removeDuplicates) {
+                                    if (currentChannelId in seenChannelIds) {
+                                        duplicateChannelIds.add(currentChannelId)
+                                    } else {
+                                        seenChannelIds.add(currentChannelId)
+                                    }
+                                }
 
                                 channelBuffer.setLength(0)
                                 channelBuffer.append(buildXmlStartTag(parser))
@@ -493,7 +533,8 @@ class EpgProcessorService : Service() {
                             "programme" -> {
                                 insideProgramme = true
                                 val channelId = parser.getAttributeValue(null, "channel") ?: "unknown"
-                                shouldKeepCurrentChannel = channelFilterDecisions.getOrDefault(channelId, true)
+                                // ✅ If channel is duplicate, mark for removal
+                                shouldKeepCurrentChannel = !duplicateChannelIds.contains(channelId)
 
                                 programmeBuffer.setLength(0)
                                 programmeBuffer.append(buildXmlStartTag(parser))
@@ -532,10 +573,16 @@ class EpgProcessorService : Service() {
                                 channelBuffer.append("</channel>\n")
 
                                 val channelText = channelBuffer.toString()
-                                shouldKeepCurrentChannel = shouldKeepXmlChannel(channelText)
-                                currentChannelId?.let { channelFilterDecisions[it] = shouldKeepCurrentChannel }
+                                val channelId = currentChannelId ?: "unknown"
 
-                                if (shouldKeepCurrentChannel) {
+                                // ✅ If duplicate, don't apply other filters
+                                val shouldKeep = if (config.filters.removeDuplicates && duplicateChannelIds.contains(channelId)) {
+                                    false
+                                } else {
+                                    shouldKeepXmlChannel(channelText)
+                                }
+
+                                if (shouldKeep) {
                                     keptChannelsCount++
                                     keptWriter.write(channelText)
                                 } else {
@@ -560,7 +607,6 @@ class EpgProcessorService : Service() {
                                     removedWriter.write("</tv>\n")
                                     tvClosed = true
                                 }
-                                // Prevent double-closing
                             }
                             else -> {
                                 val closing = "</${parser.name}>"
@@ -580,7 +626,6 @@ class EpgProcessorService : Service() {
                     }
                 }
                 parser.next()
-                // Log.d(TAG, "Event: ${parser.eventType} | Name: '${parser.name}' | Text: '${parser.text?.take(50)}'")
             }
 
             keptWriter.flush()
@@ -624,7 +669,6 @@ class EpgProcessorService : Service() {
                 if (parser.eventType == XmlPullParser.START_TAG) {
                     when (parser.name) {
                         "channel" -> totalChannels++
-                        // "programme" -> totalProgrammes++
                     }
                 }
                 parser.next()

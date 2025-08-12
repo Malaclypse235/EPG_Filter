@@ -55,7 +55,8 @@ object ConfigManager {
         var removeCNBC: Boolean = false,
         var removeOAN: Boolean = false,
         var removeWeatherChannel: Boolean = false,
-        var removeAccuWeather: Boolean = false
+        var removeAccuWeather: Boolean = false,
+        var removeDuplicates: Boolean = false
     )
 
     // Get the configuration directory

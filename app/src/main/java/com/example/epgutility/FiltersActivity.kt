@@ -22,6 +22,7 @@ class FiltersActivity : AppCompatActivity() {
     private lateinit var checkboxOAN: CheckBox
     private lateinit var checkboxWeatherChannel: CheckBox
     private lateinit var checkboxAccuWeather: CheckBox
+    private lateinit var checkboxRemoveDuplicates: CheckBox
 
     // Current config data
     private lateinit var config: ConfigManager.ConfigData
@@ -31,6 +32,7 @@ class FiltersActivity : AppCompatActivity() {
         setContentView(R.layout.activity_filters)
 
         // Link to UI elements
+        checkboxRemoveDuplicates = findViewById(R.id.checkboxRemoveDuplicates)
         removeNonLatinCheckBox = findViewById(R.id.checkboxNonLatin)
         removeNonEnglishCheckBox = findViewById(R.id.checkboxNonEnglish)
         buttonConfirm = findViewById(R.id.buttonConfirm)
@@ -70,6 +72,7 @@ class FiltersActivity : AppCompatActivity() {
         removeNonEnglishCheckBox.isChecked = config.filters.removeNonEnglish
         // Load News & Weather filter states
         checkboxRemoveNewsWeather.isChecked = config.filters.removeNewsAndWeather
+        checkboxRemoveDuplicates.isChecked = config.filters.removeDuplicates
 
         checkboxFoxNews.isChecked = config.filters.removeFoxNews
         checkboxCNN.isChecked = config.filters.removeCNN
@@ -100,6 +103,7 @@ class FiltersActivity : AppCompatActivity() {
             config.filters.removeOAN = checkboxOAN.isChecked
             config.filters.removeWeatherChannel = checkboxWeatherChannel.isChecked
             config.filters.removeAccuWeather = checkboxAccuWeather.isChecked
+            config.filters.removeDuplicates = checkboxRemoveDuplicates.isChecked
 
             // Save updated config and backup
             ConfigManager.saveConfig(this, config)
@@ -142,6 +146,8 @@ class FiltersActivity : AppCompatActivity() {
                 removeNonLatinCheckBox.isChecked = false
             }
         }
+
+
     }
 
     /**
