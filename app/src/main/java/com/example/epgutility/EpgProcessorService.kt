@@ -267,10 +267,6 @@ class EpgProcessorService : Service() {
             val result = "✅ M3U: $kept kept, $removed removed"
             logAndSend(result, 100, "M3U_Done", MSG_LOG)
 
-            keptChannelsCount = kept
-            removedChannelsCount = removed
-            // this.totalChannels = total
-
             // Log.d(TAG, "✅ M3U filtered: $total total, $kept kept, $removed removed")
         } catch (e: Exception) {
             Log.e(TAG, "❌ M3U filtering failed", e)
@@ -628,7 +624,7 @@ class EpgProcessorService : Service() {
                 if (parser.eventType == XmlPullParser.START_TAG) {
                     when (parser.name) {
                         "channel" -> totalChannels++
-                        "programme" -> totalProgrammes++
+                        // "programme" -> totalProgrammes++
                     }
                 }
                 parser.next()
