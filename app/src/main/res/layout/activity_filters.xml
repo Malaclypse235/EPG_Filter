@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000000"
+    android:background="@color/mal_blue"
     android:padding="10dp">
 
     <!-- SCROLLABLE FILTER CONTENT -->
@@ -43,36 +43,60 @@
                 android:textColor="#FF9800" />
 
             <!-- Non-Latin / Non-English Checkboxes -->
+            <!-- Three Checkboxes on Same Row -->
+            <!-- Three Checkboxes - Vertically Aligned -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="8dp">
+                android:layout_marginTop="8dp"
+                android:baselineAligned="false">
+
+                <CheckBox
+                    android:id="@+id/checkboxRemoveDuplicates"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:text="Remove Duplicate Channels"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:gravity="center_vertical"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp"
+                    android:minHeight="48dp" />
 
                 <CheckBox
                     android:id="@+id/checkboxNonLatin"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="48dp"
                     android:layout_weight="1"
                     android:text="Non-Latin Characters"
                     android:textSize="12sp"
                     android:textColor="@android:color/white"
                     android:buttonTint="@android:color/white"
-                    android:paddingEnd="8dp" />
+                    android:gravity="center_vertical"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp"
+                    android:minHeight="48dp" />
 
                 <CheckBox
                     android:id="@+id/checkboxNonEnglish"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="48dp"
                     android:layout_weight="1"
                     android:text="Non-English Characters"
                     android:textSize="12sp"
                     android:textColor="@android:color/white"
                     android:buttonTint="@android:color/white"
-                    android:paddingStart="8dp" />
+                    android:gravity="center_vertical"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp"
+                    android:minHeight="48dp" />
             </LinearLayout>
 
             <!-- Descriptions -->
+            <!-- Descriptions for Three Checkboxes -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -84,10 +108,20 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:text="Removes channels with duplicate names or IDs"
+                    android:textSize="10sp"
+                    android:textColor="@android:color/white"
+                    android:paddingEnd="4dp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:text="Removes accents, umlauts, etc."
                     android:textSize="10sp"
                     android:textColor="@android:color/white"
-                    android:paddingEnd="8dp" />
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -96,7 +130,7 @@
                     android:text="ASCII only (A-Z, 0-9, basic punctuation)"
                     android:textSize="10sp"
                     android:textColor="@android:color/white"
-                    android:paddingStart="8dp" />
+                    android:paddingStart="4dp" />
             </LinearLayout>
 
             <View
@@ -256,7 +290,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#444444"
+                android:background="#ffffff"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp" />
 
@@ -270,13 +304,13 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:orientation="vertical"
-        android:background="#000000">
+        android:background="@color/mal_blue">
 
         <!-- Divider Line -->
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#CCCCCC"
+            android:background="#444444"
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="8dp" />
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme with custom styling -->
-    <style name="Theme.EPGUtility_2" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.EPGUtility_2" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color - changed from purple to a neutral grey -->
         <item name="colorPrimary">@color/grey_600</item>
         <item name="colorPrimaryVariant">@color/grey_800</item>
