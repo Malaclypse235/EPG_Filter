@@ -182,7 +182,7 @@ class EpgProcessorService : Service() {
                                 )
                                 lastProgressUpdate = now
                             }
-                            sleep(50) // Check every 50ms
+                            sleep(500) // Check every 50ms
                         }
                     } catch (e: InterruptedException) {
                         // Stopped intentionally
@@ -418,7 +418,7 @@ class EpgProcessorService : Service() {
             // Also apply all sub-filters if master is enabled
             val newsPatterns = listOf(
                 "fox news", "cnn", "msnbc", "newsmax", "cnbc", "oan",
-                "weather channel", "accuweather"
+                "weather channel", "accuweather", "nbc news", "cbs news"
             )
             if (newsPatterns.any { it in searchText }) return false
         } else {
@@ -429,12 +429,150 @@ class EpgProcessorService : Service() {
             if (config.filters.removeNewsMax && "newsmax" in searchText) return false
             if (config.filters.removeCNBC && "cnbc" in searchText) return false
             if (config.filters.removeOAN && "oan" in searchText) return false
+            if (config.filters.removeNBCNews && "nbc news" in searchText) return false
+            if (config.filters.removeCBSNews && "cbs news" in searchText) return false
             if (config.filters.removeWeatherChannel && ("weather channel" in searchText || "weather." in searchText)) return false
             if (config.filters.removeAccuWeather && "accuweather" in searchText) return false
         }
 
+        // ⚽ Sports Filters
+        if (config.filters.removeSportsChannels) {
+            val sportsKeywords = listOf(
+                // Sports Networks
+                "espn", "fox sports", "cbs sports", "nbc sports",
+                "sportsnet", "tnt sports", "dazn", "mlb network",
+                "nfl network", "nba tv", "golf channel", "tennis channel",
+                "sky sports", "nhl channel", "big 10 network", "btn",
+
+                // Sports by Type
+                "baseball", "basketball", "football", "soccer", "futbol", "fútbol",
+                "hockey", "golf", "fishing", "ufc", "mma", "boxing", "swimming",
+                "premier league", "la liga", "pga", "nhl", "nba", "nfl", "mlb", "college football"
+            )
+            if (sportsKeywords.any { it in searchText }) return false
+        } else {
+            // Apply individual network filters
+            if (config.filters.removeESPN && "espn" in searchText) return false
+            if (config.filters.removeFoxSports && "fox sports" in searchText) return false
+            if (config.filters.removeCBSSports && "cbs sports" in searchText) return false
+            if (config.filters.removeNBCSports && "nbc sports" in searchText) return false
+            if (config.filters.removeSportsnet && "sportsnet" in searchText) return false
+            if (config.filters.removeTNTSports && "tnt sports" in searchText) return false
+            if (config.filters.removeDAZN && "dazn" in searchText) return false
+            if (config.filters.removeMLBNetwork && "mlb network" in searchText) return false
+            if (config.filters.removeNFLNetwork && "nfl network" in searchText) return false
+            if (config.filters.removeNBATV && "nba tv" in searchText) return false
+            if (config.filters.removeGolfChannel && "golf channel" in searchText) return false
+            if (config.filters.removeTennisChannel && "tennis channel" in searchText) return false
+            if (config.filters.removeSKYSports && "sky sports" in searchText) return false
+            if (config.filters.removeNHLChannel && "nhl channel" in searchText) return false
+            if (config.filters.removeBigTenNetwork && ("big 10 network" in searchText || "btn" in searchText)) return false
+        }
+
+// 🏈 Sports by Type
+        if (config.filters.removeBaseball && ("baseball" in searchText || "mlb" in searchText)) return false
+        if (config.filters.removeBasketball && ("basketball" in searchText || "nba" in searchText)) return false
+        if (config.filters.removeFootball && ("football" in searchText || "nfl" in searchText || "college football" in searchText)) return false
+        if (config.filters.removeSoccer && ("soccer" in searchText || "futbol" in searchText || "fútbol" in searchText || "premier league" in searchText || "la liga" in searchText)) return false
+        if (config.filters.removeHockey && ("hockey" in searchText || "nhl" in searchText)) return false
+        if (config.filters.removeGolf && ("golf" in searchText || "pga" in searchText)) return false
+        if (config.filters.removeFishing && "fishing" in searchText) return false
+        if (config.filters.removeBoxing && "boxing" in searchText) return false
+        if (config.filters.removeSwimming && ("swimming" in searchText || "aquatics" in searchText)) return false
+        if (config.filters.removeUFCMMA && ("ufc" in searchText || "mma" in searchText)) return false  // ✅ Checks both
+
+        // 🎵 Music Filters
+        if (config.filters.removeMusicChannels) {
+            val musicKeywords = listOf(
+                "bet jams", "bet soul", "bpm", "cmt", "clubland", "da vinci music",
+                "dance music tv", "flaunt", "fuse", "gospel music", "heart tv",
+                "juice", "jukebox", "kerrang", "kiss tv", "lite tv", "loud tv",
+                "mtv", "pulse", "qvc music", "revolt", "ride tv", "stingray",
+                "the box", "trace", "vevo",
+                "a cappella", "acoustic", "alternative", "ambient", "bollywood",
+                "children's music", "christian music", "classical", "classic rock",
+                "country", "dance", "disco", "easy listening", "electronic", "folk",
+                "gospel", "grunge", "hard rock", "hip hop", "holiday music", "indie",
+                "jazz", "karaoke", "latin", "latin pop", "lofi", "metal", "new age",
+                "opera", "pop", "punk", "r&b", "rap", "reggae", "rock", "techno",
+                "trance", "trip hop", "world music"
+            )
+            if (musicKeywords.any { it in searchText }) return false
+        } else {
+            // Apply individual network filters
+            if (config.filters.removeBETJams && "bet jams" in searchText) return false
+            if (config.filters.removeBETSoul && "bet soul" in searchText) return false
+            if (config.filters.removeBPM && "bpm" in searchText) return false
+            if (config.filters.removeCMT && "cmt" in searchText) return false
+            if (config.filters.removeClublandTV && "clubland" in searchText) return false
+            if (config.filters.removeDaVinciMusic && "da vinci music" in searchText) return false
+            if (config.filters.removeDanceMusicTV && "dance music tv" in searchText) return false
+            if (config.filters.removeFlaunt && "flaunt" in searchText) return false
+            if (config.filters.removeFuse && "fuse" in searchText) return false
+            if (config.filters.removeGospelMusicChannel && "gospel music" in searchText) return false
+            if (config.filters.removeHeartTV && "heart tv" in searchText) return false
+            if (config.filters.removeJuice && "juice" in searchText) return false
+            if (config.filters.removeJukebox && "jukebox" in searchText) return false
+            if (config.filters.removeKerrangTV && "kerrang" in searchText) return false
+            if (config.filters.removeKissTV && "kiss tv" in searchText) return false
+            if (config.filters.removeLiteTV && "lite tv" in searchText) return false
+            if (config.filters.removeLoudTV && "loud tv" in searchText) return false
+            if (config.filters.removeMTV && "mtv" in searchText) return false
+            if (config.filters.removePulse && "pulse" in searchText) return false
+            if (config.filters.removeQVCMusic && "qvc music" in searchText) return false
+            if (config.filters.removeRevolt && "revolt" in searchText) return false
+            if (config.filters.removeRIDEtv && "ride tv" in searchText) return false
+            if (config.filters.removeStingray && "stingray" in searchText) return false
+            if (config.filters.removeTheBox && "the box" in searchText) return false
+            if (config.filters.removeTrace && "trace" in searchText) return false
+            if (config.filters.removeVevo && "vevo" in searchText) return false
+
+            // Apply individual genre filters
+            if (config.filters.removeAcappella && "a cappella" in searchText) return false
+            if (config.filters.removeAcoustic && "acoustic" in searchText) return false
+            if (config.filters.removeAlternative && "alternative" in searchText) return false
+            if (config.filters.removeAmbient && "ambient" in searchText) return false
+            if (config.filters.removeBollywood && "bollywood" in searchText) return false
+            if (config.filters.removeChildrensMusic && "children's music" in searchText) return false
+            if (config.filters.removeChristianMusic && "christian music" in searchText) return false
+            if (config.filters.removeClassical && "classical" in searchText) return false
+            if (config.filters.removeClassicRock && "classic rock" in searchText) return false
+            if (config.filters.removeCountry && "country" in searchText) return false
+            if (config.filters.removeDance && "dance" in searchText) return false
+            if (config.filters.removeDisco && "disco" in searchText) return false
+            if (config.filters.removeEasyListening && "easy listening" in searchText) return false
+            if (config.filters.removeElectronic && "electronic" in searchText) return false
+            if (config.filters.removeFolk && "folk" in searchText) return false
+            if (config.filters.removeGospel && "gospel" in searchText) return false
+            if (config.filters.removeGrunge && "grunge" in searchText) return false
+            if (config.filters.removeHardRock && "hard rock" in searchText) return false
+            if (config.filters.removeHipHop && "hip hop" in searchText) return false
+            if (config.filters.removeHolidayMusic && "holiday music" in searchText) return false
+            if (config.filters.removeIndie && "indie" in searchText) return false
+            if (config.filters.removeJazz && "jazz" in searchText) return false
+            if (config.filters.removeKaraoke && "karaoke" in searchText) return false
+            if (config.filters.removeLatin && "latin" in searchText) return false
+            if (config.filters.removeLatinPop && "latin pop" in searchText) return false
+            if (config.filters.removeLofi && "lofi" in searchText) return false
+            if (config.filters.removeMetal && "metal" in searchText) return false
+            if (config.filters.removeNewAge && "new age" in searchText) return false
+            if (config.filters.removeOpera && "opera" in searchText) return false
+            if (config.filters.removePop && "pop" in searchText) return false
+            if (config.filters.removePunk && "punk" in searchText) return false
+            if (config.filters.removeRnB && "r&b" in searchText) return false
+            if (config.filters.removeRap && "rap" in searchText) return false
+            if (config.filters.removeReggae && "reggae" in searchText) return false
+            if (config.filters.removeRock && "rock" in searchText) return false
+            if (config.filters.removeTechno && "techno" in searchText) return false
+            if (config.filters.removeTrance && "trance" in searchText) return false
+            if (config.filters.removeTriphop && "trip hop" in searchText) return false
+            if (config.filters.removeWorldMusic && "world music" in searchText) return false
+        }
+
         return true
     }
+
+
 
     private fun processEpgFile(epgFile: File) {
         countElementsInFile(epgFile)
@@ -491,7 +629,7 @@ class EpgProcessorService : Service() {
                                 )
                                 lastProgressUpdate = now
                             }
-                            sleep(50)
+                            sleep(1000)
                         }
                     } catch (e: InterruptedException) { }
                 }
@@ -517,7 +655,6 @@ class EpgProcessorService : Service() {
                                 insideChannel = true
                                 currentChannelId = parser.getAttributeValue(null, "id") ?: "unknown"
                                 processedChannels++
-
                                 // ✅ Check for duplicate
                                 if (config.filters.removeDuplicates) {
                                     if (currentChannelId in seenChannelIds) {
@@ -526,23 +663,20 @@ class EpgProcessorService : Service() {
                                         seenChannelIds.add(currentChannelId)
                                     }
                                 }
-
                                 channelBuffer.setLength(0)
                                 channelBuffer.append(buildXmlStartTag(parser))
                             }
                             "programme" -> {
                                 insideProgramme = true
                                 val channelId = parser.getAttributeValue(null, "channel") ?: "unknown"
-                                // ✅ If channel is duplicate, mark for removal
-                                shouldKeepCurrentChannel = !duplicateChannelIds.contains(channelId)
-
+                                // ✅ Use the stored filtering decision
+                                shouldKeepCurrentChannel = channelFilterDecisions.getOrDefault(channelId, true)
                                 programmeBuffer.setLength(0)
                                 programmeBuffer.append(buildXmlStartTag(parser))
                             }
                             else -> {
                                 val element = buildXmlStartTag(parser)
                                 val tagName = parser.name.trim()
-
                                 if (tagName.equals("tv", ignoreCase = true)) {
                                     // Skip — we handled it
                                 } else if (insideChannel) {
@@ -571,17 +705,16 @@ class EpgProcessorService : Service() {
                             "channel" -> {
                                 insideChannel = false
                                 channelBuffer.append("</channel>\n")
-
                                 val channelText = channelBuffer.toString()
                                 val channelId = currentChannelId ?: "unknown"
-
                                 // ✅ If duplicate, don't apply other filters
                                 val shouldKeep = if (config.filters.removeDuplicates && duplicateChannelIds.contains(channelId)) {
                                     false
                                 } else {
                                     shouldKeepXmlChannel(channelText)
                                 }
-
+                                // ✅ Store the decision
+                                channelFilterDecisions[channelId] = shouldKeep
                                 if (shouldKeep) {
                                     keptChannelsCount++
                                     keptWriter.write(channelText)
@@ -593,7 +726,6 @@ class EpgProcessorService : Service() {
                             "programme" -> {
                                 insideProgramme = false
                                 programmeBuffer.append("</programme>\n")
-
                                 val programmeXml = programmeBuffer.toString()
                                 if (shouldKeepCurrentChannel) {
                                     keptWriter.write(programmeXml)
@@ -611,7 +743,6 @@ class EpgProcessorService : Service() {
                             else -> {
                                 val closing = "</${parser.name}>"
                                 val tagName = parser.name.trim()
-
                                 if (tagName.equals("tv", ignoreCase = true)) {
                                     // Skip
                                 } else if (insideChannel) {
@@ -704,10 +835,9 @@ class EpgProcessorService : Service() {
         // 🔥 3. News & Weather Master Filter
         if (config.filters.removeNewsAndWeather) {
             if (listOf("news", "weather").any { it in textContent }) return false
-
             val newsPatterns = listOf(
                 "fox news", "cnn", "msnbc", "newsmax", "cnbc", "oan",
-                "weather channel", "accuweather"
+                "weather channel", "accuweather", "nbc news", "cbs news"
             )
             if (newsPatterns.any { it in textContent }) return false
         } else {
@@ -716,10 +846,145 @@ class EpgProcessorService : Service() {
             if (config.filters.removeCNN && "cnn" in textContent) return false
             if (config.filters.removeMSNBC && "msnbc" in textContent) return false
             if (config.filters.removeNewsMax && "newsmax" in textContent) return false
+            if (config.filters.removeCBSNews && "cbs news" in textContent) return false
+            if (config.filters.removeNBCNews && "nbc news" in textContent) return false
             if (config.filters.removeCNBC && "cnbc" in textContent) return false
             if (config.filters.removeOAN && "oan" in textContent) return false
             if (config.filters.removeWeatherChannel && ("weather channel" in textContent || "weather." in textContent)) return false
             if (config.filters.removeAccuWeather && "accuweather" in textContent) return false
+        }
+
+        // ⚽ Sports Filters
+        if (config.filters.removeSportsChannels) {
+            val sportsKeywords = listOf(
+                // Sports Networks
+                "espn", "fox sports", "cbs sports", "nbc sports",
+                "sportsnet", "tnt sports", "dazn", "mlb network",
+                "nfl network", "nba tv", "golf channel", "tennis channel",
+                "sky sports", "nhl channel", "big 10 network", "btn",
+                // Sports by Type
+                "baseball", "basketball", "football", "soccer", "futbol", "fútbol",
+                "hockey", "golf", "fishing", "ufc", "mma", "boxing", "swimming",
+                "premier league", "la liga", "pga", "nhl", "nba", "nfl", "mlb", "college football"
+            )
+            if (sportsKeywords.any { it in textContent }) return false
+        } else {
+            // Apply individual network filters
+            if (config.filters.removeESPN && "espn" in textContent) return false
+            if (config.filters.removeFoxSports && "fox sports" in textContent) return false
+            if (config.filters.removeCBSSports && "cbs sports" in textContent) return false
+            if (config.filters.removeNBCSports && "nbc sports" in textContent) return false
+            if (config.filters.removeSportsnet && "sportsnet" in textContent) return false
+            if (config.filters.removeTNTSports && "tnt sports" in textContent) return false
+            if (config.filters.removeDAZN && "dazn" in textContent) return false
+            if (config.filters.removeMLBNetwork && "mlb network" in textContent) return false
+            if (config.filters.removeNFLNetwork && "nfl network" in textContent) return false
+            if (config.filters.removeNBATV && "nba tv" in textContent) return false
+            if (config.filters.removeGolfChannel && "golf channel" in textContent) return false
+            if (config.filters.removeTennisChannel && "tennis channel" in textContent) return false
+            if (config.filters.removeSKYSports && "sky sports" in textContent) return false
+            if (config.filters.removeNHLChannel && "nhl channel" in textContent) return false
+            if (config.filters.removeBigTenNetwork && ("big 10 network" in textContent || "btn" in textContent)) return false
+        }
+
+        // 🏈 Sports by Type
+        if (config.filters.removeBaseball && ("baseball" in textContent || "mlb" in textContent)) return false
+        if (config.filters.removeBasketball && ("basketball" in textContent || "nba" in textContent)) return false
+        if (config.filters.removeFootball && ("football" in textContent || "nfl" in textContent || "college football" in textContent)) return false
+        if (config.filters.removeSoccer && ("soccer" in textContent || "futbol" in textContent || "fútbol" in textContent || "premier league" in textContent || "la liga" in textContent)) return false
+        if (config.filters.removeHockey && ("hockey" in textContent || "nhl" in textContent)) return false
+        if (config.filters.removeGolf && ("golf" in textContent || "pga" in textContent)) return false
+        if (config.filters.removeFishing && "fishing" in textContent) return false
+        if (config.filters.removeBoxing && "boxing" in textContent) return false
+        if (config.filters.removeSwimming && ("swimming" in textContent || "aquatics" in textContent)) return false
+        if (config.filters.removeUFCMMA && ("ufc" in textContent || "mma" in textContent)) return false
+
+        // 🎵 Music Filters
+        if (config.filters.removeMusicChannels) {
+            val musicKeywords = listOf(
+                "bet jams", "bet soul", "bpm", "cmt", "clubland", "da vinci music",
+                "dance music tv", "flaunt", "fuse", "gospel music", "heart tv",
+                "juice", "jukebox", "kerrang", "kiss tv", "lite tv", "loud tv",
+                "mtv", "pulse", "qvc music", "revolt", "ride tv", "stingray",
+                "the box", "trace", "vevo",
+                "a cappella", "acoustic", "alternative", "ambient", "bollywood",
+                "children's music", "christian music", "classical", "classic rock",
+                "country", "dance", "disco", "easy listening", "electronic", "folk",
+                "gospel", "grunge", "hard rock", "hip hop", "holiday music", "indie",
+                "jazz", "karaoke", "latin", "latin pop", "lofi", "metal", "new age",
+                "opera", "pop", "punk", "r&b", "rap", "reggae", "rock", "techno",
+                "trance", "trip hop", "world music"
+            )
+            if (musicKeywords.any { it in textContent }) return false
+        } else {
+            // Apply individual network filters
+            if (config.filters.removeBETJams && "bet jams" in textContent) return false
+            if (config.filters.removeBETSoul && "bet soul" in textContent) return false
+            if (config.filters.removeBPM && "bpm" in textContent) return false
+            if (config.filters.removeCMT && "cmt" in textContent) return false
+            if (config.filters.removeClublandTV && "clubland" in textContent) return false
+            if (config.filters.removeDaVinciMusic && "da vinci music" in textContent) return false
+            if (config.filters.removeDanceMusicTV && "dance music tv" in textContent) return false
+            if (config.filters.removeFlaunt && "flaunt" in textContent) return false
+            if (config.filters.removeFuse && "fuse" in textContent) return false
+            if (config.filters.removeGospelMusicChannel && "gospel music" in textContent) return false
+            if (config.filters.removeHeartTV && "heart tv" in textContent) return false
+            if (config.filters.removeJuice && "juice" in textContent) return false
+            if (config.filters.removeJukebox && "jukebox" in textContent) return false
+            if (config.filters.removeKerrangTV && "kerrang" in textContent) return false
+            if (config.filters.removeKissTV && "kiss tv" in textContent) return false
+            if (config.filters.removeLiteTV && "lite tv" in textContent) return false
+            if (config.filters.removeLoudTV && "loud tv" in textContent) return false
+            if (config.filters.removeMTV && "mtv" in textContent) return false
+            if (config.filters.removePulse && "pulse" in textContent) return false
+            if (config.filters.removeQVCMusic && "qvc music" in textContent) return false
+            if (config.filters.removeRevolt && "revolt" in textContent) return false
+            if (config.filters.removeRIDEtv && "ride tv" in textContent) return false
+            if (config.filters.removeStingray && "stingray" in textContent) return false
+            if (config.filters.removeTheBox && "the box" in textContent) return false
+            if (config.filters.removeTrace && "trace" in textContent) return false
+            if (config.filters.removeVevo && "vevo" in textContent) return false
+
+            // Apply individual genre filters
+            if (config.filters.removeAcappella && "a cappella" in textContent) return false
+            if (config.filters.removeAcoustic && "acoustic" in textContent) return false
+            if (config.filters.removeAlternative && "alternative" in textContent) return false
+            if (config.filters.removeAmbient && "ambient" in textContent) return false
+            if (config.filters.removeBollywood && "bollywood" in textContent) return false
+            if (config.filters.removeChildrensMusic && "children's music" in textContent) return false
+            if (config.filters.removeChristianMusic && "christian music" in textContent) return false
+            if (config.filters.removeClassical && "classical" in textContent) return false
+            if (config.filters.removeClassicRock && "classic rock" in textContent) return false
+            if (config.filters.removeCountry && "country" in textContent) return false
+            if (config.filters.removeDance && "dance" in textContent) return false
+            if (config.filters.removeDisco && "disco" in textContent) return false
+            if (config.filters.removeEasyListening && "easy listening" in textContent) return false
+            if (config.filters.removeElectronic && "electronic" in textContent) return false
+            if (config.filters.removeFolk && "folk" in textContent) return false
+            if (config.filters.removeGospel && "gospel" in textContent) return false
+            if (config.filters.removeGrunge && "grunge" in textContent) return false
+            if (config.filters.removeHardRock && "hard rock" in textContent) return false
+            if (config.filters.removeHipHop && "hip hop" in textContent) return false
+            if (config.filters.removeHolidayMusic && "holiday music" in textContent) return false
+            if (config.filters.removeIndie && "indie" in textContent) return false
+            if (config.filters.removeJazz && "jazz" in textContent) return false
+            if (config.filters.removeKaraoke && "karaoke" in textContent) return false
+            if (config.filters.removeLatin && "latin" in textContent) return false
+            if (config.filters.removeLatinPop && "latin pop" in textContent) return false
+            if (config.filters.removeLofi && "lofi" in textContent) return false
+            if (config.filters.removeMetal && "metal" in textContent) return false
+            if (config.filters.removeNewAge && "new age" in textContent) return false
+            if (config.filters.removeOpera && "opera" in textContent) return false
+            if (config.filters.removePop && "pop" in textContent) return false
+            if (config.filters.removePunk && "punk" in textContent) return false
+            if (config.filters.removeRnB && "r&b" in textContent) return false
+            if (config.filters.removeRap && "rap" in textContent) return false
+            if (config.filters.removeReggae && "reggae" in textContent) return false
+            if (config.filters.removeRock && "rock" in textContent) return false
+            if (config.filters.removeTechno && "techno" in textContent) return false
+            if (config.filters.removeTrance && "trance" in textContent) return false
+            if (config.filters.removeTriphop && "trip hop" in textContent) return false
+            if (config.filters.removeWorldMusic && "world music" in textContent) return false
         }
 
         return true
