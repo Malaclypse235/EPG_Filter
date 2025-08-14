@@ -41,6 +41,7 @@ object ConfigManager {
     data class FilterSettings(
         var removeNonEnglish: Boolean = false,
         var removeNonLatin: Boolean = false,
+        var removeSpanish: Boolean = false,
         var excludeKeywords: List<String> = emptyList(),
         var includeCategories: List<String> = emptyList(),
         var hideEncrypted: Boolean = false,

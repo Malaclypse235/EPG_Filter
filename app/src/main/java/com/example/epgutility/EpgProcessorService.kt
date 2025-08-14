@@ -400,6 +400,53 @@ class EpgProcessorService : Service() {
             if (config.filters.excludeKeywords.any { it.lowercase() in searchText }) return false
         }
 
+        // 🌐 3. Define Spanish Keywords List
+        val spanishWords = listOf(
+            "cine",       // not in "cinema"
+            "novela",     // not in "novel"
+            "telenovela",
+            "deporte",    // not in "importante"
+            "noticias",
+            "canal",
+            "en vivo",
+            "enlace",
+            "futbol",     // not in "football"
+            "baloncesto",
+            "beisbol",
+            "tenis",
+            "musica",
+            "programa",
+            "serie",
+            "pelicula",
+            "noticia",
+            "clima",
+            "tiempo",
+            "hispano",
+            "latino",
+            "espanol",
+            "spanish",
+            "el",
+            "la",
+            "gratis",
+            "estrella",
+            "azteca",
+            "vix",
+            "caso",
+            "casa",
+            "luz",
+            "amor",
+            "oro",
+            "grandes",
+            "y",
+            "estelar",
+            "canela",
+            "cielo",
+            "misterios"
+        )
+        // 🌐 Remove Spanish Channels
+        if (config.filters.removeSpanish) {
+            if (spanishWords.any { matchesWholeWord(searchText, it) }) return false
+        }
         // 3. Hide Radio
         if (config.filters.hideRadio) {
             if ("radio" in searchText || "music" in searchText) return false
@@ -832,6 +879,53 @@ class EpgProcessorService : Service() {
             if (config.filters.excludeKeywords.any { it.lowercase() in textContent }) return false
         }
 
+        // 🌐 3. Define Spanish Keywords List
+        val spanishWords = listOf(
+            "cine",       // not in "cinema"
+            "novela",     // not in "novel"
+            "telenovela",
+            "deporte",    // not in "importante"
+            "noticias",
+            "canal",
+            "en vivo",
+            "enlace",
+            "futbol",     // not in "football"
+            "baloncesto",
+            "beisbol",
+            "tenis",
+            "musica",
+            "programa",
+            "serie",
+            "pelicula",
+            "noticia",
+            "clima",
+            "tiempo",
+            "hispano",
+            "latino",
+            "espanol",
+            "spanish",
+            "el",
+            "la",
+            "gratis",
+            "estrella",
+            "azteca",
+            "vix",
+            "caso",
+            "casa",
+            "luz",
+            "amor",
+            "oro",
+            "grandes",
+            "y",
+            "estelar",
+            "canela",
+            "cielo",
+            "misterios"
+        )
+        // 🌐 Remove Spanish Channels
+        if (config.filters.removeSpanish) {
+            if (spanishWords.any { matchesWholeWord(textContent, it) }) return false
+        }
         // 🔥 3. News & Weather Master Filter
         if (config.filters.removeNewsAndWeather) {
             if (listOf("news", "weather").any { it in textContent }) return false
@@ -1036,6 +1130,10 @@ class EpgProcessorService : Service() {
         }
         tag.append(">")
         return tag.toString()
+    }
+
+    private fun matchesWholeWord(text: String, word: String): Boolean {
+        return Regex("\\b${Regex.escape(word)}\\b", RegexOption.IGNORE_CASE).containsMatchIn(text)
     }
 
     private fun escapeXmlAttribute(text: String): String = text

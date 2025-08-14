@@ -93,6 +93,19 @@
                     android:paddingStart="4dp"
                     android:paddingEnd="4dp"
                     android:minHeight="48dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxRemoveSpanish"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Remove Spanish"
+                    android:textSize="14sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp"
+                    android:layout_marginTop="8dp" />
+
             </LinearLayout>
 
             <!-- Descriptions -->
@@ -128,6 +141,15 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="ASCII only (A-Z, 0-9, basic punctuation)"
+                    android:textSize="10sp"
+                    android:textColor="@android:color/white"
+                    android:paddingStart="4dp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Remove Spanish more aggressively"
                     android:textSize="10sp"
                     android:textColor="@android:color/white"
                     android:paddingStart="4dp" />

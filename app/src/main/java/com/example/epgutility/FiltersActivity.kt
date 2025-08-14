@@ -10,6 +10,8 @@ class FiltersActivity : AppCompatActivity() {
 
     private lateinit var removeNonLatinCheckBox: CheckBox
     private lateinit var removeNonEnglishCheckBox: CheckBox
+
+    private lateinit var checkboxRemoveSpanish: CheckBox
     private lateinit var buttonConfirm: Button
     private lateinit var buttonCancel: Button
     private lateinit var checkboxRemoveNewsWeather: CheckBox
@@ -137,6 +139,7 @@ class FiltersActivity : AppCompatActivity() {
         checkboxRemoveDuplicates = findViewById(R.id.checkboxRemoveDuplicates)
         removeNonLatinCheckBox = findViewById(R.id.checkboxNonLatin)
         removeNonEnglishCheckBox = findViewById(R.id.checkboxNonEnglish)
+        checkboxRemoveSpanish = findViewById(R.id.checkboxRemoveSpanish)
         buttonConfirm = findViewById(R.id.buttonConfirm)
         buttonCancel = findViewById(R.id.buttonCancel)
         checkboxRemoveNewsWeather = findViewById(R.id.checkboxRemoveNewsWeather)
@@ -274,6 +277,7 @@ class FiltersActivity : AppCompatActivity() {
         // ✅ FIXED: now reads from config.filters
         removeNonLatinCheckBox.isChecked = config.filters.removeNonLatin
         removeNonEnglishCheckBox.isChecked = config.filters.removeNonEnglish
+        checkboxRemoveSpanish.isChecked = config.filters.removeSpanish
         // Load News & Weather filter states
         checkboxRemoveNewsWeather.isChecked = config.filters.removeNewsAndWeather
         checkboxRemoveDuplicates.isChecked = config.filters.removeDuplicates
@@ -398,6 +402,7 @@ class FiltersActivity : AppCompatActivity() {
             // ✅ FIXED: now writes to config.filters
             config.filters.removeNonLatin = removeNonLatinCheckBox.isChecked
             config.filters.removeNonEnglish = removeNonEnglishCheckBox.isChecked
+            config.filters.removeSpanish = checkboxRemoveSpanish.isChecked
             // Save News & Weather filter states
             config.filters.removeNewsAndWeather = checkboxRemoveNewsWeather.isChecked
 
@@ -525,7 +530,9 @@ class FiltersActivity : AppCompatActivity() {
             finish()
         }
     }
-
+    private fun matchesWholeWord(text: String, word: String): Boolean {
+        return Regex("\\b${Regex.escape(word)}\\b", RegexOption.IGNORE_CASE).containsMatchIn(text)
+    }
     /**
      * Setup interactions between the checkboxes to prevent conflicts
      */
@@ -540,6 +547,7 @@ class FiltersActivity : AppCompatActivity() {
                 ).show()
                 removeNonLatinCheckBox.isChecked = false
             }
+
         }
 
         // When Non-Latin is checked and Non-English is already checked, warn user
