@@ -167,9 +167,30 @@ class MainActivity : AppCompatActivity() {
 
         buttonFilters.setOnClickListener {
             startActivity(Intent(this, FiltersActivity::class.java))
+            // Button: Open Settings
+            findViewById<Button>(R.id.buttonSettings).setOnClickListener {
+                val intent = Intent(this, SettingsActivity::class.java)
+                startActivity(intent)
+            }
+        }
+
+        findViewById<Button>(R.id.buttonSettings).setOnClickListener {
+            val intent = Intent(this, SettingsActivity::class.java)
+            startActivity(intent)
         }
 
         // Run filters screen
+        buttonRunFilter.setOnClickListener {
+            val loadResult = ConfigManager.loadConfig(this)
+            val config = loadResult.config
+
+            val intent = Intent(this, FilterProgressActivity::class.java).apply {
+                putExtra("PLAYLIST_PATH", config.system.playlistPath)
+                putExtra("EPG_PATH", config.system.epgPath)
+            }
+            startActivity(intent)
+        }
+
         buttonRunFilter.setOnClickListener {
             val loadResult = ConfigManager.loadConfig(this)
             val config = loadResult.config

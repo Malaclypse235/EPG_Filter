@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/mal_blue"
+    android:padding="24dp">
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/titleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Settings"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        android:textColor="#2196F3"
+        android:fontFamily="@font/dancingscript_bold"
+        android:shadowColor="#FF2196F3"
+        android:shadowRadius="10"
+        android:shadowDx="0"
+        android:shadowDy="0"
+        android:padding="16dp"
+        android:layout_marginBottom="8dp"
+        android:layout_centerHorizontal="true" />
+
+    <!-- Top Divider -->
+    <View
+        android:id="@+id/dividerTop"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_below="@id/titleText"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="24dp"
+        android:background="@android:color/white" />
+
+    <!-- OUTPUT FOLDER -->
+    <LinearLayout
+        android:id="@+id/outputFolderSection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_below="@id/dividerTop"
+        android:layout_marginBottom="16dp">
+
+        <Button
+            android:id="@+id/buttonChooseOutputFolder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Choose Output Folder" />
+
+        <TextView
+            android:id="@+id/textOutputFolder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="No folder selected"
+            android:textColor="#FFFFFF"
+            android:maxWidth="400dp"
+            android:ellipsize="end"
+            android:singleLine="true" />
+    </LinearLayout>
+
+    <!-- Middle Divider -->
+    <View
+        android:id="@+id/dividerLine"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/outputFolderSection"
+        android:layout_marginVertical="16dp"
+        android:background="#666666" />
+
+    <!-- FILTERING SPEED LABEL -->
+    <TextView
+        android:id="@+id/filteringSpeedLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Filtering Speed"
+        android:textSize="24sp"
+        android:textColor="#FFFFFF"
+        android:layout_below="@id/dividerLine"
+        android:layout_marginBottom="16dp"
+        android:layout_centerHorizontal="true" />
+
+    <!-- Manual & Automatic Groups in One Row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/filteringSpeedLabel"
+        android:layout_marginBottom="24dp">
+
+        <!-- Manual Group -->
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/outline_box">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="8dp">
+
+                <!-- Manual Label - Left Justified -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Manual"
+                    android:textColor="#FF9800"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="8dp" />
+
+                <!-- Manual RadioGroup -->
+                <RadioGroup
+                    android:id="@+id/radioGroupManualSpeed"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+
+                    <RadioButton
+                        android:id="@+id/radioManualFullSpeed"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Full Speed"
+                        android:textColor="#FFFFFF"
+                        android:buttonTint="#FFFFFF"
+                        android:textSize="14sp"
+                        android:padding="4dp" />
+
+                    <RadioButton
+                        android:id="@+id/radioManualBalanced"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Balanced"
+                        android:textColor="#FFFFFF"
+                        android:buttonTint="#FFFFFF"
+                        android:textSize="14sp"
+                        android:padding="4dp" />
+
+                    <RadioButton
+                        android:id="@+id/radioManualSlow"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Slow"
+                        android:textColor="#FFFFFF"
+                        android:buttonTint="#FFFFFF"
+                        android:textSize="14sp"
+                        android:padding="4dp" />
+                </RadioGroup>
+            </LinearLayout>
+        </FrameLayout>
+
+        <!-- Automatic Group -->
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/outline_box">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="8dp">
+
+                <!-- Automatic Label - Left Justified -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Automatic"
+                    android:textColor="#FF9800"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="8dp" />
+
+                <!-- Automatic RadioGroup -->
+                <RadioGroup
+                    android:id="@+id/radioGroupAutoSpeed"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+
+                    <RadioButton
+                        android:id="@+id/radioAutoFullSpeed"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Full Speed"
+                        android:textColor="#FFFFFF"
+                        android:buttonTint="#FFFFFF"
+                        android:textSize="14sp"
+                        android:padding="4dp" />
+
+                    <RadioButton
+                        android:id="@+id/radioAutoBalanced"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Balanced"
+                        android:textColor="#FFFFFF"
+                        android:buttonTint="#FFFFFF"
+                        android:textSize="14sp"
+                        android:padding="4dp" />
+
+                    <RadioButton
+                        android:id="@+id/radioAutoSlow"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Slow"
+                        android:textColor="#FFFFFF"
+                        android:buttonTint="#FFFFFF"
+                        android:textSize="14sp"
+                        android:padding="4dp" />
+                </RadioGroup>
+            </LinearLayout>
+        </FrameLayout>
+    </LinearLayout>
+
+    <!-- Save / Cancel Buttons (Anchored to Bottom) -->
+    <LinearLayout
+        android:id="@+id/bottomBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
+
+        <Button
+            android:id="@+id/buttonSaveSettings"
+            style="@style/CustomRoundedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="150dp"
+            android:text="Save"
+            android:layout_marginEnd="16dp" />
+
+        <Button
+            android:id="@+id/buttonCancelSettings"
+            style="@style/CustomRoundedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="150dp"
+            android:text="Cancel" />
+    </LinearLayout>
+
+</RelativeLayout>

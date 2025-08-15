@@ -136,6 +136,16 @@
         android:text="Run Filters" />
 
     <Button
+        android:id="@+id/buttonSettings"
+        style="@style/CustomRoundedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="150dp"
+        android:text="Settings"
+        android:textSize="18sp"
+        android:layout_marginTop="16dp" />
+
+    <Button
         android:id="@+id/buttonResetFiles"
         android:layout_width="wrap_content"
         android:layout_height="48dp"

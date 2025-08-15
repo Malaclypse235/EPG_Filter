@@ -27,6 +27,10 @@ object ConfigManager {
 
     // 🔧 System-level settings: paths, URIs, app behavior
     data class SystemSettings(
+        var outputFolderUri: String? = null,
+        var outputFolderPath: String? = null,
+        var manualFilterSpeed: String? = "balanced",
+        var autoFilterSpeed: String? = "balanced",
         var defaultFolderPath: String? = null,
         var playlistUri: String? = null,
         var epgUri: String? = null,
