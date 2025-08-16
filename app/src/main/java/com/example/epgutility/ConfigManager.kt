@@ -38,7 +38,9 @@ object ConfigManager {
         var epgPath: String? = null,
         var disablePlaylistFiltering: Boolean = false,
         var disableEPGFiltering: Boolean = false,
-        var outputLocation: String? = "Documents"  // default
+        var outputLocation: String? = "Documents",  // default
+        var autoModeEnabled: Boolean = false,
+        var autoCheckInterval: String = "24_hours"  // ✅ Default is 24 hours
     )
 
     // 🧹 Filtering rules (will grow over time)

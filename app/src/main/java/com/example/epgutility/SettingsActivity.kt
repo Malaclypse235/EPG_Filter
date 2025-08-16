@@ -9,6 +9,9 @@ class SettingsActivity : AppCompatActivity() {
 
     private lateinit var config: ConfigManager.ConfigData
 
+    private lateinit var switchAutoMode: Switch
+    private lateinit var radioGroupAutoInterval: RadioGroup
+
     private val REQUEST_CODE_PICK_FOLDER = 1001
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,6 +21,9 @@ class SettingsActivity : AppCompatActivity() {
         // Load config
         val loadResult = ConfigManager.loadConfig(this)
         config = loadResult.config
+
+        switchAutoMode = findViewById(R.id.switchAutoMode)
+        radioGroupAutoInterval = findViewById(R.id.radioGroupAutoInterval)
 
         // Restore UI from config
         setupOutputLocationRadioButtons()
@@ -62,6 +68,18 @@ class SettingsActivity : AppCompatActivity() {
                 else -> R.id.radioAutoBalanced
             }
         ).isChecked = true
+
+        // Setup Auto Mode Toggle
+        switchAutoMode.isChecked = config.system.autoModeEnabled
+
+// Setup Auto Interval
+        when (config.system.autoCheckInterval) {
+            "30_min" -> R.id.radioInterval30Min
+            "1_hour" -> R.id.radioInterval1Hour
+            "6_hours" -> R.id.radioInterval6Hours
+            "12_hours" -> R.id.radioInterval12Hours
+            else -> R.id.radioInterval24Hours  // default
+        }.also { findViewById<RadioButton>(it).isChecked = true }
     }
 
     private fun saveSettings() {
@@ -87,8 +105,19 @@ class SettingsActivity : AppCompatActivity() {
             else -> "balanced"
         }
 
-        // Save to file
+        // ✅ Save Auto Mode settings (before saving to file)
+        config.system.autoModeEnabled = switchAutoMode.isChecked
+        config.system.autoCheckInterval = when (radioGroupAutoInterval.checkedRadioButtonId) {
+            R.id.radioInterval30Min -> "30_min"
+            R.id.radioInterval1Hour -> "1_hour"
+            R.id.radioInterval6Hours -> "6_hours"
+            R.id.radioInterval12Hours -> "12_hours"
+            else -> "24_hours"
+        }
+
+        // ✅ Now save the entire config to disk
         ConfigManager.saveConfig(this, config)
         Toast.makeText(this, "Settings saved", Toast.LENGTH_SHORT).show()
     }
+
 }
