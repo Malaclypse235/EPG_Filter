@@ -15,6 +15,7 @@ import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
 import java.io.File
+import android.content.ContentUris
 
 
 class EpgProcessorService : Service() {
@@ -861,7 +862,6 @@ class EpgProcessorService : Service() {
 
     private fun exportToFile(src: File, displayName: String): Uri? {
         try {
-            // Get output location from config (Documents or Downloads)
             val location = config.system.outputLocation ?: "Documents"
             val relativePath = if (location == "Documents") {
                 Environment.DIRECTORY_DOCUMENTS + "/MalEPG"
@@ -869,25 +869,48 @@ class EpgProcessorService : Service() {
                 Environment.DIRECTORY_DOWNLOADS + "/MalEPG"
             }
 
-            // Prepare MediaStore values
+            val resolver = this.contentResolver
+            val queryUri = MediaStore.Downloads.EXTERNAL_CONTENT_URI
+
+            // ✅ Fix: Query by DISPLAY_NAME only — RELATIVE_PATH is unreliable on TV
+            val selection = "${MediaStore.MediaColumns.DISPLAY_NAME}=?"
+            val selectionArgs = arrayOf(displayName)
+
+            resolver.query(queryUri, arrayOf(MediaStore.MediaColumns._ID), selection, selectionArgs, null)?.use { cursor ->
+                if (cursor.moveToFirst()) {
+                    val id = cursor.getLong(0)
+                    val existingUri = ContentUris.withAppendedId(queryUri, id)
+
+                    // ✅ Overwrite the existing file
+                    resolver.openOutputStream(existingUri, "rwt")?.use { outputStream ->
+                        src.inputStream().use { inputStream ->
+                            inputStream.copyTo(outputStream)
+                        }
+                    }
+
+                    Log.d(TAG, "✅ Overwrote existing file: $existingUri")
+                    return existingUri
+                }
+            }
+
+            // ✅ File doesn't exist — insert new one
             val values = ContentValues().apply {
                 put(MediaStore.MediaColumns.DISPLAY_NAME, displayName)
                 put(MediaStore.MediaColumns.MIME_TYPE, "application/octet-stream")
                 put(MediaStore.MediaColumns.RELATIVE_PATH, relativePath)
             }
 
-            // Insert into MediaStore
-            val uri = this.contentResolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values) ?: return null
+            val newUri = resolver.insert(queryUri, values) ?: return null
 
-            // Write file content
-            this.contentResolver.openOutputStream(uri, "rwt")?.use { outputStream ->
+            resolver.openOutputStream(newUri, "rwt")?.use { outputStream ->
                 src.inputStream().use { inputStream ->
                     inputStream.copyTo(outputStream)
                 }
             }
 
-            Log.d(TAG, "✅ Saved to: $uri")
-            return uri
+            Log.d(TAG, "✅ Created new file: $newUri")
+            return newUri
+
         } catch (e: Exception) {
             Log.e(TAG, "❌ Failed to export $displayName", e)
             logAndSend("❌ Export failed: ${e.message}", 0, "Error", MSG_LOG)
