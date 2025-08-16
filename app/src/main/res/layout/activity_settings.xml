@@ -20,7 +20,8 @@
             android:text="Settings"
             android:textColor="#2196F3"
             android:textSize="36sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:fontFamily="@font/dancingscript_bold" />
 
         <View
             android:layout_width="match_parent"
@@ -141,7 +142,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Full"
+                            android:text="Full Speed"
                             android:textColor="#FFFFFF"
                             android:buttonTint="#FFFFFF"
                             android:textSize="14sp"
@@ -208,7 +209,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Full"
+                            android:text="Faster"
                             android:textColor="#FFFFFF"
                             android:buttonTint="#FFFFFF"
                             android:textSize="14sp"
@@ -239,6 +240,154 @@
                 </LinearLayout>
             </FrameLayout>
         </LinearLayout>
+
+        <!-- Divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginVertical="16dp"
+            android:background="#666666" />
+
+        <!-- Automatic Mode Label -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="8dp"
+            android:text="Automatic Mode"
+            android:textColor="#ffffff"
+            android:textSize="24sp" />
+
+        <!-- Enable Auto Update with Outline Box -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/outline_box">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="12dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Enable Auto Update"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp" />
+
+                <Switch
+                    android:id="@+id/switchAutoMode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false" />
+            </LinearLayout>
+        </FrameLayout>
+
+        <!-- Check Interval Label -->
+
+
+        <!-- Interval Options - Horizontal with 5 items -->
+        <RadioGroup
+            android:id="@+id/radioGroupAutoInterval"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="24dp"
+            android:weightSum="5"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginBottom="0dp"
+                android:layout_marginEnd="32dp"
+                android:text="Check Interval:"
+                android:textColor="#FF9800"
+                android:textSize="18sp" />
+
+            <RadioButton
+                android:id="@+id/radioInterval30Min"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="30 min"
+                android:textColor="#FFFFFF"
+                android:buttonTint="#FFFFFF"
+                android:textSize="14sp"
+                android:gravity="center_vertical"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:minHeight="48dp" />
+
+            <RadioButton
+                android:id="@+id/radioInterval1Hour"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="1 hr"
+                android:textColor="#FFFFFF"
+                android:buttonTint="#FFFFFF"
+                android:textSize="14sp"
+                android:gravity="center_vertical"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:minHeight="48dp" />
+
+            <RadioButton
+                android:id="@+id/radioInterval6Hours"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="6 hr"
+                android:textColor="#FFFFFF"
+                android:buttonTint="#FFFFFF"
+                android:textSize="14sp"
+                android:gravity="center_vertical"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:minHeight="48dp" />
+
+            <RadioButton
+                android:id="@+id/radioInterval12Hours"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="12 hr"
+                android:textColor="#FFFFFF"
+                android:buttonTint="#FFFFFF"
+                android:textSize="14sp"
+                android:gravity="center_vertical"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:minHeight="48dp" />
+
+            <RadioButton
+                android:id="@+id/radioInterval24Hours"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="24 hr"
+                android:textColor="#FFFFFF"
+                android:buttonTint="#FFFFFF"
+                android:textSize="14sp"
+                android:gravity="center_vertical"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:minHeight="48dp" />
+        </RadioGroup>
+
+        <!-- Divider below intervals -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginVertical="16dp"
+            android:background="#666666" />
 
         <!-- Save / Cancel Buttons -->
         <LinearLayout
