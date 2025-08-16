@@ -10,6 +10,12 @@ import org.xmlpull.v1.XmlPullParserFactory
 import java.io.*
 import java.util.regex.Pattern
 import java.util.zip.GZIPInputStream
+import android.content.ContentValues
+import android.net.Uri
+import android.os.Environment
+import android.provider.MediaStore
+import java.io.File
+
 
 class EpgProcessorService : Service() {
 
@@ -149,13 +155,12 @@ class EpgProcessorService : Service() {
     }
 
     private fun processM3uFile(playlistFile: File) {
-        // Step 1: Count total channels
+        val outputDir = File(this.filesDir, "output").apply { mkdirs() }
         val total = countExtinfLines(playlistFile)
         this.totalChannels = total
         logAndSend("Starting M3U filtering...", 0, "M3U_Start", MSG_LOG)
 
         try {
-            val outputDir = File(this.filesDir, "output").apply { mkdirs() }
             val keptFile = File(outputDir, "kept_channels.m3u")
             val removedFile = File(outputDir, "removed_channels.m3u")
 
@@ -163,7 +168,7 @@ class EpgProcessorService : Service() {
             var removed = 0
             var processed = 0
 
-            // --- NEW: Timer for smooth progress updates ---
+            // --- Progress updater thread ---
             var lastProgressUpdate = System.currentTimeMillis()
             val PROGRESS_UPDATE_INTERVAL = 500L
 
@@ -182,16 +187,13 @@ class EpgProcessorService : Service() {
                                 )
                                 lastProgressUpdate = now
                             }
-                            sleep(500) // Check every 50ms
+                            sleep(500)
                         }
-                    } catch (e: InterruptedException) {
-                        // Stopped intentionally
-                    }
+                    } catch (e: InterruptedException) { }
                 }
             }.apply { start() }
-            // --- END Timer ---
+            // --- END Progress updater ---
 
-            // ✅ NEW: Track tvg-id values for duplicate detection
             val seenTvgIds = mutableSetOf<String>()
 
             keptFile.bufferedWriter().use { keptWriter ->
@@ -222,10 +224,8 @@ class EpgProcessorService : Service() {
                             if (trimmed.startsWith("#EXTINF:")) {
                                 if (currentChannel.size >= 2) {
                                     processed++
-
-                                    // ✅ Check for tvg-id
                                     val tvgId = extractTvgId(currentChannel[0])
-                                    val isDuplicate = tvgId != null && !config.filters.removeDuplicates.not() && seenTvgIds.contains(tvgId)
+                                    val isDuplicate = tvgId != null && config.filters.removeDuplicates && seenTvgIds.contains(tvgId)
 
                                     val shouldKeep = if (config.filters.removeDuplicates && isDuplicate) {
                                         false
@@ -256,7 +256,7 @@ class EpgProcessorService : Service() {
                         if (currentChannel.size >= 2) {
                             processed++
                             val tvgId = extractTvgId(currentChannel[0])
-                            val isDuplicate = tvgId != null && !config.filters.removeDuplicates.not() && seenTvgIds.contains(tvgId)
+                            val isDuplicate = tvgId != null && config.filters.removeDuplicates && seenTvgIds.contains(tvgId)
 
                             val shouldKeep = if (config.filters.removeDuplicates && isDuplicate) {
                                 false
@@ -280,21 +280,24 @@ class EpgProcessorService : Service() {
                 }
             }
 
-            // Stop updater before final update
+            // Stop progress updater
             progressUpdater.interrupt()
             try {
                 progressUpdater.join(100)
             } catch (e: InterruptedException) { }
 
-            // Final progress update
             val progress = (processed.toLong() * 100 / total.coerceAtLeast(1)).toInt()
             logAndSend("Filtering: $processed / $total", progress, "M3U_Filtering", MSG_PROGRESS_M3U)
 
-            // Final result
             val result = "✅ M3U: $kept kept, $removed removed"
             logAndSend(result, 100, "M3U_Done", MSG_LOG)
 
-            // Removed: do not set keptChannelsCount here — it's for EPG only
+            // ✅ Move export inside try — only if filtering succeeded
+            val keptM3u = File(outputDir, "kept_channels.m3u")
+            if (keptM3u.exists()) {
+                exportToFile(keptM3u, "filtered_playlist.m3u")
+            }
+
         } catch (e: Exception) {
             Log.e(TAG, "❌ M3U filtering failed", e)
             logAndSend("❌ M3U error: ${e.message}", 0, "Error", MSG_LOG)
@@ -622,6 +625,7 @@ class EpgProcessorService : Service() {
 
 
     private fun processEpgFile(epgFile: File) {
+        val outputDir = File(this.filesDir, "output").apply { mkdirs() }
         countElementsInFile(epgFile)
 
         var inputStream: InputStream? = null
@@ -630,7 +634,6 @@ class EpgProcessorService : Service() {
         var tvClosed = false
 
         try {
-            val outputDir = File(this.filesDir, "output").apply { mkdirs() }
             val keptFile = File(outputDir, "kept_channels.xml")
             val removedFile = File(outputDir, "removed_channels.xml")
 
@@ -682,7 +685,7 @@ class EpgProcessorService : Service() {
                 }
             }.apply { start() }
 
-            // ✅ NEW: Track seen and duplicate channel IDs
+            // ✅ Track seen and duplicate channel IDs
             val seenChannelIds = mutableSetOf<String>()
             val duplicateChannelIds = mutableSetOf<String>()
 
@@ -702,7 +705,6 @@ class EpgProcessorService : Service() {
                                 insideChannel = true
                                 currentChannelId = parser.getAttributeValue(null, "id") ?: "unknown"
                                 processedChannels++
-                                // ✅ Check for duplicate
                                 if (config.filters.removeDuplicates) {
                                     if (currentChannelId in seenChannelIds) {
                                         duplicateChannelIds.add(currentChannelId)
@@ -716,7 +718,6 @@ class EpgProcessorService : Service() {
                             "programme" -> {
                                 insideProgramme = true
                                 val channelId = parser.getAttributeValue(null, "channel") ?: "unknown"
-                                // ✅ Use the stored filtering decision
                                 shouldKeepCurrentChannel = channelFilterDecisions.getOrDefault(channelId, true)
                                 programmeBuffer.setLength(0)
                                 programmeBuffer.append(buildXmlStartTag(parser))
@@ -725,7 +726,7 @@ class EpgProcessorService : Service() {
                                 val element = buildXmlStartTag(parser)
                                 val tagName = parser.name.trim()
                                 if (tagName.equals("tv", ignoreCase = true)) {
-                                    // Skip — we handled it
+                                    // Skip
                                 } else if (insideChannel) {
                                     channelBuffer.append(element)
                                 } else if (insideProgramme) {
@@ -754,13 +755,11 @@ class EpgProcessorService : Service() {
                                 channelBuffer.append("</channel>\n")
                                 val channelText = channelBuffer.toString()
                                 val channelId = currentChannelId ?: "unknown"
-                                // ✅ If duplicate, don't apply other filters
                                 val shouldKeep = if (config.filters.removeDuplicates && duplicateChannelIds.contains(channelId)) {
                                     false
                                 } else {
                                     shouldKeepXmlChannel(channelText)
                                 }
-                                // ✅ Store the decision
                                 channelFilterDecisions[channelId] = shouldKeep
                                 if (shouldKeep) {
                                     keptChannelsCount++
@@ -806,8 +805,9 @@ class EpgProcessorService : Service() {
                 parser.next()
             }
 
-            keptWriter.flush()
-            removedWriter.flush()
+            // ✅ Close writers to ensure file is fully written
+            keptWriter.close()
+            removedWriter.close()
 
             val finalProgress = (processedChannels.toLong() * 100 / totalChannels.coerceAtLeast(1)).toInt()
             logAndSend(
@@ -820,6 +820,12 @@ class EpgProcessorService : Service() {
             val result = "✅ EPG: $keptChannelsCount channels kept, $removedChannelsCount removed"
             logAndSend(result, 100, "EPG_Done", MSG_LOG)
 
+            // ✅ Move export inside try — only if filtering succeeded
+            val keptXml = File(outputDir, "kept_channels.xml")
+            if (keptXml.exists()) {
+                exportToFile(keptXml, "filtered_epg.xml")
+            }
+
         } catch (e: Exception) {
             Log.e(TAG, "❌ EPG filtering failed", e)
             logAndSend("❌ EPG error: ${e.message}", 0, "Error", MSG_LOG)
@@ -831,6 +837,41 @@ class EpgProcessorService : Service() {
         }
     }
 
+    private fun exportToFile(src: File, displayName: String): Uri? {
+        try {
+            // Get output location from config (Documents or Downloads)
+            val location = config.system.outputLocation ?: "Documents"
+            val relativePath = if (location == "Documents") {
+                Environment.DIRECTORY_DOCUMENTS + "/MalEPG"
+            } else {
+                Environment.DIRECTORY_DOWNLOADS + "/MalEPG"
+            }
+
+            // Prepare MediaStore values
+            val values = ContentValues().apply {
+                put(MediaStore.MediaColumns.DISPLAY_NAME, displayName)
+                put(MediaStore.MediaColumns.MIME_TYPE, "application/octet-stream")
+                put(MediaStore.MediaColumns.RELATIVE_PATH, relativePath)
+            }
+
+            // Insert into MediaStore
+            val uri = this.contentResolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values) ?: return null
+
+            // Write file content
+            this.contentResolver.openOutputStream(uri, "rwt")?.use { outputStream ->
+                src.inputStream().use { inputStream ->
+                    inputStream.copyTo(outputStream)
+                }
+            }
+
+            Log.d(TAG, "✅ Saved to: $uri")
+            return uri
+        } catch (e: Exception) {
+            Log.e(TAG, "❌ Failed to export $displayName", e)
+            logAndSend("❌ Export failed: ${e.message}", 0, "Error", MSG_LOG)
+            return null
+        }
+    }
     private fun countElementsInFile(epgFile: File) {
         var inputStream: InputStream? = null
         try {

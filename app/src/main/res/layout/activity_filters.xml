@@ -578,7 +578,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Remove by Sport:"
+                android:text="Remove by Sport / Keyword:"
                 android:textSize="18sp"
                 android:textColor="#FF9800"
                 android:layout_marginTop="8dp"
@@ -1106,7 +1106,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Remove by Genre:"
+                android:text="Remove by Genre / Keyword:"
                 android:textSize="18sp"
                 android:textColor="#FF9800"
                 android:layout_marginTop="8dp"

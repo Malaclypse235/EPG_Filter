@@ -37,7 +37,8 @@ object ConfigManager {
         var playlistPath: String? = null,
         var epgPath: String? = null,
         var disablePlaylistFiltering: Boolean = false,
-        var disableEPGFiltering: Boolean = false
+        var disableEPGFiltering: Boolean = false,
+        var outputLocation: String? = "Documents"  // default
     )
 
     // 🧹 Filtering rules (will grow over time)
