@@ -20,11 +20,13 @@ import java.io.File
 class EpgProcessorService : Service() {
 
     companion object {
+        // Main UI/Service constants
         const val CHANNELS = "📺"
         const val DONE = "✅"
         const val ACTION_START_EPG_PROCESSING = "START_EPG_PROCESSING"
         const val ACTION_STOP_EPG_PROCESSING = "STOP_EPG_PROCESSING"
         const val ACTION_GET_PROGRESS = "GET_EPG_PROGRESS"
+        const val ACTION_START_AUTO_EPG_PROCESSING = "START_AUTO_EPG_PROCESSING"
         const val NOTIFICATION_ID = 1001
         const val CHANNEL_ID = "epg_processor"
         private const val TAG = "EpgProcessorService"
@@ -34,10 +36,17 @@ class EpgProcessorService : Service() {
         const val MSG_PROGRESS_M3U = "PROGRESS_M3U"
         const val MSG_PROGRESS_CHANNELS = "PROGRESS_CHANNELS"
         const val MSG_LOG = "LOG"
+
+        // ✅ Throttle delay constants (in milliseconds)
+        const val DELAY_FULL = 0L      // No pause
+        const val DELAY_BALANCED = 1L  // Light pause
+        const val DELAY_SLOW = 5L      // Noticeable pause
     }
 
     private var isProcessing = false
     private var processingThread: Thread? = null
+
+    private var isAutoMode = false
 
     // Progress tracking
     private var currentProgress = 0
@@ -65,11 +74,18 @@ class EpgProcessorService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
             ACTION_START_EPG_PROCESSING -> {
-                // ✅ Extract paths from intent
                 this.playlistPath = intent.getStringExtra("PLAYLIST_PATH")
                 this.epgPath = intent.getStringExtra("EPG_PATH")
+                this.isAutoMode = false  // Manual mode
                 startEpgProcessing()
             }
+            ACTION_START_AUTO_EPG_PROCESSING -> {
+                this.playlistPath = intent.getStringExtra("PLAYLIST_PATH")
+                this.epgPath = intent.getStringExtra("EPG_PATH")
+                this.isAutoMode = true   // Automatic mode
+                startEpgProcessing()
+            }
+
             ACTION_STOP_EPG_PROCESSING -> stopEpgProcessing()
             ACTION_GET_PROGRESS -> sendCurrentProgress()
             else -> Log.w(TAG, "Unknown action: ${intent?.action}")
@@ -244,6 +260,9 @@ class EpgProcessorService : Service() {
                                         removed++
                                         removedWriter.write("${currentChannel[0]}\n${currentChannel[1].trimEnd()}\n\n")
                                     }
+                                    // ✅ Throttle: pause based on speed
+                                    val delay = getThrottleDelay()
+                                    if (delay > 0) Thread.sleep(delay)
                                 }
                                 currentChannel.clear()
                                 currentChannel.add(trimmed)
@@ -768,6 +787,9 @@ class EpgProcessorService : Service() {
                                     removedChannelsCount++
                                     removedWriter.write(channelText)
                                 }
+                                // ✅ Throttle: pause based on speed
+                                val delay = getThrottleDelay()
+                                if (delay > 0) Thread.sleep(delay)
                             }
                             "programme" -> {
                                 insideProgramme = false
@@ -1171,6 +1193,20 @@ class EpgProcessorService : Service() {
         }
         tag.append(">")
         return tag.toString()
+    }
+
+    private fun getThrottleDelay(): Long {
+        val speed = if (isAutoMode) {
+            config.system.autoFilterSpeed
+        } else {
+            config.system.manualFilterSpeed
+        }
+        return when (speed) {
+            "full" -> DELAY_FULL
+            "balanced" -> DELAY_BALANCED
+            "slow" -> DELAY_SLOW
+            else -> DELAY_BALANCED
+        }
     }
 
     private fun matchesWholeWord(text: String, word: String): Boolean {
