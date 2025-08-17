@@ -370,8 +370,11 @@ class EpgProcessorService : Service() {
             // --- Step 2: EPG Filtering ---
             if (epgFile != null) {
                 logAndSend("📺 Starting EPG filtering...", 5, "EPG_Start", MSG_LOG)
+
+                // Count total channels upfront so we can show accurate progress
                 countElementsInFile(epgFile)
                 processEpgFile(epgFile)
+
             } else {
                 logAndSend("⚠\uFE0F Skipped EPG filtering", 0, "EPG_Skipped", MSG_LOG)
             }
@@ -651,7 +654,6 @@ class EpgProcessorService : Service() {
 
     private fun processEpgFile(epgFile: File) {
         val outputDir = File(this.filesDir, "output").apply { mkdirs() }
-        countElementsInFile(epgFile)
 
         var inputStream: InputStream? = null
         var keptWriter: BufferedWriter? = null
