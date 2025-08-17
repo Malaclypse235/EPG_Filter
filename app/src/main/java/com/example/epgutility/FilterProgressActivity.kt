@@ -475,10 +475,22 @@ class FilterProgressActivity : Activity() {
         }
 
         buttonPause.setOnClickListener {
-            // To be implemented
+            val serviceIntent = Intent(this, EpgProcessorService::class.java)
+            if (buttonPause.text == "Pause") {
+                serviceIntent.action = EpgProcessorService.ACTION_PAUSE
+                startService(serviceIntent)
+                buttonPause.text = "Resume"
+            } else {
+                serviceIntent.action = EpgProcessorService.ACTION_RESUME
+                startService(serviceIntent)
+                buttonPause.text = "Pause"
+            }
         }
 
         buttonCancel.setOnClickListener {
+            val serviceIntent = Intent(this, EpgProcessorService::class.java)
+            serviceIntent.action = EpgProcessorService.ACTION_STOP_EPG_PROCESSING
+            startService(serviceIntent)
             finish()
         }
     }

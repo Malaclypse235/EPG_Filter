@@ -31,6 +31,8 @@ class EpgProcessorService : Service() {
         const val NOTIFICATION_ID = 1001
         const val CHANNEL_ID = "epg_processor"
         private const val TAG = "EpgProcessorService"
+        const val ACTION_PAUSE = "ACTION_PAUSE"
+        const val ACTION_RESUME = "ACTION_RESUME"
 
         // Message types for UI handling
         const val MSG_STATUS = "STATUS"
@@ -51,7 +53,7 @@ class EpgProcessorService : Service() {
 
     private var isProcessing = false
     private var processingThread: Thread? = null
-
+    private var isPaused = false  // Tracks whether processing is paused
     private var isAutoMode = false
 
     // Progress tracking
@@ -82,17 +84,18 @@ class EpgProcessorService : Service() {
             ACTION_START_EPG_PROCESSING -> {
                 this.playlistPath = intent.getStringExtra("PLAYLIST_PATH")
                 this.epgPath = intent.getStringExtra("EPG_PATH")
-                this.isAutoMode = false  // Manual mode
+                this.isAutoMode = false
                 startEpgProcessing()
             }
             ACTION_START_AUTO_EPG_PROCESSING -> {
                 this.playlistPath = intent.getStringExtra("PLAYLIST_PATH")
                 this.epgPath = intent.getStringExtra("EPG_PATH")
-                this.isAutoMode = true   // Automatic mode
+                this.isAutoMode = true
                 startEpgProcessing()
             }
-
             ACTION_STOP_EPG_PROCESSING -> stopEpgProcessing()
+            ACTION_PAUSE -> pauseEpgProcessing()       // ← ADD THIS
+            ACTION_RESUME -> resumeEpgProcessing()     // ← ADD THIS
             ACTION_GET_PROGRESS -> sendCurrentProgress()
             else -> Log.w(TAG, "Unknown action: ${intent?.action}")
         }
@@ -178,155 +181,126 @@ class EpgProcessorService : Service() {
 
     private fun processM3uFile(playlistFile: File) {
         val outputDir = File(this.filesDir, "output").apply { mkdirs() }
+        val keptFile = File(outputDir, "filtered_playlist.m3u")
+        val removedFile = File(outputDir, "removed_playlist.m3u")
         val total = countExtinfLines(playlistFile)
         this.totalChannels = total
-        logAndSend("Starting M3U filtering...", 0, "M3U_Start", MSG_LOG)
+        var processed = 0
+        var kept = 0
+        var removed = 0
 
-        try {
-            val keptFile = File(outputDir, "kept_channels.m3u")
-            val removedFile = File(outputDir, "removed_channels.m3u")
+        val seenTvgIds = mutableSetOf<String>()
 
-            var kept = 0
-            var removed = 0
-            var processed = 0
+        keptFile.bufferedWriter().use { keptWriter ->
+            removedFile.bufferedWriter().use { removedWriter ->
+                playlistFile.bufferedReader().use { reader ->
+                    var line: String?
+                    var currentChannel = mutableListOf<String>()
+                    var headerWritten = false
 
-            // --- Progress updater thread ---
-            var lastProgressUpdate = System.currentTimeMillis()
-            val PROGRESS_UPDATE_INTERVAL = 500L
+                    // - Progress updater thread -
+                    var lastProgressUpdate = System.currentTimeMillis()
+                    val PROGRESS_UPDATE_INTERVAL = 500L
+                    val progressUpdater = object : Thread() {
+                        override fun run() {
+                            try {
+                                while (!isInterrupted && isProcessing && processed < total) {
+                                    // ✅ Pause support
+                                    while (isPaused && isProcessing && processed < total) {
+                                        try {
+                                            Thread.sleep(100)
+                                        } catch (e: InterruptedException) {
+                                            break
+                                        }
+                                    }
+                                    if (isPaused) continue
 
-            val progressUpdater = object : Thread() {
-                override fun run() {
-                    try {
-                        while (!isInterrupted && isProcessing && processed < total) {
-                            val now = System.currentTimeMillis()
-                            if (now - lastProgressUpdate >= PROGRESS_UPDATE_INTERVAL) {
-                                val progress = (processed.toLong() * 100 / total.coerceAtLeast(1)).toInt()
-                                logAndSend(
-                                    "Filtering: $processed / $total",
-                                    progress,
-                                    "M3U_Filtering",
-                                    MSG_PROGRESS_M3U
-                                )
-                                lastProgressUpdate = now
-                            }
-                            sleep(500)
-                        }
-                    } catch (e: InterruptedException) { }
-                }
-            }.apply { start() }
-            // --- END Progress updater ---
-
-            val seenTvgIds = mutableSetOf<String>()
-
-            keptFile.bufferedWriter().use { keptWriter ->
-                removedFile.bufferedWriter().use { removedWriter ->
-                    playlistFile.bufferedReader().use { reader ->
-                        var line: String?
-                        var currentChannel = mutableListOf<String>()
-                        var headerWritten = false
-
-                        while (reader.readLine().also { line = it } != null) {
-                            val trimmed = line?.trim() ?: continue
-
-                            if (trimmed.startsWith("#EXTM3U")) {
-                                if (!headerWritten) {
-                                    keptWriter.write("$trimmed\n\n")
-                                    removedWriter.write("$trimmed\n\n")
-                                    headerWritten = true
+                                    val now = System.currentTimeMillis()
+                                    if (now - lastProgressUpdate >= PROGRESS_UPDATE_INTERVAL) {
+                                        val progress = (processed.toLong() * 100 / total.coerceAtLeast(1)).toInt()
+                                        logAndSend("Filtering: $processed / $total", progress, "M3U_Filtering", MSG_PROGRESS_M3U)
+                                        lastProgressUpdate = now
+                                    }
+                                    Thread.sleep(500)
                                 }
-                                continue
+                            } catch (e: InterruptedException) { }
+                        }
+                    }.apply { start() }
+
+                    // - Main filtering loop -
+                    while (reader.readLine().also { line = it } != null && isProcessing) {
+                        val trimmed = line?.trim() ?: continue
+
+                        if (trimmed.startsWith("#EXTM3U")) {
+                            if (!headerWritten) {
+                                keptWriter.write("$trimmed\n")
+                                removedWriter.write("$trimmed\n")
+                                headerWritten = true
                             }
+                            continue
+                        }
 
-                            if (trimmed.startsWith("#EXTGRP")) {
-                                keptWriter.write("$trimmed\n\n")
-                                removedWriter.write("$trimmed\n\n")
-                                continue
-                            }
+                        if (trimmed.startsWith("#EXTGRP")) {
+                            keptWriter.write("$trimmed\n")
+                            removedWriter.write("$trimmed\n")
+                            continue
+                        }
 
-                            if (trimmed.startsWith("#EXTINF:")) {
-                                if (currentChannel.size >= 2) {
-                                    processed++
-                                    val tvgId = extractTvgId(currentChannel[0])
-                                    val isDuplicate = tvgId != null && config.filters.removeDuplicates && seenTvgIds.contains(tvgId)
+                        if (trimmed.startsWith("#EXTINF:")) {
+                            if (currentChannel.size >= 2) {
+                                processed++
+                                val tvgId = extractTvgId(currentChannel[0])
+                                val isDuplicate = tvgId != null && config.filters.removeDuplicates && seenTvgIds.contains(tvgId)
+                                val shouldKeep = if (config.filters.removeDuplicates && isDuplicate) {
+                                    false
+                                } else {
+                                    shouldKeepM3uChannel(currentChannel)
+                                }
 
-                                    val shouldKeep = if (config.filters.removeDuplicates && isDuplicate) {
-                                        false
-                                    } else {
-                                        shouldKeepM3uChannel(currentChannel)
-                                    }
+                                if (tvgId != null && shouldKeep) {
+                                    seenTvgIds.add(tvgId)
+                                }
 
-                                    if (tvgId != null && shouldKeep) {
-                                        seenTvgIds.add(tvgId)
-                                    }
-
-                                    if (shouldKeep) {
-                                        kept++
-                                        keptWriter.write("${currentChannel[0]}\n${currentChannel[1].trimEnd()}\n\n")
-                                    } else {
-                                        removed++
-                                        removedWriter.write("${currentChannel[0]}\n${currentChannel[1].trimEnd()}\n\n")
-                                    }
-                                    // ✅ Throttle: pause based on speed
-                                    val delay = getThrottleDelay()
-                                    if (delay > 0) Thread.sleep(delay)
+                                if (shouldKeep) {
+                                    kept++
+                                    keptWriter.write("${currentChannel[0]}\n${currentChannel[1].trimEnd()}\n")
+                                } else {
+                                    removed++
+                                    removedWriter.write("${currentChannel[0]}\n${currentChannel[1].trimEnd()}\n")
                                 }
                                 currentChannel.clear()
-                                currentChannel.add(trimmed)
-                            } else if (!trimmed.startsWith("#") && currentChannel.size == 1) {
-                                currentChannel.add(trimmed)
+                            }
+                            currentChannel.add(trimmed)
+                        } else if (!trimmed.startsWith("#") && currentChannel.size == 1) {
+                            currentChannel.add(trimmed)
+                        }
+
+                        // ✅ Pause support: add this block here
+                        while (isPaused && isProcessing && processed < total) {
+                            try {
+                                Thread.sleep(100)
+                            } catch (e: InterruptedException) {
+                                break
                             }
                         }
 
-                        // Last channel
-                        if (currentChannel.size >= 2) {
-                            processed++
-                            val tvgId = extractTvgId(currentChannel[0])
-                            val isDuplicate = tvgId != null && config.filters.removeDuplicates && seenTvgIds.contains(tvgId)
-
-                            val shouldKeep = if (config.filters.removeDuplicates && isDuplicate) {
-                                false
-                            } else {
-                                shouldKeepM3uChannel(currentChannel)
-                            }
-
-                            if (tvgId != null && shouldKeep) {
-                                seenTvgIds.add(tvgId)
-                            }
-
-                            if (shouldKeep) {
-                                kept++
-                                keptWriter.write("${currentChannel[0]}\n${currentChannel[1].trimEnd()}\n\n")
-                            } else {
-                                removed++
-                                removedWriter.write("${currentChannel[0]}\n${currentChannel[1].trimEnd()}\n\n")
-                            }
-                        }
+                        // ✅ Throttle: pause based on speed
+                        val delay = getThrottleDelay()
+                        if (delay > 0) Thread.sleep(delay)
                     }
+
+                    // Stop progress updater
+                    progressUpdater.interrupt()
+                    try {
+                        progressUpdater.join(100)
+                    } catch (e: InterruptedException) { }
+
+                    val progress = (processed.toLong() * 100 / total.coerceAtLeast(1)).toInt()
+                    logAndSend("Filtering: $processed / $total", progress, "M3U_Filtering", MSG_PROGRESS_M3U)
+                    val result = "✅ M3U: $kept kept, $removed removed"
+                    logAndSend(result, 100, "M3U_Done", MSG_LOG)
                 }
             }
-
-            // Stop progress updater
-            progressUpdater.interrupt()
-            try {
-                progressUpdater.join(100)
-            } catch (e: InterruptedException) { }
-
-            val progress = (processed.toLong() * 100 / total.coerceAtLeast(1)).toInt()
-            logAndSend("Filtering: $processed / $total", progress, "M3U_Filtering", MSG_PROGRESS_M3U)
-
-            val result = "✅ M3U: $kept kept, $removed removed"
-            logAndSend(result, 100, "M3U_Done", MSG_LOG)
-
-            // ✅ Move export inside try — only if filtering succeeded
-            val keptM3u = File(outputDir, "kept_channels.m3u")
-            if (keptM3u.exists()) {
-                exportToFile(keptM3u, "filtered_playlist.m3u")
-            }
-
-        } catch (e: Exception) {
-            Log.e(TAG, "❌ M3U filtering failed", e)
-            logAndSend("❌ M3U error: ${e.message}", 0, "Error", MSG_LOG)
-            throw e
         }
     }
 
@@ -706,7 +680,7 @@ class EpgProcessorService : Service() {
                                 )
                                 lastProgressUpdate = now
                             }
-                            sleep(1000)
+                            Thread.sleep(1000)
                         }
                     } catch (e: InterruptedException) { }
                 }
@@ -833,6 +807,16 @@ class EpgProcessorService : Service() {
                     }
                 }
                 parser.next()
+
+                // ✅ Pause support
+                while (isPaused && isProcessing) {
+                    try {
+                        Thread.sleep(100)
+                    } catch (e: InterruptedException) {
+                        Thread.currentThread().interrupt()
+                        break
+                    }
+                }
             }
 
             // ✅ Close writers to ensure file is fully written
@@ -975,6 +959,16 @@ class EpgProcessorService : Service() {
                     }
                 }
                 parser.next()
+
+                // ✅ Pause support
+                while (isPaused && isProcessing) {
+                    try {
+                        Thread.sleep(100)
+                    } catch (e: InterruptedException) {
+                        Thread.currentThread().interrupt()
+                        break
+                    }
+                }
             }
 
             // ✅ Final update
@@ -1324,6 +1318,21 @@ class EpgProcessorService : Service() {
         sendProgressUpdate(message, percentage, channelsToSend, processedChannels, totalProgrammes, 0, phase, messageType)
     }
 
+    private fun pauseEpgProcessing() {
+        if (isProcessing && !isPaused) {
+            isPaused = true
+            logAndSend("⏸️ Paused", currentProgress, "Paused", MSG_STATUS)
+            startForeground(NOTIFICATION_ID, createNotification("Paused"))
+        }
+    }
+
+    private fun resumeEpgProcessing() {
+        if (isPaused) {
+            isPaused = false
+            logAndSend("▶️ Resumed", currentProgress, "Resumed", MSG_STATUS)
+            startForeground(NOTIFICATION_ID, createNotification("Resuming..."))
+        }
+    }
     private fun sendProgressUpdate(
         message: String,
         percentage: Int,
