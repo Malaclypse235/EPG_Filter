@@ -938,8 +938,16 @@ class EpgProcessorService : Service() {
             totalProgrammes = 0
 
             var tagCount = 0
-            val YIELD_EVERY_N_TAGS = 500   // ← Yield more often
-            val YIELD_DURATION_MS = 3L      // ← Sleep longer
+            val UPDATE_UI_EVERY_MS = 500L
+            var lastUpdate = System.currentTimeMillis()
+
+            // 🔁 Send initial message
+            logAndSend(
+                "Channels: $totalChannels",
+                5,
+                "EPG_Count",
+                MSG_LOG
+            )
 
             while (parser.eventType != XmlPullParser.END_DOCUMENT && isProcessing) {
                 if (parser.eventType == XmlPullParser.START_TAG) {
@@ -949,17 +957,39 @@ class EpgProcessorService : Service() {
                     }
                     tagCount++
 
-                    // ✅ Yield frequently: every 500 tags, sleep for 3ms
-                    if (tagCount % YIELD_EVERY_N_TAGS == 0) {
-                        Thread.sleep(YIELD_DURATION_MS)
+                    // ✅ Yield every 500 tags to keep system responsive
+                    if (tagCount % 500 == 0) {
+                        Thread.sleep(2)  // 2ms pause — user won't notice, system will appreciate
+                    }
+
+                    // ✅ Update UI every 500ms
+                    val now = System.currentTimeMillis()
+                    if (now - lastUpdate >= UPDATE_UI_EVERY_MS) {
+                        logAndSend(
+                            "Channels: $totalChannels",
+                            5,
+                            "EPG_Count",
+                            MSG_LOG
+                        )
+                        lastUpdate = now
                     }
                 }
                 parser.next()
             }
+
+            // ✅ Final update
+            logAndSend(
+                "Channels: $totalChannels",
+                5,
+                "EPG_Count",
+                MSG_LOG
+            )
+
         } catch (e: Exception) {
             Log.w(TAG, "Could not count elements", e)
             totalChannels = totalChannels.coerceAtLeast(100)
             totalProgrammes = totalProgrammes.coerceAtLeast(1000)
+            logAndSend("Channels: $totalChannels (estimated)", 5, "EPG_Count", MSG_LOG)
         } finally {
             try { inputStream?.close() } catch (e: IOException) { Log.w(TAG, "Error closing counting stream", e) }
         }

@@ -114,6 +114,19 @@ class FilterProgressActivity : Activity() {
                                 )
                             }
 
+                            // Handle live EPG channel counting
+                            else if (phase == "EPG_Count" && message.startsWith("Channels:")) {
+                                val count = Regex("\\d+").find(message)?.value ?: "0"
+                                val updatedLine = "${Emojis.CHANNELS} $count channels found"
+
+                                updateProgressLine(
+                                    updatedLine,
+                                    { epgStartLineIndex },        // ← Reuse the same line as "Starting EPG..."
+                                    { epgStartLineIndex = it },
+                                    percentage,
+                                    message
+                                )
+                            }
                             // All other logs
                             else {
                                 if ((message.contains("M3U:") || message.contains("EPG:")) &&
