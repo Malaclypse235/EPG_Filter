@@ -936,10 +936,22 @@ class EpgProcessorService : Service() {
             parser.setInput(inputStream, null)
             totalChannels = 0
             totalProgrammes = 0
-            while (parser.eventType != XmlPullParser.END_DOCUMENT) {
+
+            var tagCount = 0
+            val YIELD_EVERY_N_TAGS = 500   // ← Yield more often
+            val YIELD_DURATION_MS = 3L      // ← Sleep longer
+
+            while (parser.eventType != XmlPullParser.END_DOCUMENT && isProcessing) {
                 if (parser.eventType == XmlPullParser.START_TAG) {
                     when (parser.name) {
                         "channel" -> totalChannels++
+                        "programme" -> totalProgrammes++
+                    }
+                    tagCount++
+
+                    // ✅ Yield frequently: every 500 tags, sleep for 3ms
+                    if (tagCount % YIELD_EVERY_N_TAGS == 0) {
+                        Thread.sleep(YIELD_DURATION_MS)
                     }
                 }
                 parser.next()
