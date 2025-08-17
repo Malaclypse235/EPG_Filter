@@ -866,11 +866,6 @@ class EpgProcessorService : Service() {
             val result = "✅ EPG: $keptChannelsCount channels kept, $removedChannelsCount removed"
             logAndSend(result, 100, "EPG_Done", MSG_LOG)
 
-            // ✅ Move export inside try — only if filtering succeeded
-            val keptXml = File(outputDir, "kept_channels.xml")
-            if (keptXml.exists()) {
-                exportToFile(keptXml, "filtered_epg.xml")
-            }
 
         } catch (e: Exception) {
             Log.e(TAG, "❌ EPG filtering failed", e)
