@@ -703,13 +703,11 @@ class EpgProcessorService : Service() {
                         while (!isInterrupted && isProcessing && processedChannels < totalChannels) {
                             val now = System.currentTimeMillis()
                             if (now - lastProgressUpdate >= PROGRESS_UPDATE_INTERVAL) {
+                                // ✅ Skip sending "Filtering: x / y" if paused
+                                if (isPaused) continue
+
                                 val progress = (processedChannels.toLong() * 100 / totalChannels.coerceAtLeast(1)).toInt()
-                                logAndSend(
-                                    "Filtering: $processedChannels / $totalChannels",
-                                    progress,
-                                    "EPG_Channels",
-                                    MSG_PROGRESS_CHANNELS
-                                )
+                                logAndSend("Filtering: $processedChannels / $totalChannels", progress, "EPG_Channels", MSG_PROGRESS_CHANNELS)
                                 lastProgressUpdate = now
                             }
                             Thread.sleep(1000)
