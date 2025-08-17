@@ -141,6 +141,7 @@ class EpgProcessorService : Service() {
         currentStatus = "Stopped"
         processingThread?.interrupt()
         try {
+            Thread.sleep(100)
             stopForeground(true)
         } catch (e: Exception) {
             Log.w(TAG, "Error stopping foreground", e)
@@ -180,9 +181,15 @@ class EpgProcessorService : Service() {
     }
 
     private fun processM3uFile(playlistFile: File) {
+        if (!isProcessing) {
+            logAndSend("⏩ M3U processing skipped: was canceled", 0, "M3U_Skipped", MSG_LOG)
+            return
+        }
+
         val outputDir = File(this.filesDir, "output").apply { mkdirs() }
-        val keptFile = File(outputDir, "filtered_playlist.m3u")
-        val removedFile = File(outputDir, "removed_playlist.m3u")
+        // ✅ Correct: internal file should be kept_channels.m3u
+        val keptFile = File(outputDir, "kept_channels.m3u")
+        val removedFile = File(outputDir, "removed_channels.m3u")
         val total = countExtinfLines(playlistFile)
         this.totalChannels = total
         var processed = 0
@@ -311,6 +318,8 @@ class EpgProcessorService : Service() {
     }
 
     private fun processEpgInBackground() {
+        var m3uSuccess = false
+        var epgSuccess = false
         try {
             val inputDir = File(this.filesDir, "input")
             if (!inputDir.exists()) {
@@ -318,42 +327,61 @@ class EpgProcessorService : Service() {
                 return
             }
 
-            // ✅ Use only the files passed in the intent
-            val playlistFile = if (!playlistPath.isNullOrEmpty() && !config.system.disablePlaylistFiltering) {
-                val file = File(playlistPath!!)
+            // ✅ DECLARE playlistFile — this was missing
+            val playlistFile = if (!this.playlistPath.isNullOrEmpty() && !config.system.disablePlaylistFiltering) {
+                val file = File(this.playlistPath!!)
                 if (file.exists()) file else null
             } else {
                 null
             }
 
-            val epgFile = if (!epgPath.isNullOrEmpty() && !config.system.disableEPGFiltering) {
-                val file = File(epgPath!!)
+            // ✅ DECLARE epgFile — this was missing
+            val epgFile = if (!this.epgPath.isNullOrEmpty() && !config.system.disableEPGFiltering) {
+                val file = File(this.epgPath!!)
                 if (file.exists()) file else null
             } else {
                 null
             }
 
-            // --- Step 1: M3U Filtering ---
+            // - Step 1: M3U Filtering -
             if (playlistFile != null) {
                 logAndSend("\uD83D\uDCE1 Starting M3U filtering...", 0, "M3U_Start", MSG_LOG)
                 processM3uFile(playlistFile)
+                if (isProcessing) m3uSuccess = true
             } else {
                 logAndSend("⚠\uFE0F Skipped M3U filtering", 0, "M3U_Skipped", MSG_LOG)
             }
 
-            // --- Step 2: EPG Filtering ---
+            // - Step 2: EPG Filtering -
             if (epgFile != null) {
                 logAndSend("📺 Starting EPG filtering...", 5, "EPG_Start", MSG_LOG)
-
-                // Count total channels upfront so we can show accurate progress
                 countElementsInFile(epgFile)
                 processEpgFile(epgFile)
-
+                if (isProcessing) epgSuccess = true
             } else {
                 logAndSend("⚠\uFE0F Skipped EPG filtering", 0, "EPG_Skipped", MSG_LOG)
             }
 
-            logAndSend("✅ All processing complete!", 100, "Complete", MSG_LOG)
+            // ✅ Only export if successful and not canceled
+            if (m3uSuccess) {
+                val keptM3u = File(filesDir, "output/kept_channels.m3u")
+                if (keptM3u.exists()) {
+                    exportToFile(keptM3u, "filtered_playlist.m3u")
+                }
+            }
+
+            if (epgSuccess) {
+                val keptXml = File(filesDir, "output/kept_channels.xml")
+                if (keptXml.exists()) {
+                    exportToFile(keptXml, "filtered_epg.xml")
+                }
+            }
+
+            // ✅ Only log "complete" if not canceled
+            if (m3uSuccess || epgSuccess) {
+                logAndSend("✅ All processing complete!", 100, "Complete", MSG_LOG)
+            }
+
         } catch (e: Exception) {
             Log.e(TAG, "💥 Critical error", e)
             logAndSend("‼\uFE0F Processing failed: ${e.message}", 0, "Error", MSG_LOG)
@@ -627,6 +655,10 @@ class EpgProcessorService : Service() {
 
 
     private fun processEpgFile(epgFile: File) {
+        if (!isProcessing) {
+            logAndSend("⏩ EPG processing skipped: was canceled", 0, "EPG_Skipped", MSG_LOG)
+            return
+        }
         val outputDir = File(this.filesDir, "output").apply { mkdirs() }
 
         var inputStream: InputStream? = null

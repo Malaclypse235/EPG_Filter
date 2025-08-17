@@ -491,7 +491,13 @@ class FilterProgressActivity : Activity() {
             val serviceIntent = Intent(this, EpgProcessorService::class.java)
             serviceIntent.action = EpgProcessorService.ACTION_STOP_EPG_PROCESSING
             startService(serviceIntent)
+
+            Thread.sleep(250)
+
+            // ✅ Restart this activity
+            val intent = intent
             finish()
+            startActivity(intent)
         }
     }
 
