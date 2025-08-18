@@ -163,9 +163,16 @@ class EpgProcessorService : Service() {
     }
 
     private fun createNotificationChannel() {
-        val channel = NotificationChannel(CHANNEL_ID, "EPG Processing", NotificationManager.IMPORTANCE_LOW).apply {
-            description = "Processing EPG XML files"
+        val channel = NotificationChannel(
+            CHANNEL_ID,
+            "EPG Processing",
+            NotificationManager.IMPORTANCE_MIN  // 🔽 Most unobtrusive
+        ).apply {
+            description = "Background EPG filtering"
             setShowBadge(false)
+            setSound(null, null)
+            enableLights(false)
+            enableVibration(false)
         }
         val manager = getSystemService(NotificationManager::class.java)
         manager.createNotificationChannel(channel)

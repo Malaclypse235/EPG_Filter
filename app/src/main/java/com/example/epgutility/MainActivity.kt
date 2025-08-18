@@ -334,7 +334,10 @@ class MainActivity : AppCompatActivity() {
                     config.system.playlistUri = uri.toString()
                     config.system.playlistPath = UriUtils.getRealPathFromUri(this, uri)
                     playlistFileText.text = getDisplayName(config.system.playlistPath, config.system.playlistUri)
-                    // Copy in background
+
+                    // ✅ Force a fresh sync next time
+                    config.system.forceSyncPlaylist = true
+
                     lifecycleScope.launch {
                         FileManager.checkAndCopyIfNeeded(this@MainActivity, config.system.playlistPath)
                     }
@@ -343,7 +346,10 @@ class MainActivity : AppCompatActivity() {
                     config.system.epgUri = uri.toString()
                     config.system.epgPath = UriUtils.getRealPathFromUri(this, uri)
                     epgFileText.text = getDisplayName(config.system.epgPath, config.system.epgUri)
-                    // Copy in background
+
+                    // ✅ Force a fresh sync next time
+                    config.system.forceSyncEpg = true
+
                     lifecycleScope.launch {
                         FileManager.checkAndCopyIfNeeded(this@MainActivity, config.system.epgPath)
                     }

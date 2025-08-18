@@ -317,7 +317,9 @@ class FilterProgressActivity : Activity() {
 
             val inputDir = File(filesDir, "input").apply { mkdirs() }
             val existing = findExistingM3UFile(inputDir)
-            val needsUpdate = existing == null || file.lastModified() > existing.lastModified()
+            val needsUpdate = config.system.forceSyncPlaylist ||
+                    existing == null ||
+                    file.lastModified() > existing.lastModified()
 
             currentStep++
             if (needsUpdate) {
@@ -336,6 +338,10 @@ class FilterProgressActivity : Activity() {
 
                 val dest = File(inputDir, filename)
                 file.copyTo(dest, overwrite = true)
+
+                // ✅ CLEAR THE FLAG — EXACTLY HERE
+                config.system.forceSyncPlaylist = false
+                ConfigManager.saveConfig(this, config)
 
                 runOnUiThread {
                     logLines.add("\uD83D\uDCE1 $filename updated")
@@ -395,7 +401,9 @@ class FilterProgressActivity : Activity() {
 
             val inputDir = File(filesDir, "input").apply { mkdirs() }
             val existing = findExistingEPGFile(inputDir)
-            val needsUpdate = existing == null || file.lastModified() > existing.lastModified()
+            val needsUpdate = config.system.forceSyncEpg ||
+                    existing == null ||
+                    file.lastModified() > existing.lastModified()
 
             currentStep++
             if (needsUpdate) {
@@ -414,6 +422,10 @@ class FilterProgressActivity : Activity() {
 
                 val dest = File(inputDir, filename)
                 file.copyTo(dest, overwrite = true)
+
+                // ✅ CLEAR THE FLAG — EXACTLY HERE
+                config.system.forceSyncEpg = false
+                ConfigManager.saveConfig(this, config)
 
                 runOnUiThread {
                     logLines.add("\uD83D\uDCFA $filename updated")

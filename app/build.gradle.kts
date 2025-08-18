@@ -29,6 +29,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+
     }
     kotlinOptions {
         jvmTarget = "11"
@@ -59,4 +60,5 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     implementation("com.google.android.material:material:1.9.0")
+    implementation("androidx.work:work-runtime-ktx:2.8.1")
 }

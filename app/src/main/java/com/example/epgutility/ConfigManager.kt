@@ -5,6 +5,17 @@ import android.os.Environment
 import com.google.gson.GsonBuilder
 import java.io.File
 
+// Utils.kt or inside ConfigManager.kt
+fun String.toAutoIntervalMillis(): Long {
+    return when (this) {
+        "30_min" -> 30 * 60 * 1000L  // 30 minutes
+        "1_hour" -> 60 * 60 * 1000L  // 1 hour
+        "6_hours" -> 6 * 60 * 60 * 1000L
+        "12_hours" -> 12 * 60 * 60 * 1000L
+        "24_hours" -> 24 * 60 * 60 * 1000L
+        else -> 24 * 60 * 60 * 1000L  // default to 24 hours
+    }
+}
 object ConfigManager {
 
     private const val CONFIG_FILE = "config.json"
@@ -40,7 +51,9 @@ object ConfigManager {
         var disableEPGFiltering: Boolean = false,
         var outputLocation: String? = "Documents",  // default
         var autoModeEnabled: Boolean = false,
-        var autoCheckInterval: String = "24_hours"  // ✅ Default is 24 hours
+        var autoCheckInterval: String = "24_hours",  // ✅ Default is 24 hours
+        var forceSyncPlaylist: Boolean = false,
+        var forceSyncEpg: Boolean = false
     )
 
     // 🧹 Filtering rules (will grow over time)
@@ -218,6 +231,7 @@ object ConfigManager {
 
         return LoadResult(config, revoked)
     }
+
 
     /**
      * Save current config to both main and backup files (pretty-printed)
