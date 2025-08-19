@@ -8,7 +8,8 @@ import java.io.File
 // Utils.kt or inside ConfigManager.kt
 fun String.toAutoIntervalMillis(): Long {
     return when (this) {
-        "30_min" -> 30 * 60 * 1000L  // 30 minutes
+        // "30_min" -> 30 * 60 * 1000L  // 30 minutes
+        "30_min" -> 30 * 60 * 1000L  // 15 min temp for testing
         "1_hour" -> 60 * 60 * 1000L  // 1 hour
         "6_hours" -> 6 * 60 * 60 * 1000L
         "12_hours" -> 12 * 60 * 60 * 1000L
