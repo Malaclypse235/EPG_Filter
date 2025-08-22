@@ -60,15 +60,6 @@ class SettingsActivity : AppCompatActivity() {
             }
         ).isChecked = true
 
-        val autoSpeed = config.system.autoFilterSpeed
-        findViewById<RadioButton>(
-            when (autoSpeed) {
-                "full" -> R.id.radioAutoFullSpeed
-                "slow" -> R.id.radioAutoSlow
-                else -> R.id.radioAutoBalanced
-            }
-        ).isChecked = true
-
         // Setup Auto Mode Toggle
         switchAutoMode.isChecked = config.system.autoModeEnabled
         switchAutoMode.setOnCheckedChangeListener { _, isChecked ->
@@ -108,13 +99,6 @@ class SettingsActivity : AppCompatActivity() {
         config.system.manualFilterSpeed = when (manualId) {
             R.id.radioManualFullSpeed -> "full"
             R.id.radioManualSlow -> "slow"
-            else -> "balanced"
-        }
-
-        val autoId = findViewById<RadioGroup>(R.id.radioGroupAutoSpeed).checkedRadioButtonId
-        config.system.autoFilterSpeed = when (autoId) {
-            R.id.radioAutoFullSpeed -> "full"
-            R.id.radioAutoSlow -> "slow"
             else -> "balanced"
         }
 
