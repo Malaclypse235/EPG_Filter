@@ -51,16 +51,19 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun setupSpeedRadioButtons() {
+        // 1. Setup Manual Filter Speed (5 options)
         val manualSpeed = config.system.manualFilterSpeed
-        findViewById<RadioButton>(
-            when (manualSpeed) {
-                "full" -> R.id.radioManualFullSpeed
-                "slow" -> R.id.radioManualSlow
-                else -> R.id.radioManualBalanced
-            }
-        ).isChecked = true
+        val manualRadioId = when (manualSpeed) {
+            "full" -> R.id.radioManualFullSpeed
+            "fast" -> R.id.radioManualFast
+            "balanced" -> R.id.radioManualBalanced
+            "slow" -> R.id.radioManualSlow
+            "snail" -> R.id.radioManualSnail
+            else -> R.id.radioManualBalanced  // default
+        }
+        findViewById<RadioButton>(manualRadioId).isChecked = true
 
-        // Setup Auto Mode Toggle
+        // 2. Setup Auto Mode Toggle
         switchAutoMode.isChecked = config.system.autoModeEnabled
         switchAutoMode.setOnCheckedChangeListener { _, isChecked ->
             config.system.autoModeEnabled = isChecked  // Update config
@@ -76,14 +79,15 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
-// Setup Auto Interval
-        when (config.system.autoCheckInterval) {
+        // 3. Setup Auto Check Interval
+        val intervalRadioId = when (config.system.autoCheckInterval) {
             "30_min" -> R.id.radioInterval30Min
             "1_hour" -> R.id.radioInterval1Hour
             "6_hours" -> R.id.radioInterval6Hours
             "12_hours" -> R.id.radioInterval12Hours
             else -> R.id.radioInterval24Hours  // default
-        }.also { findViewById<RadioButton>(it).isChecked = true }
+        }
+        findViewById<RadioButton>(intervalRadioId).isChecked = true
     }
 
     private fun saveSettings() {
@@ -95,10 +99,14 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         // Save filter speeds
+        // Save filter speeds
         val manualId = findViewById<RadioGroup>(R.id.radioGroupManualSpeed).checkedRadioButtonId
         config.system.manualFilterSpeed = when (manualId) {
             R.id.radioManualFullSpeed -> "full"
+            R.id.radioManualFast -> "fast"
+            R.id.radioManualBalanced -> "balanced"
             R.id.radioManualSlow -> "slow"
+            R.id.radioManualSnail -> "snail"
             else -> "balanced"
         }
 

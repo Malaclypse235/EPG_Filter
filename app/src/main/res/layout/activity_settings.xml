@@ -123,8 +123,20 @@
                     android:textColor="#FFFFFF"
                     android:buttonTint="#FFFFFF"
                     android:textSize="14sp"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="72dp"
+                    android:minHeight="48dp" />
+
+                <RadioButton
+                    android:id="@+id/radioManualFast"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Fast"
+                    android:textColor="#FFFFFF"
+                    android:buttonTint="#FFFFFF"
+                    android:textSize="14sp"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="72dp"
                     android:minHeight="48dp" />
 
                 <RadioButton
@@ -135,8 +147,8 @@
                     android:textColor="#FFFFFF"
                     android:buttonTint="#FFFFFF"
                     android:textSize="14sp"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="72dp"
                     android:minHeight="48dp" />
 
                 <RadioButton
@@ -147,8 +159,20 @@
                     android:textColor="#FFFFFF"
                     android:buttonTint="#FFFFFF"
                     android:textSize="14sp"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="72dp"
+                    android:minHeight="48dp" />
+
+                <RadioButton
+                    android:id="@+id/radioManualSnail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Snail"
+                    android:textColor="#FFFFFF"
+                    android:buttonTint="#FFFFFF"
+                    android:textSize="14sp"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="12dp"
                     android:minHeight="48dp" />
             </RadioGroup>
         </FrameLayout>

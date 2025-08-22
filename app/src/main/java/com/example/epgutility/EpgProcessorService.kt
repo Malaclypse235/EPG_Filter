@@ -42,13 +42,11 @@ class EpgProcessorService : Service() {
 
         // ✅ Throttle delay constants (in milliseconds)
         const val DELAY_FULL = 0L      // No pause
-        const val DELAY_BALANCED = 1L  // Light pause
+        const val DELAY_FAST = 1L   // Fast
+        const val DELAY_BALANCED = 3L  // Light pause
         const val DELAY_SLOW = 5L      // Noticeable pause
+        const val DELAY_SNAIL = 10L // Process Everything else
 
-        // ✅ Auto Mode throttle constants (slower than manual)
-        const val DELAY_AUTO_FULL = 1L      // Still gentle
-        const val DELAY_AUTO_BALANCED = 4L  // Noticeable pause
-        const val DELAY_AUTO_SLOW = 8L      // Very gentle on system
     }
 
     private var isProcessing = false
@@ -1294,20 +1292,13 @@ class EpgProcessorService : Service() {
     }
 
     private fun getThrottleDelay(): Long {
-        return if (isAutoMode) {
-            when (config.system.autoFilterSpeed) {
-                "full" -> DELAY_AUTO_FULL
-                "balanced" -> DELAY_AUTO_BALANCED
-                "slow" -> DELAY_AUTO_SLOW
-                else -> DELAY_AUTO_BALANCED
-            }
-        } else {
-            when (config.system.manualFilterSpeed) {
-                "full" -> DELAY_FULL
-                "balanced" -> DELAY_BALANCED
-                "slow" -> DELAY_SLOW
-                else -> DELAY_BALANCED
-            }
+        return when (config.system.manualFilterSpeed) {
+            "full" -> DELAY_FULL
+            "fast" -> DELAY_FAST
+            "balanced" -> DELAY_BALANCED
+            "slow" -> DELAY_SLOW
+            "snail" -> DELAY_SNAIL
+            else -> DELAY_BALANCED
         }
     }
 
