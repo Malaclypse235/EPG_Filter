@@ -71,6 +71,19 @@ class SettingsActivity : AppCompatActivity() {
 
         // Setup Auto Mode Toggle
         switchAutoMode.isChecked = config.system.autoModeEnabled
+        switchAutoMode.setOnCheckedChangeListener { _, isChecked ->
+            config.system.autoModeEnabled = isChecked  // Update config
+
+            if (isChecked) {
+                // ✅ User turned ON → schedule worker
+                WorkerScheduler.scheduleWork(this@SettingsActivity)
+                Toast.makeText(this, "Auto check enabled", Toast.LENGTH_SHORT).show()
+            } else {
+                // ✅ User turned OFF → cancel worker
+                WorkerScheduler.cancelWork(this@SettingsActivity)
+                Toast.makeText(this, "Auto check disabled", Toast.LENGTH_SHORT).show()
+            }
+        }
 
 // Setup Auto Interval
         when (config.system.autoCheckInterval) {

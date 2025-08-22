@@ -33,14 +33,15 @@ object WorkerScheduler {
             TimeUnit.MILLISECONDS
         )
 
-        // Optional: Add constraints (remove if not needed)
+        /* Optional: Add constraints (remove if not needed)
         builder.setConstraints(
             Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .setRequiresBatteryNotLow(true)
                 .setRequiresStorageNotLow(true)
                 .build()
-        )
+       )
+         */
 
         // ✅ Build and enqueue
         val workRequest = builder.build()

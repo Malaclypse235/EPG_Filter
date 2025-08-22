@@ -254,7 +254,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="8dp"
-            android:text="Automatic Mode"
+            android:text="Check For Changes in Background"
             android:textColor="#ffffff"
             android:textSize="24sp" />
 
@@ -276,7 +276,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Enable Auto Update"
+                    android:text="Automatically Check For Playlist and EPG File Changes"
                     android:textColor="#FFFFFF"
                     android:textSize="16sp" />
 
