@@ -62,6 +62,7 @@
 
             <Button
                 android:id="@+id/buttonPlaylist"
+                android:background="@drawable/focus_glow_border_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Choose Playlist File" />
@@ -76,6 +77,7 @@
 
             <CheckBox
                 android:id="@+id/checkboxDisablePlaylistFilter"
+                android:background="@drawable/focus_glow_border"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -96,6 +98,7 @@
 
             <Button
                 android:id="@+id/buttonEPG"
+                android:background="@drawable/focus_glow_border_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Choose EPG File" />
@@ -110,6 +113,7 @@
 
             <CheckBox
                 android:id="@+id/checkboxDisableEpgFilter"
+                android:background="@drawable/focus_glow_border"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -123,12 +127,14 @@
 
     <Button
         android:id="@+id/buttonFilters"
+        android:background="@drawable/focus_glow_border_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Filters" />
 
     <Button
         android:id="@+id/buttonRunFilter"
+        android:background="@drawable/focus_glow_border_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -137,6 +143,7 @@
 
     <Button
         android:id="@+id/buttonSettings"
+        android:background="@drawable/focus_glow_border_button"
         style="@style/CustomRoundedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -147,6 +154,7 @@
 
     <Button
         android:id="@+id/buttonResetFiles"
+        android:background="@drawable/focus_glow_border_button"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:layout_gravity="center_horizontal"

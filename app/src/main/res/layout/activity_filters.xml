@@ -54,6 +54,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxRemoveDuplicates"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="48dp"
                     android:layout_weight="1"
@@ -68,6 +69,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxNonLatin"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="48dp"
                     android:layout_weight="1"
@@ -82,6 +84,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxNonEnglish"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="48dp"
                     android:layout_weight="1"
@@ -96,6 +99,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxRemoveSpanish"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -180,6 +184,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxRemoveNewsWeather"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Remove all News and Weather"
@@ -209,6 +214,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxAccuWeather"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -220,6 +226,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxCBSNews"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -232,6 +239,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxCNBC"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -244,6 +252,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxCNN"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -255,6 +264,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxFoxNews"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -275,6 +285,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxMSNBC"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -286,6 +297,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxNBCNews"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -298,6 +310,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxNewsMax"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -310,6 +323,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxOAN"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -321,6 +335,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxWeatherChannel"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -356,6 +371,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxRemoveAllSports"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Remove all Sports"
@@ -382,6 +398,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxBigTenNetwork"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -393,6 +410,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxCBSSports"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -405,6 +423,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxDAZN"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -417,6 +436,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxESPN"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -428,6 +448,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxFoxSports"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -447,6 +468,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxGolfChannel"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -458,6 +480,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxMLBNetwork"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -470,6 +493,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxNBATV"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -482,6 +506,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxNBCSports"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -493,6 +518,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxNHLChannel"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -512,6 +538,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxNFLNetwork"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -523,6 +550,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxSKYSports"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -535,6 +563,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxSportsnet"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -547,6 +576,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxTennisChannel"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -558,6 +588,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxTNTSports"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -593,6 +624,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxBaseball"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -604,6 +636,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxBasketball"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -616,6 +649,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxBoxing"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -628,6 +662,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxFishing"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -639,6 +674,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxFootball"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -658,6 +694,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxGolf"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -669,6 +706,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxHockey"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -681,6 +719,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxSoccer"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -693,6 +732,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxSwimming"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -704,6 +744,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxUFCMMA"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -739,6 +780,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxRemoveAllMusic"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Remove all Music"
@@ -765,6 +807,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxBETJams"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -776,6 +819,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxBETSoul"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -788,6 +832,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxBPM"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -800,6 +845,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxCMT"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -811,6 +857,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxClublandTV"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -830,6 +877,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxDaVinciMusic"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -841,6 +889,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxDanceMusicTV"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -853,6 +902,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxFlaunt"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -865,6 +915,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxFuse"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -876,6 +927,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxGospelMusicChannel"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -895,6 +947,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxHeartTV"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -906,6 +959,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxJuice"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -918,6 +972,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxJukebox"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -930,6 +985,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxKerrangTV"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -941,6 +997,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxKissTV"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -960,6 +1017,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxLiteTV"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -971,6 +1029,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxLoudTV"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -983,6 +1042,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxMTV"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -995,6 +1055,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxPulse"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -1006,6 +1067,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxQVCMusic"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -1025,6 +1087,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxRevolt"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -1036,6 +1099,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxRIDEtv"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -1048,6 +1112,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxStingray"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -1060,6 +1125,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxTheBox"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -1071,6 +1137,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxTrace"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -1090,6 +1157,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxVevo"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -1121,6 +1189,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxAcappella"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -1132,6 +1201,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxAcoustic"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -1144,6 +1214,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxAlternative"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -1156,6 +1227,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxAmbient"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -1167,6 +1239,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxBollywood"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -1186,6 +1259,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxChildrensMusic"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -1197,6 +1271,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxChristianMusic"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -1209,6 +1284,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxClassical"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -1221,6 +1297,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxClassicRock"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -1232,6 +1309,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxCountry"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -1251,6 +1329,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxDance"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -1262,6 +1341,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxDisco"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -1274,6 +1354,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxEasyListening"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -1286,6 +1367,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxElectronic"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -1297,6 +1379,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxFolk"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -1316,6 +1399,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxGospel"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -1327,6 +1411,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxGrunge"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -1339,6 +1424,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxHardRock"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -1351,6 +1437,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxHipHop"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -1362,6 +1449,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxHolidayMusic"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -1381,6 +1469,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxIndie"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -1392,6 +1481,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxJazz"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -1404,6 +1494,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxKaraoke"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -1416,6 +1507,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxLatin"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -1427,6 +1519,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxLatinPop"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -1446,6 +1539,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxLofi"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -1457,6 +1551,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxMetal"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -1469,6 +1564,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxNewAge"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -1481,6 +1577,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxOpera"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -1492,6 +1589,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxPop"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -1511,6 +1609,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxPunk"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -1522,6 +1621,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxRnB"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -1534,6 +1634,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxRap"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -1546,6 +1647,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxReggae"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -1557,6 +1659,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxRock"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -1576,6 +1679,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxTechno"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -1587,6 +1691,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxTrance"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -1599,6 +1704,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxTriphop"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -1611,6 +1717,7 @@
 
                 <CheckBox
                     android:id="@+id/checkboxWorldMusic"
+                    android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -1659,7 +1766,7 @@
 
             <Button
                 android:id="@+id/buttonConfirm"
-                style="@style/CustomRoundedButton"
+                android:background="@drawable/focus_glow_border_button"
                 android:minWidth="150dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -1668,7 +1775,7 @@
 
             <Button
                 android:id="@+id/buttonCancel"
-                style="@style/CustomRoundedButton"
+                android:background="@drawable/focus_glow_border_button"
                 android:minWidth="150dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
