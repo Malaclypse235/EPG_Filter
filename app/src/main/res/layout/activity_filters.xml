@@ -193,6 +193,7 @@
                     android:buttonTint="@android:color/white" />
             </LinearLayout>
 
+
             <!-- Remove: Label -->
             <TextView
                 android:layout_width="wrap_content"
@@ -841,6 +842,889 @@
             </LinearLayout>
 
             <!-- Final divider inside scroll -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#444444"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- YOUNG CHILDREN SECTION -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Young Children:"
+                android:textSize="18sp"
+                android:textColor="#FF9800"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp">
+
+
+                <CheckBox
+                    android:id="@+id/checkboxRemoveAllYoungChildren"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Remove all Young Children"
+                    android:textSize="14sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white" />
+            </LinearLayout>
+            <!-- Remove by Channel -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Remove Channels:"
+                android:textSize="18sp"
+                android:textColor="#FFFFFF"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="0dp">
+
+                <CheckBox
+                    android:id="@+id/checkboxBabyTV"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="BabyTV"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingEnd="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxBoomerang"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Boomerang"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxCartoonito"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Cartoonito"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxDisneyJunior"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Disney Junior"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxNickJr"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Nick Jr."
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="0dp">
+
+                <CheckBox
+                    android:id="@+id/checkboxPBSKids"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="PBS Kids"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingEnd="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxUniversalKids"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Universal Kids"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp" />
+            </LinearLayout>
+
+            <!-- Remove by Keyword / Show -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Remove by Keyword / Show:"
+                android:textSize="18sp"
+                android:textColor="#FF9800"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="0dp">
+
+                <CheckBox
+                    android:id="@+id/checkboxBabyShark"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="BabyShark"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingEnd="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxArthur"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Arthur"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxBarbieAndFriends"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Barbie and friends"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxBarneyAndFriends"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Barney and friends"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxBabyEinstein"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Baby Einstein"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="0dp">
+
+                <CheckBox
+                    android:id="@+id/checkboxBlippi"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Blippi"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingEnd="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxBBCKids"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="BBC Kids"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxBobTheBuilder"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Bob the builder"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxCaillou"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Caillou"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxCampSnoopy"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Camp Snoopy"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="0dp">
+
+                <CheckBox
+                    android:id="@+id/checkboxDoraTV"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Dora tv"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingEnd="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxDuckTV"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Ducktv"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxFiremanSam"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Fireman sam"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxForeverKids"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Forever kids"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxGoGoGadget"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Go go gadget"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="0dp">
+
+                <CheckBox
+                    android:id="@+id/checkboxHappyKids"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Happykids"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingEnd="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxHotwheels"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Hotwheels"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxInspectorGadget"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Inspector gadget"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxKidoodle"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Kidoodle"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxKidzBop"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Kidz bop"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="0dp">
+
+                <CheckBox
+                    android:id="@+id/checkboxKetchupTV"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Ketchup tv"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingEnd="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxLittleAngelsPlayground"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Little angel's playground"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxLittleStarsUniverse"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Little stars universe"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxLoolooKids"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Looloo kids"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxMaxAndRuby"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Max &amp; ruby"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="0dp">
+
+                <CheckBox
+                    android:id="@+id/checkboxMoonbug"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Moonbug"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingEnd="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxNinjaKids"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Ninja kids"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxPawPatrol"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Paw patrol"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxPeppaPig"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Peppa pig"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxPlutoTVKids"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Pluto tv kids"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="0dp">
+
+                <CheckBox
+                    android:id="@+id/checkboxPocoyo"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Pocoyo"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingEnd="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxRainbowRuby"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Rainbow ruby"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxRevAndRoll"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Rev and roll"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxRyanAndFriends"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Ryan and friends"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxSensicalJr"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Sensical Jr"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="0dp">
+
+                <CheckBox
+                    android:id="@+id/checkboxShaunTheSheep"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Shaun the sheep"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingEnd="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxSmurfTV"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Smurf tv"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxSpongeBob"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="SpongeBob"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxStrawberryShortcake"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Strawberry shortcake"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxSupertoonsTV"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Supertoons tv"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="0dp">
+
+                <CheckBox
+                    android:id="@+id/checkboxTeletubbies"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Teletubbies"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingEnd="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxTheWiggles"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="The wiggles"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxTgJunior"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Tg Junior"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxToonGoggles"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Toon goggles"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxYaaas"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Yaaas"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="0dp">
+
+                <CheckBox
+                    android:id="@+id/checkboxRetroKid"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Retro kid"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingEnd="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxRetroToons"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Retro toons"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxKidsAnime"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Kids anime"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxKartoonChannel"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Kartoon channel"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxBratTV"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Brat tv"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="0dp">
+
+
+                <CheckBox
+                    android:id="@+id/checkboxZoomoo"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Zoomoo"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp" />
+
+
+            </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -1823,6 +2707,8 @@
                 android:background="#444444"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp" />
+
+
 
         </LinearLayout>
 

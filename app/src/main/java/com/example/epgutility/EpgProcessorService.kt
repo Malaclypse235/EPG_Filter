@@ -660,6 +660,87 @@ class EpgProcessorService : Service() {
             if (config.filters.removeWorldMusic && "world music" in searchText) return false
         }
 
+        // 🧒 Young Children Keywords
+        val youngChildrenKeywords = listOf(
+            "nick jr", "disney junior", "pbs kids", "universal kids", "babytv",
+            "boomerang", "cartoonito", "paw patrol", "dora", "max & ruby", "arthur",
+            "the wiggles", "spongebob", "retro kid", "retro toons", "teletubbies",
+            "bob the builder", "pluto tv kids", "inspector gadget", "barney",
+            "barbie", "hotwheels", "moonbug", "blippi", "caillou", "fireman sam",
+            "baby einstein", "strawberry shortcake", "happykids", "shaun the sheep",
+            "rainbow ruby", "zoomoo", "rev and roll", "tg junior", "all babies",
+            "duckt", "sensical jr", "kartoon", "ryan", "ninja kids", "toon goggles",
+            "kidoodle", "peppa pig", "bbc kids", "little stars", "angel's playground",
+            "baby shark", "kids anime", "go go gadget", "smurf", "brat tv", "camp snoopy",
+            "kidz bop"
+        ).sorted()
+
+        // 🧒 Young Children Master Filter
+        if (config.filters.removeAllYoungChildren) {
+            if (youngChildrenKeywords.any { it in searchText }) return false
+        }
+
+        // 🧒 Individual Young Children Channel Filters
+        if (config.filters.removeNickJr && "nick jr" in searchText) return false
+        if (config.filters.removeDisneyJunior && "disney junior" in searchText) return false
+        if (config.filters.removePBSKids && "pbs kids" in searchText) return false
+        if (config.filters.removeUniversalKids && "universal kids" in searchText) return false
+        if (config.filters.removeBabyTV && "babytv" in searchText) return false
+        if (config.filters.removeBoomerang && "boomerang" in searchText) return false
+        if (config.filters.removeCartoonito && "cartoonito" in searchText) return false
+
+        // 🧒 Individual Young Children Keyword Filters
+        if (config.filters.removePawPatrol && "paw patrol" in searchText) return false
+        if (config.filters.removeDoraTV && "dora" in searchText) return false
+        if (config.filters.removeMaxAndRuby && "max & ruby" in searchText) return false
+        if (config.filters.removeArthur && "arthur" in searchText) return false
+        if (config.filters.removeTheWiggles && "the wiggles" in searchText) return false
+        if (config.filters.removeSpongeBob && "spongebob" in searchText) return false
+        if (config.filters.removeRetroKid && "retro kid" in searchText) return false
+        if (config.filters.removeRetroToons && "retro toons" in searchText) return false
+        if (config.filters.removeTeletubbies && "teletubbies" in searchText) return false
+        if (config.filters.removeBobTheBuilder && "bob the builder" in searchText) return false
+        if (config.filters.removeInspectorGadget && "inspector gadget" in searchText) return false
+        if (config.filters.removeBarneyAndFriends && "barney" in searchText) return false
+        if (config.filters.removeBarbieAndFriends && "barbie" in searchText) return false
+        if (config.filters.removeHotwheels && "hotwheels" in searchText) return false
+        if (config.filters.removeMoonbug && "moonbug" in searchText) return false
+        if (config.filters.removeBlippi && "blippi" in searchText) return false
+        if (config.filters.removeCaillou && "caillou" in searchText) return false
+        if (config.filters.removeFiremanSam && "fireman sam" in searchText) return false
+        if (config.filters.removeBabyEinstein && "baby einstein" in searchText) return false
+        if (config.filters.removeStrawberryShortcake && "strawberry shortcake" in searchText) return false
+        if (config.filters.removeHappyKids && "happykids" in searchText) return false
+        if (config.filters.removeShaunTheSheep && "shaun the sheep" in searchText) return false
+        if (config.filters.removeRainbowRuby && "rainbow ruby" in searchText) return false
+        if (config.filters.removeZoomoo && "zoomoo" in searchText) return false
+        if (config.filters.removeRevAndRoll && "rev and roll" in searchText) return false
+        if (config.filters.removeTgJunior && "tg junior" in searchText) return false
+        if (config.filters.removeDuckTV && "duckt" in searchText) return false
+        if (config.filters.removeSensicalJr && "sensical jr" in searchText) return false
+        if (config.filters.removeKartoonChannel && "kartoon" in searchText) return false
+        if (config.filters.removeRyanAndFriends && "ryan" in searchText) return false
+        if (config.filters.removeNinjaKids && "ninja kids" in searchText) return false
+        if (config.filters.removeToonGoggles && "toon goggles" in searchText) return false
+        if (config.filters.removeKidoodle && "kidoodle" in searchText) return false
+        if (config.filters.removePeppaPig && "peppa pig" in searchText) return false
+        if (config.filters.removeBbcKids && "bbc kids" in searchText) return false
+        if (config.filters.removeLittleStarsUniverse && "little stars" in searchText) return false
+        if (config.filters.removeLittleAngelsPlayground && "angel's playground" in searchText) return false
+        if (config.filters.removeBabyShark && "baby shark" in searchText) return false
+        if (config.filters.removeKidsAnime && "kids anime" in searchText) return false
+        if (config.filters.removeGoGoGadget && "go go gadget" in searchText) return false
+        if (config.filters.removeForeverKids && "forever kids" in searchText) return false
+        if (config.filters.removeLoolooKids && "looloo kids" in searchText) return false
+        if (config.filters.removePocoyo && "pocoyo" in searchText) return false
+        if (config.filters.removeKetchupTV && "ketchup tv" in searchText) return false
+        if (config.filters.removeSupertoonsTV && "supertoons tv" in searchText) return false
+        if (config.filters.removeYaaas && "yaaas" in searchText) return false
+        if (config.filters.removeSmurfTV && "smurf" in searchText) return false
+        if (config.filters.removeBratTV && "brat tv" in searchText) return false
+        if (config.filters.removeCampSnoopy && "camp snoopy" in searchText) return false
+        if (config.filters.removeKidzBop && "kidz bop" in searchText) return false
+
         return true
     }
 
@@ -1261,6 +1342,87 @@ class EpgProcessorService : Service() {
             if (config.filters.removeTriphop && "trip hop" in textContent) return false
             if (config.filters.removeWorldMusic && "world music" in textContent) return false
         }
+
+        // 🧒 Young Children Keywords
+        val youngChildrenKeywords = listOf(
+            "nick jr", "disney junior", "pbs kids", "universal kids", "babytv",
+            "boomerang", "cartoonito", "paw patrol", "dora", "max & ruby", "arthur",
+            "the wiggles", "spongebob", "retro kid", "retro toons", "teletubbies",
+            "bob the builder", "pluto tv kids", "inspector gadget", "barney",
+            "barbie", "hotwheels", "moonbug", "blippi", "caillou", "fireman sam",
+            "baby einstein", "strawberry shortcake", "happykids", "shaun the sheep",
+            "rainbow ruby", "zoomoo", "rev and roll", "tg junior", "all babies",
+            "duckt", "sensical jr", "kartoon", "ryan", "ninja kids", "toon goggles",
+            "kidoodle", "peppa pig", "bbc kids", "little stars", "angel's playground",
+            "baby shark", "kids anime", "go go gadget", "smurf", "brat tv", "camp snoopy",
+            "kidz bop"
+        ).sorted()
+
+        // 🧒 Young Children Master Filter
+        if (config.filters.removeAllYoungChildren) {
+            if (youngChildrenKeywords.any { it in textContent }) return false
+        }
+
+// 🧒 Individual Young Children Channel Filters
+        if (config.filters.removeNickJr && "nick jr" in textContent) return false
+        if (config.filters.removeDisneyJunior && "disney junior" in textContent) return false
+        if (config.filters.removePBSKids && "pbs kids" in textContent) return false
+        if (config.filters.removeUniversalKids && "universal kids" in textContent) return false
+        if (config.filters.removeBabyTV && "babytv" in textContent) return false
+        if (config.filters.removeBoomerang && "boomerang" in textContent) return false
+        if (config.filters.removeCartoonito && "cartoonito" in textContent) return false
+
+// 🧒 Individual Young Children Keyword Filters
+        if (config.filters.removePawPatrol && "paw patrol" in textContent) return false
+        if (config.filters.removeDoraTV && "dora" in textContent) return false
+        if (config.filters.removeMaxAndRuby && "max & ruby" in textContent) return false
+        if (config.filters.removeArthur && "arthur" in textContent) return false
+        if (config.filters.removeTheWiggles && "the wiggles" in textContent) return false
+        if (config.filters.removeSpongeBob && "spongebob" in textContent) return false
+        if (config.filters.removeRetroKid && "retro kid" in textContent) return false
+        if (config.filters.removeRetroToons && "retro toons" in textContent) return false
+        if (config.filters.removeTeletubbies && "teletubbies" in textContent) return false
+        if (config.filters.removeBobTheBuilder && "bob the builder" in textContent) return false
+        if (config.filters.removeInspectorGadget && "inspector gadget" in textContent) return false
+        if (config.filters.removeBarneyAndFriends && "barney" in textContent) return false
+        if (config.filters.removeBarbieAndFriends && "barbie" in textContent) return false
+        if (config.filters.removeHotwheels && "hotwheels" in textContent) return false
+        if (config.filters.removeMoonbug && "moonbug" in textContent) return false
+        if (config.filters.removeBlippi && "blippi" in textContent) return false
+        if (config.filters.removeCaillou && "caillou" in textContent) return false
+        if (config.filters.removeFiremanSam && "fireman sam" in textContent) return false
+        if (config.filters.removeBabyEinstein && "baby einstein" in textContent) return false
+        if (config.filters.removeStrawberryShortcake && "strawberry shortcake" in textContent) return false
+        if (config.filters.removeHappyKids && "happykids" in textContent) return false
+        if (config.filters.removeShaunTheSheep && "shaun the sheep" in textContent) return false
+        if (config.filters.removeRainbowRuby && "rainbow ruby" in textContent) return false
+        if (config.filters.removeZoomoo && "zoomoo" in textContent) return false
+        if (config.filters.removeRevAndRoll && "rev and roll" in textContent) return false
+        if (config.filters.removeTgJunior && "tg junior" in textContent) return false
+        if (config.filters.removeDuckTV && "duckt" in textContent) return false
+        if (config.filters.removeSensicalJr && "sensical jr" in textContent) return false
+        if (config.filters.removeKartoonChannel && "kartoon" in textContent) return false
+        if (config.filters.removeRyanAndFriends && "ryan" in textContent) return false
+        if (config.filters.removeNinjaKids && "ninja kids" in textContent) return false
+        if (config.filters.removeToonGoggles && "toon goggles" in textContent) return false
+        if (config.filters.removeKidoodle && "kidoodle" in textContent) return false
+        if (config.filters.removePeppaPig && "peppa pig" in textContent) return false
+        if (config.filters.removeBbcKids && "bbc kids" in textContent) return false
+        if (config.filters.removeLittleStarsUniverse && "little stars" in textContent) return false
+        if (config.filters.removeLittleAngelsPlayground && "angel's playground" in textContent) return false
+        if (config.filters.removeBabyShark && "baby shark" in textContent) return false
+        if (config.filters.removeKidsAnime && "kids anime" in textContent) return false
+        if (config.filters.removeGoGoGadget && "go go gadget" in textContent) return false
+        if (config.filters.removeForeverKids && "forever kids" in textContent) return false
+        if (config.filters.removeLoolooKids && "looloo kids" in textContent) return false
+        if (config.filters.removePocoyo && "pocoyo" in textContent) return false
+        if (config.filters.removeKetchupTV && "ketchup tv" in textContent) return false
+        if (config.filters.removeSupertoonsTV && "supertoons tv" in textContent) return false
+        if (config.filters.removeYaaas && "yaaas" in textContent) return false
+        if (config.filters.removeSmurfTV && "smurf" in textContent) return false
+        if (config.filters.removeBratTV && "brat tv" in textContent) return false
+        if (config.filters.removeCampSnoopy && "camp snoopy" in textContent) return false
+        if (config.filters.removeKidzBop && "kidz bop" in textContent) return false
 
         return true
     }

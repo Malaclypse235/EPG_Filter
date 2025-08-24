@@ -133,6 +133,70 @@ class FiltersActivity : AppCompatActivity() {
     private lateinit var checkboxTriphop: CheckBox
     private lateinit var checkboxWorldMusic: CheckBox
 
+    // Young Children - Master
+    private lateinit var checkboxRemoveAllYoungChildren: CheckBox
+
+    // Young Children - Channels
+    private lateinit var checkboxNickJr: CheckBox
+    private lateinit var checkboxDisneyJunior: CheckBox
+    private lateinit var checkboxPBSKids: CheckBox
+    private lateinit var checkboxUniversalKids: CheckBox
+    private lateinit var checkboxBabyTV: CheckBox
+    private lateinit var checkboxBoomerang: CheckBox
+    private lateinit var checkboxCartoonito: CheckBox
+
+    // Young Children - Keywords
+    private lateinit var checkboxPawPatrol: CheckBox
+    private lateinit var checkboxDoraTV: CheckBox
+    private lateinit var checkboxMaxAndRuby: CheckBox
+    private lateinit var checkboxArthur: CheckBox
+    private lateinit var checkboxTheWiggles: CheckBox
+    private lateinit var checkboxSpongeBob: CheckBox
+    private lateinit var checkboxRetroKid: CheckBox
+    private lateinit var checkboxRetroToons: CheckBox
+    private lateinit var checkboxTeletubbies: CheckBox
+    private lateinit var checkboxBobTheBuilder: CheckBox
+    private lateinit var checkboxInspectorGadget: CheckBox
+    private lateinit var checkboxBarneyAndFriends: CheckBox
+    private lateinit var checkboxBarbieAndFriends: CheckBox
+    private lateinit var checkboxHotwheels: CheckBox
+    private lateinit var checkboxMoonbug: CheckBox
+    private lateinit var checkboxBlippi: CheckBox
+    private lateinit var checkboxCaillou: CheckBox
+    private lateinit var checkboxFiremanSam: CheckBox
+    private lateinit var checkboxBabyEinstein: CheckBox
+    private lateinit var checkboxStrawberryShortcake: CheckBox
+    private lateinit var checkboxHappyKids: CheckBox
+    private lateinit var checkboxShaunTheSheep: CheckBox
+    private lateinit var checkboxRainbowRuby: CheckBox
+    private lateinit var checkboxZoomoo: CheckBox
+    private lateinit var checkboxRevAndRoll: CheckBox
+    private lateinit var checkboxTgJunior: CheckBox
+    private lateinit var checkboxDuckTV: CheckBox
+    private lateinit var checkboxSensicalJr: CheckBox
+    private lateinit var checkboxKartoonChannel: CheckBox
+    private lateinit var checkboxRyanAndFriends: CheckBox
+    private lateinit var checkboxNinjaKids: CheckBox
+    private lateinit var checkboxToonGoggles: CheckBox
+    private lateinit var checkboxKidoodle: CheckBox
+    private lateinit var checkboxPeppaPig: CheckBox
+    private lateinit var checkboxBBCKids: CheckBox
+    private lateinit var checkboxLittleStarsUniverse: CheckBox
+    private lateinit var checkboxLittleAngelsPlayground: CheckBox
+    private lateinit var checkboxBabyShark: CheckBox
+    private lateinit var checkboxKidsAnime: CheckBox
+    private lateinit var checkboxGoGoGadget: CheckBox
+    private lateinit var checkboxForeverKids: CheckBox
+    private lateinit var checkboxLoolooKids: CheckBox
+    private lateinit var checkboxPocoyo: CheckBox
+    private lateinit var checkboxKetchupTV: CheckBox
+    private lateinit var checkboxSupertoonsTV: CheckBox
+    private lateinit var checkboxYaaas: CheckBox
+    private lateinit var checkboxSmurfTV: CheckBox
+    private lateinit var checkboxBratTV: CheckBox
+    private lateinit var checkboxCampSnoopy: CheckBox
+    private lateinit var checkboxKidzBop: CheckBox
+
     // Current config data
     private lateinit var config: ConfigManager.ConfigData
 
@@ -265,6 +329,71 @@ class FiltersActivity : AppCompatActivity() {
         checkboxTrance = findViewById(R.id.checkboxTrance)
         checkboxTriphop = findViewById(R.id.checkboxTriphop)
         checkboxWorldMusic = findViewById(R.id.checkboxWorldMusic)
+
+        // Young Children - Master
+        checkboxRemoveAllYoungChildren = findViewById(R.id.checkboxRemoveAllYoungChildren)
+
+// Young Children - Channels
+        checkboxNickJr = findViewById(R.id.checkboxNickJr)
+        checkboxDisneyJunior = findViewById(R.id.checkboxDisneyJunior)
+        checkboxPBSKids = findViewById(R.id.checkboxPBSKids)
+        checkboxUniversalKids = findViewById(R.id.checkboxUniversalKids)
+        checkboxBabyTV = findViewById(R.id.checkboxBabyTV)
+        checkboxBoomerang = findViewById(R.id.checkboxBoomerang)
+        checkboxCartoonito = findViewById(R.id.checkboxCartoonito)
+
+// Young Children - Keywords
+        checkboxPawPatrol = findViewById(R.id.checkboxPawPatrol)
+        checkboxDoraTV = findViewById(R.id.checkboxDoraTV)
+        checkboxMaxAndRuby = findViewById(R.id.checkboxMaxAndRuby)
+        checkboxArthur = findViewById(R.id.checkboxArthur)
+        checkboxTheWiggles = findViewById(R.id.checkboxTheWiggles)
+        checkboxSpongeBob = findViewById(R.id.checkboxSpongeBob)
+        checkboxRetroKid = findViewById(R.id.checkboxRetroKid)
+        checkboxRetroToons = findViewById(R.id.checkboxRetroToons)
+        checkboxTeletubbies = findViewById(R.id.checkboxTeletubbies)
+        checkboxBobTheBuilder = findViewById(R.id.checkboxBobTheBuilder)
+        checkboxInspectorGadget = findViewById(R.id.checkboxInspectorGadget)
+        checkboxBarneyAndFriends = findViewById(R.id.checkboxBarneyAndFriends)
+        checkboxBarbieAndFriends = findViewById(R.id.checkboxBarbieAndFriends)
+        checkboxHotwheels = findViewById(R.id.checkboxHotwheels)
+        checkboxMoonbug = findViewById(R.id.checkboxMoonbug)
+        checkboxBlippi = findViewById(R.id.checkboxBlippi)
+        checkboxCaillou = findViewById(R.id.checkboxCaillou)
+        checkboxFiremanSam = findViewById(R.id.checkboxFiremanSam)
+        checkboxBabyEinstein = findViewById(R.id.checkboxBabyEinstein)
+        checkboxStrawberryShortcake = findViewById(R.id.checkboxStrawberryShortcake)
+        checkboxHappyKids = findViewById(R.id.checkboxHappyKids)
+        checkboxShaunTheSheep = findViewById(R.id.checkboxShaunTheSheep)
+        checkboxRainbowRuby = findViewById(R.id.checkboxRainbowRuby)
+        checkboxZoomoo = findViewById(R.id.checkboxZoomoo)
+        checkboxRevAndRoll = findViewById(R.id.checkboxRevAndRoll)
+        checkboxTgJunior = findViewById(R.id.checkboxTgJunior)
+        checkboxDuckTV = findViewById(R.id.checkboxDuckTV)
+        checkboxSensicalJr = findViewById(R.id.checkboxSensicalJr)
+        checkboxKartoonChannel = findViewById(R.id.checkboxKartoonChannel)
+        checkboxRyanAndFriends = findViewById(R.id.checkboxRyanAndFriends)
+        checkboxNinjaKids = findViewById(R.id.checkboxNinjaKids)
+        checkboxToonGoggles = findViewById(R.id.checkboxToonGoggles)
+        checkboxKidoodle = findViewById(R.id.checkboxKidoodle)
+        checkboxPeppaPig = findViewById(R.id.checkboxPeppaPig)
+        checkboxBBCKids = findViewById(R.id.checkboxBBCKids)
+        checkboxLittleStarsUniverse = findViewById(R.id.checkboxLittleStarsUniverse)
+        checkboxLittleAngelsPlayground = findViewById(R.id.checkboxLittleAngelsPlayground)
+        checkboxBabyShark = findViewById(R.id.checkboxBabyShark)
+        checkboxKidsAnime = findViewById(R.id.checkboxKidsAnime)
+        checkboxGoGoGadget = findViewById(R.id.checkboxGoGoGadget)
+        checkboxForeverKids = findViewById(R.id.checkboxForeverKids)
+        checkboxLoolooKids = findViewById(R.id.checkboxLoolooKids)
+        checkboxPocoyo = findViewById(R.id.checkboxPocoyo)
+        checkboxKetchupTV = findViewById(R.id.checkboxKetchupTV)
+        checkboxSupertoonsTV = findViewById(R.id.checkboxSupertoonsTV)
+        checkboxYaaas = findViewById(R.id.checkboxYaaas)
+        checkboxSmurfTV = findViewById(R.id.checkboxSmurfTV)
+        checkboxBratTV = findViewById(R.id.checkboxBratTV)
+        checkboxCampSnoopy = findViewById(R.id.checkboxCampSnoopy)
+        checkboxKidzBop = findViewById(R.id.checkboxKidzBop)
+
         // Load config (create defaults if missing)
         val loadResult = ConfigManager.loadConfig(this)
         config = loadResult.config
@@ -409,6 +538,70 @@ class FiltersActivity : AppCompatActivity() {
         checkboxTriphop.isChecked = config.filters.removeTriphop
         checkboxWorldMusic.isChecked = config.filters.removeWorldMusic
 
+        // Load Young Children - Master
+        checkboxRemoveAllYoungChildren.isChecked = config.filters.removeAllYoungChildren
+
+// Load Young Children - Channels
+        checkboxNickJr.isChecked = config.filters.removeNickJr
+        checkboxDisneyJunior.isChecked = config.filters.removeDisneyJunior
+        checkboxPBSKids.isChecked = config.filters.removePBSKids
+        checkboxUniversalKids.isChecked = config.filters.removeUniversalKids
+        checkboxBabyTV.isChecked = config.filters.removeBabyTV
+        checkboxBoomerang.isChecked = config.filters.removeBoomerang
+        checkboxCartoonito.isChecked = config.filters.removeCartoonito
+
+// Load Young Children - Keywords
+        checkboxPawPatrol.isChecked = config.filters.removePawPatrol
+        checkboxDoraTV.isChecked = config.filters.removeDoraTV
+        checkboxMaxAndRuby.isChecked = config.filters.removeMaxAndRuby
+        checkboxArthur.isChecked = config.filters.removeArthur
+        checkboxTheWiggles.isChecked = config.filters.removeTheWiggles
+        checkboxSpongeBob.isChecked = config.filters.removeSpongeBob
+        checkboxRetroKid.isChecked = config.filters.removeRetroKid
+        checkboxRetroToons.isChecked = config.filters.removeRetroToons
+        checkboxTeletubbies.isChecked = config.filters.removeTeletubbies
+        checkboxBobTheBuilder.isChecked = config.filters.removeBobTheBuilder
+        checkboxInspectorGadget.isChecked = config.filters.removeInspectorGadget
+        checkboxBarneyAndFriends.isChecked = config.filters.removeBarneyAndFriends
+        checkboxBarbieAndFriends.isChecked = config.filters.removeBarbieAndFriends
+        checkboxHotwheels.isChecked = config.filters.removeHotwheels
+        checkboxMoonbug.isChecked = config.filters.removeMoonbug
+        checkboxBlippi.isChecked = config.filters.removeBlippi
+        checkboxCaillou.isChecked = config.filters.removeCaillou
+        checkboxFiremanSam.isChecked = config.filters.removeFiremanSam
+        checkboxBabyEinstein.isChecked = config.filters.removeBabyEinstein
+        checkboxStrawberryShortcake.isChecked = config.filters.removeStrawberryShortcake
+        checkboxHappyKids.isChecked = config.filters.removeHappyKids
+        checkboxShaunTheSheep.isChecked = config.filters.removeShaunTheSheep
+        checkboxRainbowRuby.isChecked = config.filters.removeRainbowRuby
+        checkboxZoomoo.isChecked = config.filters.removeZoomoo
+        checkboxRevAndRoll.isChecked = config.filters.removeRevAndRoll
+        checkboxTgJunior.isChecked = config.filters.removeTgJunior
+        checkboxDuckTV.isChecked = config.filters.removeDuckTV
+        checkboxSensicalJr.isChecked = config.filters.removeSensicalJr
+        checkboxKartoonChannel.isChecked = config.filters.removeKartoonChannel
+        checkboxRyanAndFriends.isChecked = config.filters.removeRyanAndFriends
+        checkboxNinjaKids.isChecked = config.filters.removeNinjaKids
+        checkboxToonGoggles.isChecked = config.filters.removeToonGoggles
+        checkboxKidoodle.isChecked = config.filters.removeKidoodle
+        checkboxPeppaPig.isChecked = config.filters.removePeppaPig
+        checkboxBBCKids.isChecked = config.filters.removeBbcKids
+        checkboxLittleStarsUniverse.isChecked = config.filters.removeLittleStarsUniverse
+        checkboxLittleAngelsPlayground.isChecked = config.filters.removeLittleAngelsPlayground
+        checkboxBabyShark.isChecked = config.filters.removeBabyShark
+        checkboxKidsAnime.isChecked = config.filters.removeKidsAnime
+        checkboxGoGoGadget.isChecked = config.filters.removeGoGoGadget
+        checkboxForeverKids.isChecked = config.filters.removeForeverKids
+        checkboxLoolooKids.isChecked = config.filters.removeLoolooKids
+        checkboxPocoyo.isChecked = config.filters.removePocoyo
+        checkboxKetchupTV.isChecked = config.filters.removeKetchupTV
+        checkboxSupertoonsTV.isChecked = config.filters.removeSupertoonsTV
+        checkboxYaaas.isChecked = config.filters.removeYaaas
+        checkboxSmurfTV.isChecked = config.filters.removeSmurfTV
+        checkboxBratTV.isChecked = config.filters.removeBratTV
+        checkboxCampSnoopy.isChecked = config.filters.removeCampSnoopy
+        checkboxKidzBop.isChecked = config.filters.removeKidzBop
+
         // Add checkbox interaction logic
         setupCheckboxInteractions()
 
@@ -539,6 +732,70 @@ class FiltersActivity : AppCompatActivity() {
             config.filters.removeTrance = checkboxTrance.isChecked
             config.filters.removeTriphop = checkboxTriphop.isChecked
             config.filters.removeWorldMusic = checkboxWorldMusic.isChecked
+
+            // Save Young Children - Master
+            config.filters.removeAllYoungChildren = checkboxRemoveAllYoungChildren.isChecked
+
+// Save Young Children - Channels
+            config.filters.removeNickJr = checkboxNickJr.isChecked
+            config.filters.removeDisneyJunior = checkboxDisneyJunior.isChecked
+            config.filters.removePBSKids = checkboxPBSKids.isChecked
+            config.filters.removeUniversalKids = checkboxUniversalKids.isChecked
+            config.filters.removeBabyTV = checkboxBabyTV.isChecked
+            config.filters.removeBoomerang = checkboxBoomerang.isChecked
+            config.filters.removeCartoonito = checkboxCartoonito.isChecked
+
+// Save Young Children - Keywords
+            config.filters.removePawPatrol = checkboxPawPatrol.isChecked
+            config.filters.removeDoraTV = checkboxDoraTV.isChecked
+            config.filters.removeMaxAndRuby = checkboxMaxAndRuby.isChecked
+            config.filters.removeArthur = checkboxArthur.isChecked
+            config.filters.removeTheWiggles = checkboxTheWiggles.isChecked
+            config.filters.removeSpongeBob = checkboxSpongeBob.isChecked
+            config.filters.removeRetroKid = checkboxRetroKid.isChecked
+            config.filters.removeRetroToons = checkboxRetroToons.isChecked
+            config.filters.removeTeletubbies = checkboxTeletubbies.isChecked
+            config.filters.removeBobTheBuilder = checkboxBobTheBuilder.isChecked
+            config.filters.removeInspectorGadget = checkboxInspectorGadget.isChecked
+            config.filters.removeBarneyAndFriends = checkboxBarneyAndFriends.isChecked
+            config.filters.removeBarbieAndFriends = checkboxBarbieAndFriends.isChecked
+            config.filters.removeHotwheels = checkboxHotwheels.isChecked
+            config.filters.removeMoonbug = checkboxMoonbug.isChecked
+            config.filters.removeBlippi = checkboxBlippi.isChecked
+            config.filters.removeCaillou = checkboxCaillou.isChecked
+            config.filters.removeFiremanSam = checkboxFiremanSam.isChecked
+            config.filters.removeBabyEinstein = checkboxBabyEinstein.isChecked
+            config.filters.removeStrawberryShortcake = checkboxStrawberryShortcake.isChecked
+            config.filters.removeHappyKids = checkboxHappyKids.isChecked
+            config.filters.removeShaunTheSheep = checkboxShaunTheSheep.isChecked
+            config.filters.removeRainbowRuby = checkboxRainbowRuby.isChecked
+            config.filters.removeZoomoo = checkboxZoomoo.isChecked
+            config.filters.removeRevAndRoll = checkboxRevAndRoll.isChecked
+            config.filters.removeTgJunior = checkboxTgJunior.isChecked
+            config.filters.removeDuckTV = checkboxDuckTV.isChecked
+            config.filters.removeSensicalJr = checkboxSensicalJr.isChecked
+            config.filters.removeKartoonChannel = checkboxKartoonChannel.isChecked
+            config.filters.removeRyanAndFriends = checkboxRyanAndFriends.isChecked
+            config.filters.removeNinjaKids = checkboxNinjaKids.isChecked
+            config.filters.removeToonGoggles = checkboxToonGoggles.isChecked
+            config.filters.removeKidoodle = checkboxKidoodle.isChecked
+            config.filters.removePeppaPig = checkboxPeppaPig.isChecked
+            config.filters.removeBbcKids = checkboxBBCKids.isChecked
+            config.filters.removeLittleStarsUniverse = checkboxLittleStarsUniverse.isChecked
+            config.filters.removeLittleAngelsPlayground = checkboxLittleAngelsPlayground.isChecked
+            config.filters.removeBabyShark = checkboxBabyShark.isChecked
+            config.filters.removeKidsAnime = checkboxKidsAnime.isChecked
+            config.filters.removeGoGoGadget = checkboxGoGoGadget.isChecked
+            config.filters.removeForeverKids = checkboxForeverKids.isChecked
+            config.filters.removeLoolooKids = checkboxLoolooKids.isChecked
+            config.filters.removePocoyo = checkboxPocoyo.isChecked
+            config.filters.removeKetchupTV = checkboxKetchupTV.isChecked
+            config.filters.removeSupertoonsTV = checkboxSupertoonsTV.isChecked
+            config.filters.removeYaaas = checkboxYaaas.isChecked
+            config.filters.removeSmurfTV = checkboxSmurfTV.isChecked
+            config.filters.removeBratTV = checkboxBratTV.isChecked
+            config.filters.removeCampSnoopy = checkboxCampSnoopy.isChecked
+            config.filters.removeKidzBop = checkboxKidzBop.isChecked
             // Save updated config and backup
             ConfigManager.saveConfig(this, config)
 
