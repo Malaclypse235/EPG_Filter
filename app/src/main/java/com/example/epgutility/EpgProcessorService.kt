@@ -532,7 +532,8 @@ class EpgProcessorService : Service() {
                 // Sports by Type
                 "baseball", "basketball", "football", "soccer", "futbol", "fútbol",
                 "hockey", "golf", "fishing", "ufc", "mma", "boxing", "swimming",
-                "premier league", "la liga", "pga", "nhl", "nba", "nfl", "mlb", "college football"
+                "premier league", "la liga", "pga", "nhl", "nba", "nfl", "mlb", "college football",
+                "fifa", "f1", "xfc", "lucha"
             )
             if (sportsKeywords.any { it in searchText }) return false
         } else {
@@ -1063,7 +1064,34 @@ class EpgProcessorService : Service() {
             "estelar",
             "canela",
             "cielo",
-            "misterios"
+            "misterios",
+            "vive",
+            "kanal",
+            "vida",
+            "vr+",
+            "tuwarner",
+            "todo",
+            "teleonce",
+            "telemundo",
+            "saborear",
+            "naturaleza",
+            "asesinatos",
+            "expedientes",
+            "crimen",
+            "construcciones",
+            "clic",
+            "buen via",
+            "bodas +",
+            "aventura",
+            "soleil",
+            "pitufo",
+            "pelimex",
+            "novelisima",
+            "lucha",
+            "minutos",
+            "itv deportes",
+            "combatv",
+            "c4 en alerta"
         )
         // 🌐 Remove Spanish Channels
         if (config.filters.removeSpanish) {
