@@ -708,9 +708,7 @@ class EpgProcessorService : Service() {
                         while (!isInterrupted && isProcessing && processedChannels < totalChannels) {
                             val now = System.currentTimeMillis()
                             if (now - lastProgressUpdate >= PROGRESS_UPDATE_INTERVAL) {
-                                // ✅ Skip sending "Filtering: x / y" if paused
                                 if (isPaused) continue
-
                                 val progress = (processedChannels.toLong() * 100 / totalChannels.coerceAtLeast(1)).toInt()
                                 logAndSend("Filtering: $processedChannels / $totalChannels", progress, "EPG_Channels", MSG_PROGRESS_CHANNELS)
                                 lastProgressUpdate = now
@@ -721,19 +719,23 @@ class EpgProcessorService : Service() {
                 }
             }.apply { start() }
 
-            // ✅ Track seen and duplicate channel IDs
             val seenChannelIds = mutableSetOf<String>()
             val duplicateChannelIds = mutableSetOf<String>()
+
+            // Set of known empty elements in XMLTV
+            val xmltvEmptyElements = setOf("icon", "new", "previously-shown")
 
             while (parser.eventType != XmlPullParser.END_DOCUMENT && isProcessing) {
                 when (parser.eventType) {
                     XmlPullParser.START_TAG -> {
-                        when (parser.name) {
+                        val tagName = parser.name.trim()
+                        val element = buildXmlStartTag(parser)
+
+                        when (tagName) {
                             "tv" -> {
                                 if (!tvRootWritten) {
-                                    val tvElement = buildXmlStartTag(parser)
-                                    keptWriter.write("$tvElement\n")
-                                    removedWriter.write("$tvElement\n")
+                                    keptWriter.write("$element\n")
+                                    removedWriter.write("$element\n")
                                     tvRootWritten = true
                                 }
                             }
@@ -749,43 +751,42 @@ class EpgProcessorService : Service() {
                                     }
                                 }
                                 channelBuffer.setLength(0)
-                                channelBuffer.append(buildXmlStartTag(parser))
+                                channelBuffer.append(element)
                             }
                             "programme" -> {
                                 insideProgramme = true
                                 val channelId = parser.getAttributeValue(null, "channel") ?: "unknown"
                                 shouldKeepCurrentChannel = channelFilterDecisions.getOrDefault(channelId, true)
                                 programmeBuffer.setLength(0)
-                                programmeBuffer.append(buildXmlStartTag(parser))
+                                programmeBuffer.append(element)
+                            }
+                            in xmltvEmptyElements -> {
+                                // Empty elements always self-close
+                                val selfClosing = element.removeSuffix(">") + " />"
+                                if (insideChannel) channelBuffer.append(selfClosing)
+                                else if (insideProgramme) programmeBuffer.append(selfClosing)
+                                else {
+                                    keptWriter.write(selfClosing)
+                                    removedWriter.write(selfClosing)
+                                }
                             }
                             else -> {
-                                val element = buildXmlStartTag(parser)
-                                val tagName = parser.name.trim()
-                                if (tagName.equals("tv", ignoreCase = true)) {
-                                    // Skip
-                                } else if (insideChannel) {
-                                    channelBuffer.append(element)
-                                } else if (insideProgramme) {
-                                    programmeBuffer.append(element)
-                                } else {
-                                    keptWriter.write(element)
-                                }
+                                if (insideChannel) channelBuffer.append(element)
+                                else if (insideProgramme) programmeBuffer.append(element)
+                                else keptWriter.write(element)
                             }
                         }
                     }
                     XmlPullParser.TEXT -> {
                         val text = parser.text ?: ""
                         val escaped = escapeXmlText(text)
-                        if (insideChannel) {
-                            channelBuffer.append(escaped)
-                        } else if (insideProgramme) {
-                            programmeBuffer.append(escaped)
-                        } else {
-                            keptWriter.write(escaped)
-                        }
+                        if (insideChannel) channelBuffer.append(escaped)
+                        else if (insideProgramme) programmeBuffer.append(escaped)
+                        else keptWriter.write(escaped)
                     }
                     XmlPullParser.END_TAG -> {
-                        when (parser.name) {
+                        val tagName = parser.name.trim()
+                        when (tagName) {
                             "channel" -> {
                                 insideChannel = false
                                 channelBuffer.append("</channel>\n")
@@ -804,7 +805,6 @@ class EpgProcessorService : Service() {
                                     removedChannelsCount++
                                     removedWriter.write(channelText)
                                 }
-                                // ✅ Throttle: pause based on speed
                                 val delay = getThrottleDelay()
                                 if (delay > 0) Thread.sleep(delay)
                             }
@@ -812,11 +812,8 @@ class EpgProcessorService : Service() {
                                 insideProgramme = false
                                 programmeBuffer.append("</programme>\n")
                                 val programmeXml = programmeBuffer.toString()
-                                if (shouldKeepCurrentChannel) {
-                                    keptWriter.write(programmeXml)
-                                } else {
-                                    removedWriter.write(programmeXml)
-                                }
+                                if (shouldKeepCurrentChannel) keptWriter.write(programmeXml)
+                                else removedWriter.write(programmeXml)
                             }
                             "tv" -> {
                                 if (!tvClosed) {
@@ -825,36 +822,24 @@ class EpgProcessorService : Service() {
                                     tvClosed = true
                                 }
                             }
+                            in xmltvEmptyElements -> {
+                                // Already self-closed; skip writing end tag
+                            }
                             else -> {
-                                val closing = "</${parser.name}>"
-                                val tagName = parser.name.trim()
-                                if (tagName.equals("tv", ignoreCase = true)) {
-                                    // Skip
-                                } else if (insideChannel) {
-                                    channelBuffer.append(closing)
-                                } else if (insideProgramme) {
-                                    programmeBuffer.append(closing)
-                                } else {
-                                    keptWriter.write(closing)
-                                }
+                                val closing = "</$tagName>"
+                                if (insideChannel) channelBuffer.append(closing)
+                                else if (insideProgramme) programmeBuffer.append(closing)
+                                else keptWriter.write(closing)
                             }
                         }
                     }
                 }
                 parser.next()
-
-                // ✅ Pause support
                 while (isPaused && isProcessing) {
-                    try {
-                        Thread.sleep(100)
-                    } catch (e: InterruptedException) {
-                        Thread.currentThread().interrupt()
-                        break
-                    }
+                    try { Thread.sleep(100) } catch (e: InterruptedException) { Thread.currentThread().interrupt(); break }
                 }
             }
 
-            // ✅ Close writers to ensure file is fully written
             keptWriter.close()
             removedWriter.close()
 
@@ -868,7 +853,6 @@ class EpgProcessorService : Service() {
 
             val result = "✅ EPG: $keptChannelsCount channels kept, $removedChannelsCount removed"
             logAndSend(result, 100, "EPG_Done", MSG_LOG)
-
 
         } catch (e: Exception) {
             Log.e(TAG, "❌ EPG filtering failed", e)
