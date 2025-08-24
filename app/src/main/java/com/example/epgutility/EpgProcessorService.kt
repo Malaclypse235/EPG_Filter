@@ -533,7 +533,7 @@ class EpgProcessorService : Service() {
                 "baseball", "basketball", "football", "soccer", "futbol", "fútbol",
                 "hockey", "golf", "fishing", "ufc", "mma", "boxing", "swimming",
                 "premier league", "la liga", "pga", "nhl", "nba", "nfl", "mlb", "college football",
-                "fifa", "f1", "xfc", "lucha"
+                "fifa", "f1", "xfc", "lucha", "sport"
             )
             if (sportsKeywords.any { it in searchText }) return false
         } else {
@@ -566,6 +566,11 @@ class EpgProcessorService : Service() {
         if (config.filters.removeBoxing && "boxing" in searchText) return false
         if (config.filters.removeSwimming && ("swimming" in searchText || "aquatics" in searchText)) return false
         if (config.filters.removeUFCMMA && ("ufc" in searchText || "mma" in searchText)) return false  // ✅ Checks both
+        if (config.filters.removeFifa && ("fifa" in searchText)) return false
+        if (config.filters.removeF1 && ("f1" in searchText || "formula 1" in searchText)) return false
+        if (config.filters.removeXfc && ("xfc" in searchText)) return false
+        if (config.filters.removeLucha && ("lucha" in searchText)) return false
+        if (config.filters.removeSport && ("sport" in searchText)) return false
 
         // 🎵 Music Filters
         if (config.filters.removeMusicChannels) {
@@ -1102,7 +1107,7 @@ class EpgProcessorService : Service() {
             if (listOf("news", "weather").any { it in textContent }) return false
             val newsPatterns = listOf(
                 "fox news", "cnn", "msnbc", "newsmax", "cnbc", "oan",
-                "weather channel", "accuweather", "nbc news", "cbs news"
+                "weather channel", "accuweather", "nbc news", "cbs news", "the hill"
             )
             if (newsPatterns.any { it in textContent }) return false
         } else {
@@ -1163,6 +1168,11 @@ class EpgProcessorService : Service() {
         if (config.filters.removeBoxing && "boxing" in textContent) return false
         if (config.filters.removeSwimming && ("swimming" in textContent || "aquatics" in textContent)) return false
         if (config.filters.removeUFCMMA && ("ufc" in textContent || "mma" in textContent)) return false
+        if (config.filters.removeFifa && ("fifa" in textContent)) return false
+        if (config.filters.removeF1 && ("f1" in textContent || "formula 1" in textContent)) return false
+        if (config.filters.removeXfc && ("xfc" in textContent)) return false
+        if (config.filters.removeLucha && ("lucha" in textContent)) return false
+        if (config.filters.removeSport && ("sport" in textContent)) return false
 
         // 🎵 Music Filters
         if (config.filters.removeMusicChannels) {

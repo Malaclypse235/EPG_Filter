@@ -622,6 +622,20 @@
                 android:gravity="center_vertical"
                 android:layout_marginBottom="0dp">
 
+                <!-- 1. "Sport" FIRST -->
+                <CheckBox
+                    android:id="@+id/checkboxSport"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Sport"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingEnd="4dp" />
+
+                <!-- 2. Baseball (A) -->
                 <CheckBox
                     android:id="@+id/checkboxBaseball"
                     android:background="@drawable/focus_glow_border"
@@ -632,8 +646,10 @@
                     android:textSize="12sp"
                     android:textColor="@android:color/white"
                     android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp"
                     android:paddingEnd="4dp" />
 
+                <!-- 3. Basketball (B) -->
                 <CheckBox
                     android:id="@+id/checkboxBasketball"
                     android:background="@drawable/focus_glow_border"
@@ -647,6 +663,7 @@
                     android:paddingStart="4dp"
                     android:paddingEnd="4dp" />
 
+                <!-- 4. Boxing (B) -->
                 <CheckBox
                     android:id="@+id/checkboxBoxing"
                     android:background="@drawable/focus_glow_border"
@@ -657,28 +674,16 @@
                     android:textSize="12sp"
                     android:textColor="@android:color/white"
                     android:buttonTint="@android:color/white"
-                    android:paddingStart="4dp"
-                    android:paddingEnd="4dp" />
-
-                <CheckBox
-                    android:id="@+id/checkboxFishing"
-                    android:background="@drawable/focus_glow_border"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Fishing"
-                    android:textSize="12sp"
-                    android:textColor="@android:color/white"
-                    android:buttonTint="@android:color/white"
                     android:paddingStart="4dp" />
 
+                <!-- 5. F1 (F) -->
                 <CheckBox
-                    android:id="@+id/checkboxFootball"
+                    android:id="@+id/checkboxF1"
                     android:background="@drawable/focus_glow_border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Football"
+                    android:text="F1"
                     android:textSize="12sp"
                     android:textColor="@android:color/white"
                     android:buttonTint="@android:color/white"
@@ -692,6 +697,48 @@
                 android:gravity="center_vertical"
                 android:layout_marginBottom="0dp">
 
+                <!-- 6. FIFA (F) -->
+                <CheckBox
+                    android:id="@+id/checkboxFifa"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="FIFA"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingEnd="4dp" />
+
+                <!-- 7. Fishing (F) -->
+                <CheckBox
+                    android:id="@+id/checkboxFishing"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Fishing"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp" />
+
+                <!-- 8. Football (F) -->
+                <CheckBox
+                    android:id="@+id/checkboxFootball"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Football"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp" />
+
+                <!-- 9. Golf (G) -->
                 <CheckBox
                     android:id="@+id/checkboxGolf"
                     android:background="@drawable/focus_glow_border"
@@ -702,8 +749,9 @@
                     android:textSize="12sp"
                     android:textColor="@android:color/white"
                     android:buttonTint="@android:color/white"
-                    android:paddingEnd="4dp" />
+                    android:paddingStart="4dp" />
 
+                <!-- 10. Hockey (H) -->
                 <CheckBox
                     android:id="@+id/checkboxHockey"
                     android:background="@drawable/focus_glow_border"
@@ -714,9 +762,30 @@
                     android:textSize="12sp"
                     android:textColor="@android:color/white"
                     android:buttonTint="@android:color/white"
-                    android:paddingStart="4dp"
+                    android:paddingStart="4dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="0dp">
+
+                <!-- 11. Lucha (L) -->
+                <CheckBox
+                    android:id="@+id/checkboxLucha"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Lucha"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
                     android:paddingEnd="4dp" />
 
+                <!-- 12. Soccer (S) -->
                 <CheckBox
                     android:id="@+id/checkboxSoccer"
                     android:background="@drawable/focus_glow_border"
@@ -730,6 +799,7 @@
                     android:paddingStart="4dp"
                     android:paddingEnd="4dp" />
 
+                <!-- 13. Swimming (S) -->
                 <CheckBox
                     android:id="@+id/checkboxSwimming"
                     android:background="@drawable/focus_glow_border"
@@ -740,8 +810,10 @@
                     android:textSize="12sp"
                     android:textColor="@android:color/white"
                     android:buttonTint="@android:color/white"
-                    android:paddingStart="4dp" />
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp" />
 
+                <!-- 14. UFC / MMA (U) -->
                 <CheckBox
                     android:id="@+id/checkboxUFCMMA"
                     android:background="@drawable/focus_glow_border"
@@ -749,6 +821,19 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="UFC / MMA"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:buttonTint="@android:color/white"
+                    android:paddingStart="4dp" />
+
+                <!-- 15. XFC (X) -->
+                <CheckBox
+                    android:id="@+id/checkboxXfc"
+                    android:background="@drawable/focus_glow_border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="XFC"
                     android:textSize="12sp"
                     android:textColor="@android:color/white"
                     android:buttonTint="@android:color/white"
@@ -1727,8 +1812,17 @@
                     android:buttonTint="@android:color/white"
                     android:paddingStart="4dp" />
 
+
                 <View android:layout_width="0dp" android:layout_height="1dp" android:layout_weight="1" />
+
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#444444"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp" />
 
         </LinearLayout>
 

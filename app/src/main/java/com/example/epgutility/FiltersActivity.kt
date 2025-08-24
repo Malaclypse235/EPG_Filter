@@ -57,6 +57,11 @@ class FiltersActivity : AppCompatActivity() {
     private lateinit var checkboxUFCMMA: CheckBox
     private lateinit var checkboxBoxing: CheckBox
     private lateinit var checkboxSwimming: CheckBox
+    private lateinit var checkboxFifa: CheckBox
+    private lateinit var checkboxF1: CheckBox
+    private lateinit var checkboxXfc: CheckBox
+    private lateinit var checkboxLucha: CheckBox
+    private lateinit var checkboxSport: CheckBox
 
     // Music Networks
     private lateinit var checkboxRemoveAllMusic: CheckBox
@@ -173,6 +178,7 @@ class FiltersActivity : AppCompatActivity() {
         checkboxNHLChannel = findViewById(R.id.checkboxNHLChannel)
         checkboxBigTenNetwork = findViewById(R.id.checkboxBigTenNetwork)
 
+
 // Sports by Type
         checkboxBaseball = findViewById(R.id.checkboxBaseball)
         checkboxBasketball = findViewById(R.id.checkboxBasketball)
@@ -184,6 +190,11 @@ class FiltersActivity : AppCompatActivity() {
         checkboxUFCMMA = findViewById(R.id.checkboxUFCMMA)
         checkboxBoxing = findViewById(R.id.checkboxBoxing)
         checkboxSwimming = findViewById(R.id.checkboxSwimming)
+        checkboxFifa = findViewById(R.id.checkboxFifa)
+        checkboxF1 = findViewById(R.id.checkboxF1)
+        checkboxXfc = findViewById(R.id.checkboxXfc)
+        checkboxLucha = findViewById(R.id.checkboxLucha)
+        checkboxSport = findViewById(R.id.checkboxSport)
 
         // Music Networks
         checkboxRemoveAllMusic = findViewById(R.id.checkboxRemoveAllMusic)
@@ -322,6 +333,11 @@ class FiltersActivity : AppCompatActivity() {
         checkboxUFCMMA.isChecked = config.filters.removeUFCMMA
         checkboxBoxing.isChecked = config.filters.removeBoxing
         checkboxSwimming.isChecked = config.filters.removeSwimming
+        checkboxFifa.isChecked = config.filters.removeFifa
+        checkboxF1.isChecked = config.filters.removeF1
+        checkboxXfc.isChecked = config.filters.removeXfc
+        checkboxLucha.isChecked = config.filters.removeLucha
+        checkboxSport.isChecked = config.filters.removeSport
 
         // Restore Music Networks
         checkboxRemoveAllMusic.isChecked = config.filters.removeMusicChannels
@@ -447,6 +463,12 @@ class FiltersActivity : AppCompatActivity() {
             config.filters.removeUFCMMA = checkboxUFCMMA.isChecked
             config.filters.removeBoxing = checkboxBoxing.isChecked
             config.filters.removeSwimming = checkboxSwimming.isChecked
+            config.filters.removeFifa = checkboxFifa.isChecked
+            config.filters.removeF1 = checkboxF1.isChecked
+            config.filters.removeXfc = checkboxXfc.isChecked
+            config.filters.removeLucha = checkboxLucha.isChecked
+            config.filters.removeSport = checkboxSport.isChecked
+
 
             // Save Music Networks
             config.filters.removeMusicChannels = checkboxRemoveAllMusic.isChecked

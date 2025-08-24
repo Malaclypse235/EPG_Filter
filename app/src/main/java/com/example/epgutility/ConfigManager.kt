@@ -111,6 +111,11 @@ object ConfigManager {
         var removeUFCMMA: Boolean = false,
         var removeBoxing: Boolean = false,
         var removeSwimming: Boolean = false,
+        var removeFifa: Boolean = false,
+        var removeF1: Boolean = false,
+        var removeXfc: Boolean = false,
+        var removeLucha: Boolean = false,
+        var removeSport: Boolean = false,
 
         // 🔽 Music Filters
         var removeMusicChannels: Boolean = false,
