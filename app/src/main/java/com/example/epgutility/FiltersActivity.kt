@@ -5,6 +5,7 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import android.widget.CompoundButton
 
 class FiltersActivity : AppCompatActivity() {
 
@@ -196,6 +197,61 @@ class FiltersActivity : AppCompatActivity() {
     private lateinit var checkboxBratTV: CheckBox
     private lateinit var checkboxCampSnoopy: CheckBox
     private lateinit var checkboxKidzBop: CheckBox
+
+    // Reality Shows - Master
+    private lateinit var checkboxRemoveAllRealityShows: CheckBox
+
+    // Reality Shows - Channels
+    private lateinit var checkboxAE: CheckBox
+    private lateinit var checkboxBravo: CheckBox
+    private lateinit var checkboxE: CheckBox
+    private lateinit var checkboxLifetime: CheckBox
+    private lateinit var checkboxMTVReality: CheckBox
+    private lateinit var checkboxOWN: CheckBox
+    private lateinit var checkboxTLC: CheckBox
+    private lateinit var checkboxVH1: CheckBox
+    private lateinit var checkboxWEtv: CheckBox
+
+    // Reality Shows - Keywords
+    private lateinit var checkbox90DayFiancee: CheckBox
+    private lateinit var checkboxAmericanIdol: CheckBox
+    private lateinit var checkboxAmazingRace: CheckBox
+    private lateinit var checkboxBigBrother: CheckBox
+    private lateinit var checkboxChallenge: CheckBox
+    private lateinit var checkboxDancingWithTheStars: CheckBox
+    private lateinit var checkboxDragRace: CheckBox
+    private lateinit var checkboxDuckDynasty: CheckBox
+    private lateinit var checkboxFlipOrFlop: CheckBox
+    private lateinit var checkboxGordonRamsay: CheckBox
+    private lateinit var checkboxHellSKitchen: CheckBox
+    private lateinit var checkboxJerseyShore: CheckBox
+    private lateinit var checkboxJudge: CheckBox
+    private lateinit var checkboxKardashians: CheckBox
+    private lateinit var checkboxLoveIsBlind: CheckBox
+    private lateinit var checkboxLoveItOrListIt: CheckBox
+    private lateinit var checkboxLoveIsland: CheckBox
+    private lateinit var checkboxMasterchef: CheckBox
+    private lateinit var checkboxMillionDollarListing: CheckBox
+    private lateinit var checkboxNosey: CheckBox
+    private lateinit var checkboxPerfectMatch: CheckBox
+    private lateinit var checkboxPawnStars: CheckBox
+    private lateinit var checkboxPropertyBrothers: CheckBox
+    private lateinit var checkboxQueerEye: CheckBox
+    private lateinit var checkboxRealHousewives: CheckBox
+    private lateinit var checkboxSharkTank: CheckBox
+    private lateinit var checkboxSinglesInferno: CheckBox
+    private lateinit var checkboxStorageWars: CheckBox
+    private lateinit var checkboxSurvivor: CheckBox
+    private lateinit var checkboxTheBachelor: CheckBox
+    private lateinit var checkboxTheBachelorette: CheckBox
+    private lateinit var checkboxTheMaskedSinger: CheckBox
+    private lateinit var checkboxTheOsbournes: CheckBox
+    private lateinit var checkboxTheUltimatum: CheckBox
+    private lateinit var checkboxTheVoice: CheckBox
+    private lateinit var checkboxTopModel: CheckBox
+    private lateinit var checkboxTeenMom: CheckBox
+    private lateinit var checkboxTooHotToHandle: CheckBox
+    private lateinit var checkboxVanderpumpRules: CheckBox
 
     // Current config data
     private lateinit var config: ConfigManager.ConfigData
@@ -393,6 +449,63 @@ class FiltersActivity : AppCompatActivity() {
         checkboxBratTV = findViewById(R.id.checkboxBratTV)
         checkboxCampSnoopy = findViewById(R.id.checkboxCampSnoopy)
         checkboxKidzBop = findViewById(R.id.checkboxKidzBop)
+
+        // Reality Shows - Master
+        checkboxRemoveAllRealityShows = findViewById(R.id.checkboxRemoveAllRealityShows)
+
+// Reality Shows - Channels
+        checkboxAE = findViewById(R.id.checkboxAE)
+        checkboxBravo = findViewById(R.id.checkboxBravo)
+        checkboxE = findViewById(R.id.checkboxE)
+        checkboxLifetime = findViewById(R.id.checkboxLifetime)
+        checkboxMTVReality = findViewById(R.id.checkboxMTVReality)
+        checkboxOWN = findViewById(R.id.checkboxOWN)
+        checkboxTLC = findViewById(R.id.checkboxTLC)
+        checkboxVH1 = findViewById(R.id.checkboxVH1)
+        checkboxWEtv = findViewById(R.id.checkboxWEtv)
+
+// Reality Shows - Keywords
+        checkbox90DayFiancee = findViewById(R.id.checkbox90DayFiancee)
+        checkboxAmericanIdol = findViewById(R.id.checkboxAmericanIdol)
+        checkboxAmazingRace = findViewById(R.id.checkboxAmazingRace)
+        checkboxBigBrother = findViewById(R.id.checkboxBigBrother)
+        checkboxChallenge = findViewById(R.id.checkboxChallenge)
+        checkboxDancingWithTheStars = findViewById(R.id.checkboxDancingWithTheStars)
+        checkboxDragRace = findViewById(R.id.checkboxDragRace)
+        checkboxDuckDynasty = findViewById(R.id.checkboxDuckDynasty)
+        checkboxFlipOrFlop = findViewById(R.id.checkboxFlipOrFlop)
+        checkboxGordonRamsay = findViewById(R.id.checkboxGordonRamsay)
+        checkboxHellSKitchen = findViewById(R.id.checkboxHellSKitchen)
+        checkboxJerseyShore = findViewById(R.id.checkboxJerseyShore)
+        checkboxJudge = findViewById(R.id.checkboxJudge)
+        checkboxKardashians = findViewById(R.id.checkboxKardashians)
+        checkboxLoveIsBlind = findViewById(R.id.checkboxLoveIsBlind)
+        checkboxLoveItOrListIt = findViewById(R.id.checkboxLoveItOrListIt)
+        checkboxLoveIsland = findViewById(R.id.checkboxLoveIsland)
+        checkboxMasterchef = findViewById(R.id.checkboxMasterchef)
+        checkboxMillionDollarListing = findViewById(R.id.checkboxMillionDollarListing)
+        checkboxNosey = findViewById(R.id.checkboxNosey)
+        checkboxPerfectMatch = findViewById(R.id.checkboxPerfectMatch)
+        checkboxPawnStars = findViewById(R.id.checkboxPawnStars)
+        checkboxPropertyBrothers = findViewById(R.id.checkboxPropertyBrothers)
+        checkboxQueerEye = findViewById(R.id.checkboxQueerEye)
+        checkboxRealHousewives = findViewById(R.id.checkboxRealHousewives)
+        checkboxSharkTank = findViewById(R.id.checkboxSharkTank)
+        checkboxSinglesInferno = findViewById(R.id.checkboxSinglesInferno)
+        checkboxStorageWars = findViewById(R.id.checkboxStorageWars)
+        checkboxSurvivor = findViewById(R.id.checkboxSurvivor)
+        checkboxTheBachelor = findViewById(R.id.checkboxTheBachelor)
+        checkboxTheBachelorette = findViewById(R.id.checkboxTheBachelorette)
+        checkboxTheMaskedSinger = findViewById(R.id.checkboxTheMaskedSinger)
+        checkboxTheOsbournes = findViewById(R.id.checkboxTheOsbournes)
+        checkboxTheUltimatum = findViewById(R.id.checkboxTheUltimatum)
+        checkboxTheVoice = findViewById(R.id.checkboxTheVoice)
+        checkboxTopModel = findViewById(R.id.checkboxTopModel)
+        checkboxTeenMom = findViewById(R.id.checkboxTeenMom)
+        checkboxTooHotToHandle = findViewById(R.id.checkboxTooHotToHandle)
+        checkboxVanderpumpRules = findViewById(R.id.checkboxVanderpumpRules)
+
+
 
         // Load config (create defaults if missing)
         val loadResult = ConfigManager.loadConfig(this)
@@ -602,8 +715,91 @@ class FiltersActivity : AppCompatActivity() {
         checkboxCampSnoopy.isChecked = config.filters.removeCampSnoopy
         checkboxKidzBop.isChecked = config.filters.removeKidzBop
 
+
+
+        // Load Reality Shows - Master
+        checkboxRemoveAllRealityShows.isChecked = config.filters.removeAllRealityShows
+
+// Load Reality Shows - Channels
+        checkboxAE.isChecked = config.filters.removeAE
+        checkboxBravo.isChecked = config.filters.removeBravo
+        checkboxE.isChecked = config.filters.removeE
+        checkboxLifetime.isChecked = config.filters.removeLifetime
+        checkboxOWN.isChecked = config.filters.removeOWN
+        checkboxTLC.isChecked = config.filters.removeTLC
+        checkboxVH1.isChecked = config.filters.removeVH1
+        checkboxWEtv.isChecked = config.filters.removeWEtv
+
+// Load Reality Shows - Keywords
+        checkbox90DayFiancee.isChecked = config.filters.remove90DayFiancee
+        checkboxAmericanIdol.isChecked = config.filters.removeAmericanIdol
+        checkboxAmazingRace.isChecked = config.filters.removeAmazingRace
+        checkboxBigBrother.isChecked = config.filters.removeBigBrother
+        checkboxChallenge.isChecked = config.filters.removeChallenge
+        checkboxDancingWithTheStars.isChecked = config.filters.removeDancingWithTheStars
+        checkboxDragRace.isChecked = config.filters.removeDragRace
+        checkboxDuckDynasty.isChecked = config.filters.removeDuckDynasty
+        checkboxFlipOrFlop.isChecked = config.filters.removeFlipOrFlop
+        checkboxGordonRamsay.isChecked = config.filters.removeGordonRamsay
+        checkboxHellSKitchen.isChecked = config.filters.removeHellSKitchen
+        checkboxJerseyShore.isChecked = config.filters.removeJerseyShore
+        checkboxJudge.isChecked = config.filters.removeJudge
+        checkboxKardashians.isChecked = config.filters.removeKardashians
+        checkboxLoveIsBlind.isChecked = config.filters.removeLoveIsBlind
+        checkboxLoveItOrListIt.isChecked = config.filters.removeLoveItOrListIt
+        checkboxLoveIsland.isChecked = config.filters.removeLoveIsland
+        checkboxMasterchef.isChecked = config.filters.removeMasterchef
+        checkboxMillionDollarListing.isChecked = config.filters.removeMillionDollarListing
+        checkboxNosey.isChecked = config.filters.removeNosey
+        checkboxPerfectMatch.isChecked = config.filters.removePerfectMatch
+        checkboxPawnStars.isChecked = config.filters.removePawnStars
+        checkboxPropertyBrothers.isChecked = config.filters.removePropertyBrothers
+        checkboxQueerEye.isChecked = config.filters.removeQueerEye
+        checkboxRealHousewives.isChecked = config.filters.removeRealHousewives
+        checkboxSharkTank.isChecked = config.filters.removeSharkTank
+        checkboxSinglesInferno.isChecked = config.filters.removeSinglesInferno
+        checkboxStorageWars.isChecked = config.filters.removeStorageWars
+        checkboxSurvivor.isChecked = config.filters.removeSurvivor
+        checkboxTheBachelor.isChecked = config.filters.removeTheBachelor
+        checkboxTheBachelorette.isChecked = config.filters.removeTheBachelorette
+        checkboxTheMaskedSinger.isChecked = config.filters.removeTheMaskedSinger
+        checkboxTheOsbournes.isChecked = config.filters.removeTheOsbournes
+        checkboxTheUltimatum.isChecked = config.filters.removeTheUltimatum
+        checkboxTheVoice.isChecked = config.filters.removeTheVoice
+        checkboxTopModel.isChecked = config.filters.removeTopModel
+        checkboxTeenMom.isChecked = config.filters.removeTeenMom
+        checkboxTooHotToHandle.isChecked = config.filters.removeTooHotToHandle
+        checkboxVanderpumpRules.isChecked = config.filters.removeVanderpumpRules
+
+
+
+
+
         // Add checkbox interaction logic
         setupCheckboxInteractions()
+
+
+        // 🔗 Sync MTV checkboxes (Music ↔ Reality) - Simple双向 sync
+        checkboxMTV.setOnCheckedChangeListener { _, isChecked ->
+            if (checkboxMTVReality.isPressed) return@setOnCheckedChangeListener
+            checkboxMTVReality.isChecked = isChecked
+        }
+
+        checkboxMTVReality.setOnCheckedChangeListener { _, isChecked ->
+            if (checkboxMTV.isPressed) return@setOnCheckedChangeListener
+            checkboxMTV.isChecked = isChecked
+        }
+
+// Load state: use Music as source of truth
+        val mtvChecked = config.filters.removeMTV
+        checkboxMTV.isChecked = mtvChecked
+        checkboxMTVReality.isChecked = mtvChecked  // Sync on load
+
+// But also respect Reality setting if different (merge)
+        if (config.filters.removeMTVReality) {
+            checkboxMTV.isChecked = true
+            checkboxMTVReality.isChecked = true
+        }
 
         // Save changes when confirm button pressed
         buttonConfirm.setOnClickListener {
@@ -796,6 +992,63 @@ class FiltersActivity : AppCompatActivity() {
             config.filters.removeBratTV = checkboxBratTV.isChecked
             config.filters.removeCampSnoopy = checkboxCampSnoopy.isChecked
             config.filters.removeKidzBop = checkboxKidzBop.isChecked
+
+            // Save Reality Shows - Master
+            config.filters.removeAllRealityShows = checkboxRemoveAllRealityShows.isChecked
+
+// Save Reality Shows - Channels
+            config.filters.removeAE = checkboxAE.isChecked
+            config.filters.removeBravo = checkboxBravo.isChecked
+            config.filters.removeE = checkboxE.isChecked
+            config.filters.removeLifetime = checkboxLifetime.isChecked
+            config.filters.removeOWN = checkboxOWN.isChecked
+            config.filters.removeTLC = checkboxTLC.isChecked
+            config.filters.removeVH1 = checkboxVH1.isChecked
+            config.filters.removeWEtv = checkboxWEtv.isChecked
+            config.filters.removeMTVReality = checkboxMTVReality.isChecked
+
+// Save Reality Shows - Keywords
+            config.filters.remove90DayFiancee = checkbox90DayFiancee.isChecked
+            config.filters.removeAmericanIdol = checkboxAmericanIdol.isChecked
+            config.filters.removeAmazingRace = checkboxAmazingRace.isChecked
+            config.filters.removeBigBrother = checkboxBigBrother.isChecked
+            config.filters.removeChallenge = checkboxChallenge.isChecked
+            config.filters.removeDancingWithTheStars = checkboxDancingWithTheStars.isChecked
+            config.filters.removeDragRace = checkboxDragRace.isChecked
+            config.filters.removeDuckDynasty = checkboxDuckDynasty.isChecked
+            config.filters.removeFlipOrFlop = checkboxFlipOrFlop.isChecked
+            config.filters.removeGordonRamsay = checkboxGordonRamsay.isChecked
+            config.filters.removeHellSKitchen = checkboxHellSKitchen.isChecked
+            config.filters.removeJerseyShore = checkboxJerseyShore.isChecked
+            config.filters.removeJudge = checkboxJudge.isChecked
+            config.filters.removeKardashians = checkboxKardashians.isChecked
+            config.filters.removeLoveIsBlind = checkboxLoveIsBlind.isChecked
+            config.filters.removeLoveItOrListIt = checkboxLoveItOrListIt.isChecked
+            config.filters.removeLoveIsland = checkboxLoveIsland.isChecked
+            config.filters.removeMasterchef = checkboxMasterchef.isChecked
+            config.filters.removeMillionDollarListing = checkboxMillionDollarListing.isChecked
+            config.filters.removeNosey = checkboxNosey.isChecked
+            config.filters.removePerfectMatch = checkboxPerfectMatch.isChecked
+            config.filters.removePawnStars = checkboxPawnStars.isChecked
+            config.filters.removePropertyBrothers = checkboxPropertyBrothers.isChecked
+            config.filters.removeQueerEye = checkboxQueerEye.isChecked
+            config.filters.removeRealHousewives = checkboxRealHousewives.isChecked
+            config.filters.removeSharkTank = checkboxSharkTank.isChecked
+            config.filters.removeSinglesInferno = checkboxSinglesInferno.isChecked
+            config.filters.removeStorageWars = checkboxStorageWars.isChecked
+            config.filters.removeSurvivor = checkboxSurvivor.isChecked
+            config.filters.removeTheBachelor = checkboxTheBachelor.isChecked
+            config.filters.removeTheBachelorette = checkboxTheBachelorette.isChecked
+            config.filters.removeTheMaskedSinger = checkboxTheMaskedSinger.isChecked
+            config.filters.removeTheOsbournes = checkboxTheOsbournes.isChecked
+            config.filters.removeTheUltimatum = checkboxTheUltimatum.isChecked
+            config.filters.removeTheVoice = checkboxTheVoice.isChecked
+            config.filters.removeTopModel = checkboxTopModel.isChecked
+            config.filters.removeTeenMom = checkboxTeenMom.isChecked
+            config.filters.removeTooHotToHandle = checkboxTooHotToHandle.isChecked
+            config.filters.removeVanderpumpRules = checkboxVanderpumpRules.isChecked
+
+
             // Save updated config and backup
             ConfigManager.saveConfig(this, config)
 

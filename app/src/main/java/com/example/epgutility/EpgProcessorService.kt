@@ -572,6 +572,80 @@ class EpgProcessorService : Service() {
         if (config.filters.removeLucha && ("lucha" in searchText)) return false
         if (config.filters.removeSport && ("sport" in searchText)) return false
 
+        // 🎭 Reality Shows Keywords
+        val realityKeywords = listOf(
+            "90 day fiancee", "american idol", "amazing race", "big brother",
+            "the challenge", "dancing with the stars", "drag race", "duck dynasty",
+            "flip or flop", "gordon ramsay", "hell's kitchen", "jersey shore",
+            "judge", "kardashians", "love is blind", "love it or list it",
+            "love island", "masterchef", "million dollar listing", "nosey",
+            "perfect match", "pawn stars", "property brothers", "queer eye",
+            "real housewives", "shark tank", "single's inferno", "storage wars",
+            "survivor", "the bachelor", "the bachelorette", "the masked singer",
+            "the osbournes", "the ultimatum", "the voice", "top model",
+            "teen mom", "too hot to handle", "vanderpump rules", "mtv",
+            "a&amp;e", "bravo", "e!", "lifetime", "mtv reality", "own",
+            "tlc", "vh1", "we tv"
+        ).sorted()
+
+// 🎭 Reality Shows Master Filter
+        if (config.filters.removeAllRealityShows) {
+            if (realityKeywords.any { it in searchText }) return false
+        }
+
+// 🎭 Individual Channel Filters
+        if (config.filters.removeAE && "a & e" in searchText) return false
+        if (config.filters.removeBravo && "bravo" in searchText) return false
+        if (config.filters.removeE && "e!" in searchText) return false
+        if (config.filters.removeLifetime && "lifetime" in searchText) return false
+        if (config.filters.removeMTV && "mtv" in searchText) return false
+        if (config.filters.removeOWN && "own" in searchText) return false
+        if (config.filters.removeTLC && "tlc" in searchText) return false
+        if (config.filters.removeVH1 && "vh1" in searchText) return false
+        if (config.filters.removeWEtv && "we tv" in searchText) return false
+        if ((config.filters.removeMTV || config.filters.removeMTVReality) && "mtv" in searchText) return false
+
+// 🎭 Individual Keyword Filters
+        if (config.filters.remove90DayFiancee && "90 day fiancee" in searchText) return false
+        if (config.filters.removeAmericanIdol && "american idol" in searchText) return false
+        if (config.filters.removeAmazingRace && "amazing race" in searchText) return false
+        if (config.filters.removeBigBrother && "big brother" in searchText) return false
+        if (config.filters.removeChallenge && "the challenge" in searchText) return false
+        if (config.filters.removeDancingWithTheStars && "dancing with the stars" in searchText) return false
+        if (config.filters.removeDragRace && "drag race" in searchText) return false
+        if (config.filters.removeDuckDynasty && "duck dynasty" in searchText) return false
+        if (config.filters.removeFlipOrFlop && "flip or flop" in searchText) return false
+        if (config.filters.removeGordonRamsay && "gordon ramsay" in searchText) return false
+        if (config.filters.removeHellSKitchen && "hell's kitchen" in searchText) return false
+        if (config.filters.removeJerseyShore && "jersey shore" in searchText) return false
+        if (config.filters.removeJudge && "judge" in searchText) return false
+        if (config.filters.removeKardashians && "kardashians" in searchText) return false
+        if (config.filters.removeLoveIsBlind && "love is blind" in searchText) return false
+        if (config.filters.removeLoveItOrListIt && "love it or list it" in searchText) return false
+        if (config.filters.removeLoveIsland && "love island" in searchText) return false
+        if (config.filters.removeMasterchef && "masterchef" in searchText) return false
+        if (config.filters.removeMillionDollarListing && "million dollar listing" in searchText) return false
+        if (config.filters.removeNosey && "nosey" in searchText) return false
+        if (config.filters.removePerfectMatch && "perfect match" in searchText) return false
+        if (config.filters.removePawnStars && "pawn stars" in searchText) return false
+        if (config.filters.removePropertyBrothers && "property brothers" in searchText) return false
+        if (config.filters.removeQueerEye && "queer eye" in searchText) return false
+        if (config.filters.removeRealHousewives && "real housewives" in searchText) return false
+        if (config.filters.removeSharkTank && "shark tank" in searchText) return false
+        if (config.filters.removeSinglesInferno && "single's inferno" in searchText) return false
+        if (config.filters.removeStorageWars && "storage wars" in searchText) return false
+        if (config.filters.removeSurvivor && "survivor" in searchText) return false
+        if (config.filters.removeTheBachelor && "the bachelor" in searchText) return false
+        if (config.filters.removeTheBachelorette && "the bachelorette" in searchText) return false
+        if (config.filters.removeTheMaskedSinger && "the masked singer" in searchText) return false
+        if (config.filters.removeTheOsbournes && "the osbournes" in searchText) return false
+        if (config.filters.removeTheUltimatum && "the ultimatum" in searchText) return false
+        if (config.filters.removeTheVoice && "the voice" in searchText) return false
+        if (config.filters.removeTopModel && "top model" in searchText) return false
+        if (config.filters.removeTeenMom && "teen mom" in searchText) return false
+        if (config.filters.removeTooHotToHandle && "too hot to handle" in searchText) return false
+        if (config.filters.removeVanderpumpRules && "vanderpump rules" in searchText) return false
+
         // 🎵 Music Filters
         if (config.filters.removeMusicChannels) {
             val musicKeywords = listOf(
@@ -1204,6 +1278,78 @@ class EpgProcessorService : Service() {
             if (config.filters.removeWeatherChannel && ("weather channel" in textContent || "weather." in textContent)) return false
             if (config.filters.removeAccuWeather && "accuweather" in textContent) return false
         }
+
+        // 🎭 Reality Shows Keywords
+        val realityKeywords = listOf(
+            "90 day fiancee", "american idol", "amazing race", "big brother",
+            "the challenge", "dancing with the stars", "drag race", "duck dynasty",
+            "flip or flop", "gordon ramsay", "hell's kitchen", "jersey shore",
+            "judge", "kardashians", "love is blind", "love it or list it",
+            "love island", "masterchef", "million dollar listing", "nosey",
+            "perfect match", "pawn stars", "property brothers", "queer eye",
+            "real housewives", "shark tank", "single's inferno", "storage wars",
+            "survivor", "the bachelor", "the bachelorette", "the masked singer",
+            "the osbournes", "the ultimatum", "the voice", "top model",
+            "teen mom", "too hot to handle", "vanderpump rules", "mtv",
+            "a&amp;e", "bravo", "e!", "lifetime", "own", "tlc", "vh1", "we tv",
+        ).sorted()
+
+// 🎭 Reality Shows Master Filter
+        if (config.filters.removeAllRealityShows) {
+            if (realityKeywords.any { it in textContent }) return false
+        }
+
+// 🎭 Individual Channel Filters
+        if (config.filters.removeAE && "a & e" in textContent) return false
+        if (config.filters.removeBravo && "bravo" in textContent) return false
+        if (config.filters.removeE && "e!" in textContent) return false
+        if (config.filters.removeLifetime && "lifetime" in textContent) return false
+        if ((config.filters.removeMTV || config.filters.removeMTVReality) && "mtv" in textContent) return false
+        if (config.filters.removeOWN && "own" in textContent) return false
+        if (config.filters.removeTLC && "tlc" in textContent) return false
+        if (config.filters.removeVH1 && "vh1" in textContent) return false
+        if (config.filters.removeWEtv && "we tv" in textContent) return false
+
+// 🎭 Individual Keyword Filters
+        if (config.filters.remove90DayFiancee && "90 day fiancee" in textContent) return false
+        if (config.filters.removeAmericanIdol && "american idol" in textContent) return false
+        if (config.filters.removeAmazingRace && "amazing race" in textContent) return false
+        if (config.filters.removeBigBrother && "big brother" in textContent) return false
+        if (config.filters.removeChallenge && "the challenge" in textContent) return false
+        if (config.filters.removeDancingWithTheStars && "dancing with the stars" in textContent) return false
+        if (config.filters.removeDragRace && "drag race" in textContent) return false
+        if (config.filters.removeDuckDynasty && "duck dynasty" in textContent) return false
+        if (config.filters.removeFlipOrFlop && "flip or flop" in textContent) return false
+        if (config.filters.removeGordonRamsay && "gordon ramsay" in textContent) return false
+        if (config.filters.removeHellSKitchen && "hell's kitchen" in textContent) return false
+        if (config.filters.removeJerseyShore && "jersey shore" in textContent) return false
+        if (config.filters.removeJudge && "judge" in textContent) return false
+        if (config.filters.removeKardashians && "kardashians" in textContent) return false
+        if (config.filters.removeLoveIsBlind && "love is blind" in textContent) return false
+        if (config.filters.removeLoveItOrListIt && "love it or list it" in textContent) return false
+        if (config.filters.removeLoveIsland && "love island" in textContent) return false
+        if (config.filters.removeMasterchef && "masterchef" in textContent) return false
+        if (config.filters.removeMillionDollarListing && "million dollar listing" in textContent) return false
+        if (config.filters.removeNosey && "nosey" in textContent) return false
+        if (config.filters.removePerfectMatch && "perfect match" in textContent) return false
+        if (config.filters.removePawnStars && "pawn stars" in textContent) return false
+        if (config.filters.removePropertyBrothers && "property brothers" in textContent) return false
+        if (config.filters.removeQueerEye && "queer eye" in textContent) return false
+        if (config.filters.removeRealHousewives && "real housewives" in textContent) return false
+        if (config.filters.removeSharkTank && "shark tank" in textContent) return false
+        if (config.filters.removeSinglesInferno && "single's inferno" in textContent) return false
+        if (config.filters.removeStorageWars && "storage wars" in textContent) return false
+        if (config.filters.removeSurvivor && "survivor" in textContent) return false
+        if (config.filters.removeTheBachelor && "the bachelor" in textContent) return false
+        if (config.filters.removeTheBachelorette && "the bachelorette" in textContent) return false
+        if (config.filters.removeTheMaskedSinger && "the masked singer" in textContent) return false
+        if (config.filters.removeTheOsbournes && "the osbournes" in textContent) return false
+        if (config.filters.removeTheUltimatum && "the ultimatum" in textContent) return false
+        if (config.filters.removeTheVoice && "the voice" in textContent) return false
+        if (config.filters.removeTopModel && "top model" in textContent) return false
+        if (config.filters.removeTeenMom && "teen mom" in textContent) return false
+        if (config.filters.removeTooHotToHandle && "too hot to handle" in textContent) return false
+        if (config.filters.removeVanderpumpRules && "vanderpump rules" in textContent) return false
 
         // ⚽ Sports Filters
         if (config.filters.removeSportsChannels) {
